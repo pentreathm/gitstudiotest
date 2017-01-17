@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "ExchangeRates"
+        }
+    },
+    "id": "2f268132-f0df-4c7e-9fb6-570ce003840c",
+    "version": "5.2.0.0"
+}

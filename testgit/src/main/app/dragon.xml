@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+      xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+      xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp"
+      xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+  <http:connector name="dragonHTTPConnector" cookieSpec="netscape" validateConnections="true" sendBufferSize="0" receiveBufferSize="0" receiveBacklog="0"
+                  clientSoTimeout="${blaze.http.timeout}" serverSoTimeout="${blaze.http.timeout}" socketSoLinger="0" doc:name="HTTP-HTTPS" enableCookies="true"/>
+  <ee:object-store-caching-strategy name="ClientDetailsCachingStrategy" doc:name="Caching Strategy">
+    <in-memory-store name="ClientDetailsInMemoryStore" maxEntries="1000" entryTTL="-1" expirationInterval="3600000"/>
+  </ee:object-store-caching-strategy>
+  <mulexml:namespace-manager includeConfigNamespaces="true">
+    <mulexml:namespace prefix="iXML" uri="urn:schemas-ixml-org:ixml.v1"/>
+  </mulexml:namespace-manager>
+  <sub-flow name="dragon.getClientInfo">
+    <ee:cache cachingStrategy-ref="ClientDetailsCachingStrategy" doc:name="Cache">
+      <logger message="Fetching Dragon Client [#[payload]]..." level="INFO" doc:name="Log Client Id"/>
+      <scripting:component doc:name="Setup Client Request">
+        <scripting:script engine="Groovy"><![CDATA[import com.vatit.wyvern.shared.dto.getClientDetailsOTRequest
+import com.vatit.wyvern.shared.dto.ClientCodeListOTDef
+
+c = getClientDetailsOTRequest.create()
+c.setClients(ClientCodeListOTDef.create())
+c.getClients().addCode(payload);
+    
+c]]></scripting:script>
+      </scripting:component>
+            <custom-transformer returnClass="com.vatit.wyvern.shared.dto.getClientDetailsOTResponse" class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" metadata:id="511d5dea-bb96-4abf-a89c-768fad077214" doc:name="Call Dragon">
+                <spring:property name="methodName" value="getClientDetailsOT"/>
+                <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.OTDragonWSProxy"/>
+                <spring:property name="useServiceAccount" value="true"/>
+            </custom-transformer>
+            <custom-transformer returnClass="com.vatit.blaze.dto.Client" class="com.vatit.blaze.esb.dragon.ClientResponseToClientTransformer" metadata:id="378aae6c-bd47-4563-a099-4e9b771a45e0" doc:name="Extract Client"/>
+
+    </ee:cache>
+  </sub-flow>
+    <sub-flow name="dragon.populateBlazeUserId">
+        <enricher doc:name="Prevent Payload Change">
+            <processor-chain doc:name="Processor Chain">
+                <expression-filter expression="#[flowVars['blaze.dragon.user.id'] == null]" doc:name="User Id Should Not Already Exist"/>
+                <expression-filter expression="#[flowVars['blaze.dragon.login.cookies'] != empty]" doc:name="Dragon Cookie Must Exist"/>
+                <set-payload value="#[flowVars['blaze.dragon.login.cookies'][0].value]" doc:name="Set Payload to Dragon Cookie"/>
+                <ee:cache doc:name="Cache">
+                    <logger message="Fetching User Id from Dragon..." level="INFO" doc:name="Logger"/>
+                    <custom-transformer class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" doc:name="Call Dragon">
+                        <spring:property name="hasPayload" value="false"/>
+                        <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.WVCommonWSProxy"/>
+                        <spring:property name="methodName" value="WhoAmI"/>
+                    </custom-transformer>
+                </ee:cache>
+                <logger message="Dragon User is: #[payload.getIAm().getUserName()], Id: #[payload.getIAm().getUserId()]." level="INFO" doc:name="Logger"/>
+            </processor-chain>
+            <enrich source="payload.getIAm().getUserId()" target="message.outboundProperties['Blaze-user-id']"/>
+            <enrich source="payload.getIAm().getUserId()" target="flowVars['blaze.dragon.user.id']"/>
+            <enrich source="payload.getIAm().getUserName()" target="flowVars['blaze.dragon.user.name']"/>
+        </enricher>
+    </sub-flow>
+  <sub-flow name="dragon.resolveCalcsFromPayload">
+    <message-properties-transformer overwrite="true" scope="invocation" doc:name="Message Properties">
+      <add-message-property key="expense.types.unmapped" value="#[new com.vatit.blaze.dto.Invoices()]"/>
+    </message-properties-transformer>
+    <scripting:component doc:name="Unflatten">
+      <scripting:script engine="Groovy" file="groovy/UnflattenInvoicesToInvoiceGroupsMatchedOnClientId.groovy"></scripting:script>
+    </scripting:component>
+    <foreach collection="payload" doc:name="For Each Invoice Group">
+      <set-variable variableName="blaze.dragon.data.client" value="#[payload.connection.client]" doc:name="Dragon Client"/>
+      <set-payload value="#[payload.getInvoices()]" doc:name="Set Payload"/>
+      <flow-ref name="dragon.calculateInvoices" doc:name="Calculate Invoices"/>
+      <flow-ref name="dragon.emailUnmappedExpenseTypes" doc:name="Email Unmapped Expense Types"/>
+    </foreach>
+    <scripting:component doc:name="Flatten">
+      <scripting:script engine="Groovy" file="groovy/flattenInvoiceGroups.groovy"/>
+    </scripting:component>
+    <flow-ref name="potentials.putInvoiceCalculations" doc:name="Save Invoices"/>
+  </sub-flow>
+
+  <flow name="dragon.resolveCalculations" tracking:enable-default-events="true">
+    <expression-filter expression="#[groovy: !flowVars['syncOmissions']?.contains('calcs')]" doc:name="Check Omissions"/>
+    <logger message="Fetching and Calculating Invoices..." level="INFO" doc:name="Info"/>
+    <message-properties-transformer overwrite="true" scope="invocation" doc:name="Message Properties">
+      <add-message-property key="connection.id" value="#[payload.?id]"/>
+      <add-message-property key="expense.types.unmapped" value="#[new com.vatit.blaze.dto.Invoices()]"/>
+      <add-message-property key="blaze.page.count" value="#[new Integer[${blaze.send.invoices.toDragon.forCalculations.page.count}]]"/>
+      <add-message-property key="blaze.page.size" value="${blaze.send.invoices.toDragon.forCalculations.page.size}"/>
+      <add-message-property key="blaze.page.done" value="false"/>
+    </message-properties-transformer>
+
+    <enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+      <processor-chain doc:name="Processor Chain">
+
+        <set-payload value="Dummy payload to prevent jaxb transformation exception going into the http endpoint on the second call" doc:name="Set Payload"/>
+        <flow-ref name="dragon.pageCalculations" doc:name="Page Calculations"/>
+        <flow-ref name="dragon.emailUnmappedExpenseTypes" doc:name="Email Unmapped Expense Types"/>
+      </processor-chain>
+    </enricher>
+    <logger message="Invoice Calculations Complete." level="INFO" doc:name="Calculations Complete"/>
+
+    <catch-exception-strategy doc:name="Catch Exception Strategy">
+      <flow-ref name="general.exceptionHandling" doc:name="General Exception"/>
+      <scripting:component doc:name="Build Sync Report">
+        <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+
+SyncReport report = message.getInvocationProperty('sync.report')
+if (report != null && message.getInvocationProperty('myCount') != null){
+	int iteration = message.getInvocationProperty('myCount') - 1
+    report.connections.get(iteration).errors.add("Resolve Calculations Level: " + payload.toString())
+}
+
+payload]]></scripting:script>
+      </scripting:component>
+    </catch-exception-strategy>
+  </flow>
+  <flow name="dragon.pageCalculations">
+    <foreach collection="#[flowVars['blaze.page.count']]" doc:name="For Each page" counterVariableName="blaze.page.number">
+      <expression-filter expression="#[flowVars.'blaze.page.done' == false]" doc:name="Check for end of data"/>
+      <logger message="Processing Page #[flowVars['blaze.page.number']] of #[flowVars['blaze.page.count'].length]..." level="INFO" doc:name="Page Progress"/>
+      <set-variable variableName="httpMethod" value="GET" doc:name="Set http method"/>
+      <set-variable variableName="blaze.services.path"
+                    value="${blaze.services.address}/api/1.0/potentials/invoices-for-calculations/#[flowVars['blaze.connection'].Id]?pageSize=#[flowVars['blaze.page.size']]"
+                    doc:name="Set services path"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+	    <custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+	    </custom-transformer>
+      <set-variable variableName="blaze.page.done" value="#[payload.items.size() != flowVars.'blaze.page.size']"
+                    doc:name="Is Paging Done?"/>
+      <expression-filter expression="#[groovy: !payload.items.isEmpty()]" doc:name="Stop Here on Empty List"/>
+      <set-payload value="#[payload.items]" doc:name="Set Payload"/>
+            <scripting:component doc:name="Copy Client Details to Each Invoice">
+                <scripting:script engine="Groovy"><![CDATA[clientId = message.getInvocationProperty('blaze.connection').client.id
+payload.each { it.setClientId clientId }
+payload]]></scripting:script>
+            </scripting:component>
+
+      <flow-ref name="dragon.calculateInvoices" doc:name="Calculate Invoices"/>
+            <enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+                <flow-ref name="potentials.putInvoiceCalculations" doc:name="Save Invoices"/>
+            </enricher>
+            <scripting:component doc:name="Build Sync Report">
+                <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+
+SyncReport report = message.getInvocationProperty('sync.report')
+
+if (report != null){
+	int iteration = message.getInvocationProperty('myCount') - 1
+	report.connections.get(iteration).calculationsRetrieved += payload.items.size()
+	// at this point 'dragon.calculations' could be null - if the previous enricher is kicked out with an empty list
+    report.connections.get(iteration).faultyCalculations += payload.items.size() - (message.getInvocationProperty('dragon.calculations')?.sizeInvoice() ?: 0)
+}
+
+payload]]></scripting:script>
+            </scripting:component>
+
+    </foreach>
+  </flow>
+  <sub-flow name="dragon.calculateInvoices">
+
+    <expression-filter expression="#[groovy: !payload?.isEmpty()]" doc:name="Stop Here on Empty List"/>
+    <logger message="Calculating #[payload.size()] Invoice(s) for Client with id #[payload[0].connection.client.id]" level="INFO" doc:name="Info"/>
+	  <set-variable variableName="expense.types.unmapped" value="#[flowVars['expense.types.unmapped'] or new com.vatit.blaze.dto.Invoices()]" doc:name="Set Unmapped List"/>
+
+    <enricher source="#[payload.InvoiceCalculation.Invoices]" target="#[variable:dragon.calculations]" doc:name="Enrich with Calculations">
+      <processor-chain doc:name="Processor Chain">
+                <scripting:component metadata:id="3b46636c-381d-4112-b8b6-c4e7e443e9fb" doc:name="Create Dragon Invoice Collection">
+                    <scripting:script engine="Groovy" file="groovy/createDragonInvoicesFromInvoices.groovy"/>
+                </scripting:component>
+
+
+                <logger message="Sending #[payload.invoiceCalculation.invoices.sizeInvoice()] Invoices to Dragon for calculation..." level="INFO" doc:name="Info"/>
+        <expression-filter expression="#[!payload.invoiceCalculation.invoices.invoiceList.isEmpty()]" doc:name="Stop Here on Empty List"/>
+                <custom-transformer returnClass="com.vatit.wyvern.shared.dto.calculateInvoiceValueOTResponse" class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" metadata:id="277cacd7-4c5a-4e04-8e5c-2af8d66d04ef" doc:name="Call Dragon">
+                    <spring:property name="useServiceAccount" value="true"/>
+                    <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.OTDragonWSProxy"/>
+                    <spring:property name="methodName" value="calculateInvoiceValueOT"/>
+                </custom-transformer>
+
+        <expression-filter expression="#[groovy: !payload.invoiceCalculation.invoices?.invoiceList?.isEmpty()]" doc:name="Stop Here on Empty List"/>
+
+      </processor-chain>
+    </enricher>
+    <scripting:component doc:name="Inject Calculations">
+      <scripting:script engine="Groovy" file="groovy/createInvoicesFromDragonCalculationResults.groovy"/>
+    </scripting:component>
+
+
+  </sub-flow>
+
+
+  <flow name="dragon.emailUnmappedExpenseTypes">
+    <expression-filter expression="#[groovy: !flowVars['syncOmissions']?.contains('notifications')]" doc:name="Check sync omissions"/>
+    <choice doc:name="Choice">
+      <when expression="#[flowVars['expense.types.unmapped'].?items.?size() &gt; 0]">
+        <scripting:component doc:name="Get Unmapped Expense Types">
+          <scripting:script engine="Groovy"><![CDATA[import java.util.ArrayList
+String clientName = message.getInvocationProperty('blaze.dragon.data.client').name
+message.getInvocationProperty("expense.types.unmapped").items.collect {
+	ArrayList<String> invoice = new ArrayList<String>()
+	invoice.add(it.expenseType.externalName)
+	invoice.add(it.expenseType.externalId)
+	invoice.add(clientName)
+	invoice
+}.unique()
+]]></scripting:script>
+        </scripting:component>
+        <mulexml:object-to-xml-transformer doc:name="Object to XML"/>
+        <mulexml:xslt-transformer maxIdleTransformers="2" maxActiveTransformers="5" xsl-file="UnmappedExpenseTypes.xsl" doc:name="XSLT"/>
+        <logger message="Sending Unmapped Expense Type Email: Server (${blaze.notification.email.smtp.server}) From (${blaze.notification.email.from})..." level="INFO"
+                doc:name="Info"/>
+        <smtp:outbound-endpoint host="${blaze.notification.email.smtp.server}" user="${blaze.notification.email.username}" password="${blaze.notification.email.password}"
+                                connector-ref="VatitSMTP" to="${blaze.notification.email.unmapped.expense.types}" responseTimeout="10000" doc:name="SMTP"
+                                subject="Unmapped Blaze Expense Types"/>
+        <logger message="Unmapped Expense Type Email Sent" level="INFO" doc:name="Info"/>
+      </when>
+      <otherwise>
+        <logger message="No Unmapped Expense Types" level="INFO" doc:name="No Unmapped Expense Types"/>
+      </otherwise>
+    </choice>
+    <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+  </flow>
+
+</mule>

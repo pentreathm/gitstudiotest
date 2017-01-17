@@ -1,0 +1,34 @@
+/rates:
+  description: |
+    Fetches a list of conversion rates.
+  post:
+    is: [acceptEncodingHeader]
+    body:
+      application/json: 
+        schema : !include res/ExchangeRates.schema.json
+        example : !include res/ExchangeRatesRequestBodyExample.json
+    description: |
+      Returns a list of conversion rates where each rate is the price of the _toCurrencyCode_ in terms of 1 _fromCurrencyCode_. In other words the rate at which the _fromCurrencyCode_ will be exchanged for the _toCurrencyCode_.
+    
+      ###Example:
+      
+      _toCurrencyCode_ = USD
+      
+      _fromCurrencyCode_ = ZAR
+      
+      rate returned = 11.0929926 
+      
+      The quotation USD/ZAR 11.0929926 means that 1 US dollar is able to buy 11.0929926 South African Rand.
+    headers: 
+      Content-Type:
+        description: Specify the type of payload you are sending
+        type: string
+        enum: [application/json]
+        example: application/json
+        required: true
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include res/ExchangeRates.schema.json
+            example: !include res/ExchangeRatesResponseExample.json

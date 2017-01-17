@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+      xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
+      xmlns:oauth2-provider="http://www.mulesoft.org/schema/mule/oauth2-provider"
+      xmlns:smtp="http://www.mulesoft.org/schema/mule/smtp"
+      xmlns:quartz="http://www.mulesoft.org/schema/mule/quartz"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/quartz/current/mule-quartz.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/smtp http://www.mulesoft.org/schema/mule/smtp/current/mule-smtp.xsd
+http://www.mulesoft.org/schema/mule/oauth2-provider http://www.mulesoft.org/schema/mule/oauth2-provider/current/mule-oauth2-provider.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd">
+
+  <quartz:connector name="Quartz" validateConnections="true" doc:name="Quartz">
+    <receiver-threading-profile maxThreadsActive="1"/>
+  </quartz:connector>
+
+  <smtp:connector name="VatitSMTP" contentType="text/html" fromAddress="${blaze.notification.email.from}" validateConnections="true" doc:name="SMTP"
+                  replyToAddresses="${blaze.notification.email.replyTo}"/>
+
+  <queued-asynchronous-processing-strategy name="AsyncCalculationsProcessingStrategy" maxThreads="20" minThreads="5" threadTTL="120000" poolExhaustedAction="WAIT"
+                                           threadWaitTimeout="120000" maxQueueSize="200" doc:name="Queued Asynchronous Processing Strategy">
+  </queued-asynchronous-processing-strategy>
+
+  <message-properties-transformer scope="invocation" name="ExchangeRates_Calcs" doc:name="Message Properties">
+    <add-message-property key="blaze.wantsExchangeRates"
+                          value="#[message.inboundProperties['exchangeRatesFor'] != empty &amp;&amp; message.inboundProperties['exchangeRatesFor'] != 'NONE']"/>
+    <add-message-property key="blaze.exchangeRatesFor" value="#[message.inboundProperties['exchangeRatesFor']]"/>
+    <add-message-property key="blaze.queryParameters.calcs"
+                          value="#[groovy:com.vatit.blaze.utils.Constants.HttpParameters.CalcResolution.resolve(message.getInboundProperty('calcs'))]"/>
+    <add-message-property key="blaze.wantsCalcs" value="#[groovy:!com.vatit.blaze.utils.Constants.HttpParameters.CalcResolution.isNone(message.getInboundProperty('calcs'))]"/>
+  </message-properties-transformer>
+
+  <data-mapper:config name="Blaze_Invoice_to_Dragon_Invoice" transformationGraphPath="blaze_invoice_to_dragon_invoice.grf" doc:name="Blaze_Invoice_to_Dragon_Invoice"/>
+  <data-mapper:config name="Dragon_Aggregate_to_Blaze_Aggregate" transformationGraphPath="dragon_aggregate_to_blaze_aggregate.grf" doc:name="Dragon_Aggregate_to_Blaze_Aggregate"/>
+
+    <flow name="potentials.syncExternal" doc:description="When we synchronise invoices from external systems to the Potentials service">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_SYNC" doc:name="SYNC"/>
+        <set-variable variableName="blaze.responseContentType" value="#[message.inboundProperties['Accept']]" doc:name="Set Accept Value for Sync Report"/>
+        <set-variable variableName="syncOmissions" value="#[message.inboundProperties['http.query.params'].get('omit')]" doc:name="Sync Omissions"/>
+        <set-variable variableName="blaze.queryString" value="#[message.inboundProperties['http.request'].replace(message.inboundProperties['http.request.path'], '')]"
+                      doc:name="Set QueryString"/>
+        <flow-ref name="potentials.sync" doc:name="potentials.sync"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.syncAllQuartzJob" processingStrategy="synchronous">
+        <quartz:inbound-endpoint jobName="SyncPotentials" repeatInterval="10000" responseTimeout="10000" doc:name="Daily Sync Job" cronExpression="${blaze.potentials.sync.cron}"
+                                 connector-ref="Quartz">
+            <quartz:event-generator-job/>
+        </quartz:inbound-endpoint>
+        <message-properties-transformer overwrite="true" scope="invocation" doc:name="Message Properties">
+            <add-message-property key="blaze.responseContentType" value="text/html"/>
+            <add-message-property key="blaze.api.client.id" value="blaze-esb"/>
+            <add-message-property key="blaze.queryString" value=""/>
+        </message-properties-transformer>
+        <set-variable variableName="blaze.request.category" value="Automatic potentials sync" doc:name="Set blaze request category"/>
+        <flow-ref name="potentials.sync" doc:name="potentials.sync"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <sub-flow name="potentials.sync">
+        <logger message="Sync All Connections" level="INFO" doc:name="Info"/>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/connections/connections#[flowVars['blaze.queryString']]"
+                      doc:name="Set request address"/>
+        <set-variable variableName="httpMethod" value="GET" doc:name="Set Http Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze Services"/>
+        <custom-transformer returnClass="com.vatit.blaze.dto.Connections"
+                            class="com.vatit.blaze.esb.transformer.ConnectionsTransformer"
+                            doc:name="Deserialize Connections"/>
+        <set-variable variableName="sync.report" value="#[new com.vatit.blaze.esb.SyncReport(payload.Items.size())]" doc:name="Set Sync Report Object"/>
+        <foreach collection="message.payload.Items" counterVariableName="myCount" rootMessageVariableName="parentList" doc:name="For Each Connection">
+            <set-variable variableName="blaze.connection" value="#[payload]" metadata:id="b4124f5a-187d-4905-8765-186f9be66927" doc:name="Store Connection"/>
+
+
+            <set-variable variableName="blaze.request.id" value="payload.client.id" doc:name="Set blaze request id"/>
+            <enricher target="#[variable:blaze.dragon.data.client]" doc:name="Get Dragon Client">
+                <processor-chain doc:name="Processor Chain">
+                    <set-payload value="#[payload.client.id]" doc:name="Set Payload"/>
+                    <flow-ref name="dragon.getClientInfo" doc:name="dragon.getClientInfo"/>
+                    <!-- flow-ref name="dragon.getClientInfo" doc:name="dragon.getClientInfo"/> -->
+                </processor-chain>
+            </enricher>
+            <logger message="Start Sync for #[payload.source.code] Connection, Client: #[flowVars.'blaze.dragon.data.client'.name] [#[flowVars.'blaze.dragon.data.client'.id]]" level="INFO" metadata:id="3d0f8213-6185-42a0-9e9e-655a44435e12" doc:name="Logger"/>
+            <expression-component doc:name="Copy Client into Payload"><![CDATA[payload.client = flowVars.'blaze.dragon.data.client']]></expression-component>
+            <tracking:custom-event event-name="start-sync-for-connection" doc:name="Custom Business Event">
+                <tracking:meta-data key="client-name" value="#[flowVars['blaze.dragon.data.client'].name]"/>
+                <tracking:meta-data key="client-id" value="#[flowVars['blaze.dragon.data.client'].id]"/>
+                <tracking:meta-data key="connection-type-code" value="#[payload.source.code]"/>
+            </tracking:custom-event>
+            <scripting:component doc:name="Prepare Sync Report">
+                <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReportConnection
+SyncReportConnection conn = new SyncReportConnection(payload)
+message.getInvocationProperty('sync.report').connections.add(conn)
+payload]]></scripting:script>
+            </scripting:component>
+            <enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+                <choice doc:name="Connection Type">
+                    <when expression="#[payload.isActive == false]">
+                        <logger level="WARN" doc:name="Inactive Connection" message="Inactive Connection Type: #[payload.source.code] for client #[payload.client.id] encountered, skipping processing"/>
+                    </when>
+                    <when expression="#[payload.source.code == 'CONCUR' &amp;&amp; payload.isActive == true]">
+                        <flow-ref name="concur.syncConnection" doc:name="concur.syncConnection" metadata:id="a3dc1533-51b9-486a-8710-6e003db744e3"/>
+                    </when>
+                    <otherwise>
+                        <flow-ref name="potentials.syncConnection" doc:name="potentials.syncConnection"/>
+
+                    </otherwise>
+                </choice>
+            </enricher>
+            <tracking:custom-event event-name="sync-for-connection-completed" doc:name="Custom Business Event">
+                <tracking:meta-data key="client-name" value="#[flowVars['blaze.dragon.data.client'].name]"/>
+                <tracking:meta-data key="client-id" value="#[flowVars['blaze.dragon.data.client'].id]"/>
+                <tracking:meta-data key="connection-type-code" value="#[payload.source.code]"/>
+            </tracking:custom-event>
+            <logger message="Done Sync for #[payload.source.code] Connection, Client: #[flowVars['blaze.dragon.data.client'].name]." level="INFO" doc:name="Logger"/>
+        </foreach>
+        <flow-ref name="potentials.syncReport" doc:name="potentials.syncReport"/>
+        <choice doc:name="Send Notifications?">
+            <when expression="#[groovy: !flowVars['syncOmissions']?.contains('notifications')]">
+                <logger message="Sending Sync Report Email: Server (${blaze.notification.email.smtp.server}) From (${blaze.notification.email.from})..." level="INFO" doc:name="Send Sync Report"/>
+                <smtp:outbound-endpoint host="${blaze.notification.email.smtp.server}" port="${blaze.notification.email.port}" user="${blaze.notification.email.username}" password="${blaze.notification.email.password}" connector-ref="VatitSMTP" to="${blaze.notification.email.potentials.sync}" subject="Blaze Potentials Sync Report" responseTimeout="10000" doc:name="SMTP" tracking:enable-default-events="true"/>
+            </when>
+            <otherwise>
+                <logger message="Notifications omitted, no sync report will be sent." level="INFO" doc:name="No Notifications"/>
+            </otherwise>
+        </choice>
+        <tracking:custom-event event-name="sync-completed" doc:name="Custom Business Event"/>
+        <logger message="Sync Complete." level="INFO" doc:name="Sync Complete"/>
+    </sub-flow>
+
+    <flow name="potentials.syncConnection">
+        <logger message="Starting Base Sync Process..." level="INFO" doc:name="Logger"/>
+        <enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+            <flow-ref name="dragon.resolveCalculations" doc:name="dragon.resolveCalculations"/>
+        </enricher>
+        <logger message="Base Sync Process Complete." level="INFO" doc:name="Complete"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+            <scripting:component doc:name="Build Sync Report">
+                <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+SyncReport report = message.getInvocationProperty('sync.report')
+if (report != null && message.getInvocationProperty('myCount') != null){
+	int iteration = message.getInvocationProperty('myCount') - 1
+    report.connections.get(iteration).errors.add("Connection Level: " + payload.toString())
+}
+payload]]></scripting:script>
+            </scripting:component>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="potentials.postInvoicesByGroup">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="WRITE"/>
+        <transformer ref="ExchangeRates_Calcs" doc:name="Exchange Rates &amp; Calcs"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze Services"/>
+		    <custom-transformer returnClass="com.vatit.blaze.dto.InvoiceGroups" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+			    <spring:property name="returnClassName" value="com.vatit.blaze.dto.InvoiceGroups"/>
+		    </custom-transformer>
+        <flow-ref name="potentials.becauseStudioIsScrewed2" doc:name="Resolve Exchange Rates"/>
+        <choice doc:name="Calcs?">
+            <when expression="groovy:message.getInvocationProperty('blaze.queryParameters.calcs') == com.vatit.blaze.utils.Constants.HttpParameters.CalcResolution.ASYNC">
+                <async processingStrategy="AsyncCalculationsProcessingStrategy" doc:name="Async">
+                    <processor-chain doc:name="Processor Chain">
+                        <scripting:component doc:name="Flatten">
+                            <scripting:script engine="Groovy" file="groovy/flattenInvoiceGroups.groovy"/>
+                        </scripting:component>
+                        <flow-ref name="dragon.resolveCalcsFromPayload" doc:name="Resolve Calculations"/>
+                    </processor-chain>
+                </async>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalInvoicePostTransformer" doc:name="Marshal">
+                </custom-transformer>
+            </when>
+            <when expression="groovy:message.getInvocationProperty('blaze.queryParameters.calcs') == com.vatit.blaze.utils.Constants.HttpParameters.CalcResolution.SYNC">
+                <enricher target="#[variable:junk]" doc:name="Sync">
+                    <processor-chain doc:name="Processor Chain">
+                        <scripting:component doc:name="Flatten">
+                            <scripting:script engine="Groovy" file="groovy/flattenInvoiceGroups.groovy"/>
+                        </scripting:component>
+                        <flow-ref name="dragon.resolveCalcsFromPayload" doc:name="Resolve Calculations"/>
+                    </processor-chain>
+                </enricher>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalInvoicePostTransformer" doc:name="Marshal"/>
+            </when>
+            <otherwise>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalInvoicePostTransformer" doc:name="Marshal"/>
+            </otherwise>
+        </choice>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.getInvoices">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+        <transformer ref="ExchangeRates_Calcs" doc:name="Exchange Rates &amp; Calcs"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+		    <custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+			    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+		    </custom-transformer>
+        <flow-ref name="potentials.becauseStudioIsScrewed" doc:name="Resolve Exchange Rates"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshall"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.postInvoices">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="WRITE"/>
+        <transformer ref="ExchangeRates_Calcs" doc:name="Exchange Rates &amp; Calcs"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+		    <custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+			    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+		    </custom-transformer>
+        <flow-ref name="potentials.becauseStudioIsScrewed" doc:name="Resolve Exchange Rates"/>
+        <choice doc:name="Calcs?">
+            <when expression="groovy:message.getInvocationProperty('blaze.queryParameters.calcs') == com.vatit.blaze.utils.Constants.HttpParameters.CalcResolution.ASYNC">
+                <async processingStrategy="AsyncCalculationsProcessingStrategy" doc:name="Async">
+                    <processor-chain doc:name="Processor Chain">
+                        <set-payload value="#[payload.items]" doc:name="Set Payload"/>
+                        <flow-ref name="dragon.resolveCalcsFromPayload" doc:name="Resolve Calculations"/>
+                    </processor-chain>
+                </async>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalInvoicePostTransformer" doc:name="Marshal">
+                </custom-transformer>
+            </when>
+            <when expression="groovy:message.getInvocationProperty('blaze.queryParameters.calcs') == com.vatit.blaze.utils.Constants.HttpParameters.CalcResolution.SYNC">
+                <enricher target="#[variable:junk]" doc:name="Sync">
+                    <processor-chain doc:name="Processor Chain">
+                        <set-payload value="#[payload.items]" doc:name="Set Payload"/>
+                        <flow-ref name="dragon.resolveCalcsFromPayload" doc:name="Resolve Calculations"/>
+                    </processor-chain>
+                </enricher>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalInvoicePostTransformer" doc:name="Marshal"/>
+            </when>
+            <otherwise>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalInvoicePostTransformer" doc:name="Marshal"/>
+            </otherwise>
+        </choice>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.getInvoiceByGroup">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+        <transformer ref="ExchangeRates_Calcs" doc:name="Exchange Rates &amp; Calcs"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+		    <custom-transformer returnClass="com.vatit.blaze.dto.InvoiceGroups" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+			    <spring:property name="returnClassName" value="com.vatit.blaze.dto.InvoiceGroups"/>
+		    </custom-transformer>
+        <flow-ref name="potentials.becauseStudioIsScrewed2" doc:name="Resolve Exchange Rates"/>
+        <logger message="Number of invoices returned #[payload.items.size()]" level="INFO" doc:name="Logger"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshall"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <sub-flow name="potentials.becauseStudioIsScrewed">
+        <enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+            <processor-chain doc:name="Processor Chain">
+                <set-payload value="#[payload.items]" doc:name="Set Payload"/>
+                <flow-ref name="potentials.enrichInvoicesWithExchangeRates" doc:name="potentials.enrichInvoicesWithExchangeRates"/>
+            </processor-chain>
+        </enricher>
+    </sub-flow>
+
+    <sub-flow name="potentials.becauseStudioIsScrewed2">
+        <enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+            <processor-chain doc:name="Processor Chain">
+                <expression-filter expression="#[flowVars['blaze.wantsExchangeRates']]" doc:name="Check Currency Parameter"/>
+                <scripting:component doc:name="Flatten">
+                    <scripting:script engine="Groovy" file="groovy/flattenInvoiceGroups.groovy"/>
+                </scripting:component>
+                <flow-ref name="potentials.enrichInvoicesWithExchangeRates" doc:name="potentials.enrichInvoicesWithExchangeRates"/>
+            </processor-chain>
+        </enricher>
+    </sub-flow>
+
+    <sub-flow name="potentials.enrichInvoicesWithExchangeRates">
+        <expression-filter expression="#[flowVars['blaze.wantsExchangeRates']]" doc:name="Check Currency Parameter"/>
+        <logger message="Adding Exchange Rates to Invoices..." level="INFO" doc:name="Logger"/>
+        <scripting:component doc:name="Setup Exchange Rate List">
+            <scripting:script engine="Groovy" file="groovy/extractExchangeRatesFromInvoices.groovy"/>
+        </scripting:component>
+        <set-variable variableName="blaze.exchangeRateList" value="#[new com.vatit.blaze.dto.ExchangeRates()]" doc:name="Create Exchange Rate List"/>
+        <foreach collection="payload" doc:name="For Each Invoice">
+            <choice doc:name="Choice">
+                <when expression="#[flowVars['blaze.exchangeRatesFor'] != 'DEFAULT']">
+                    <scripting:component doc:name="Set Currency Code">
+                        <scripting:script engine="Groovy"><![CDATA[targetCode = message.getInvocationProperty('blaze.exchangeRatesFor')
+payload.exchangeRate.setToCurrencyCode(targetCode == 'NONE' ? null : targetCode)
+payload]]></scripting:script>
+                    </scripting:component>
+                </when>
+                <otherwise>
+                    <enricher target="#[variable:blaze.dragon.data.client]" doc:name="Get Dragon Client">
+                        <processor-chain doc:name="Processor Chain">
+                            <set-payload value="#[payload.connection.client.id]" doc:name="Set Payload"/>
+                            <flow-ref name="dragon.getClientInfo" doc:name="dragon.getClientInfo"/>
+                        </processor-chain>
+                    </enricher>
+                    <scripting:component doc:name="Set Client Currency Code">
+                        <scripting:script engine="Groovy"><![CDATA[currencyCode = message.getInvocationProperty('blaze.dragon.data.client').reportingCurrencyCode
+clientName = message.getInvocationProperty('blaze.dragon.data.client').name
+if (currencyCode == null)
+	throw new Exception("No Reporting Currency found for client: $clientName")
+payload.exchangeRate.setToCurrencyCode(currencyCode)
+payload]]></scripting:script>
+                    </scripting:component>
+                </otherwise>
+            </choice>
+            <scripting:component doc:name="Add Exchange Rate to List">
+                <scripting:script engine="Groovy"><![CDATA[if (payload.exchangeRate.fromCurrencyCode ?: '' != '')
+	message.getInvocationProperty('blaze.exchangeRateList').items.add(payload.exchangeRate)
+payload]]></scripting:script>
+            </scripting:component>
+        </foreach>
+        <set-payload value="#[flowVars['blaze.exchangeRateList']]" doc:name="Set Payload"/>
+        <flow-ref name="currencies.resolveExchangeRates" doc:name="currencies.resolveExchangeRates"/>
+    </sub-flow>
+
+    <sub-flow name="potentials.putInvoiceCalculations">
+        <scripting:component doc:name="Filter &amp; Embed">
+            <scripting:script engine="Groovy"><![CDATA[new com.vatit.blaze.dto.Invoices(payload.findAll {it.hasCalculationError == false})]]></scripting:script>
+        </scripting:component>
+        <logger message="Saving #[payload.items.size()] Calculated Invoices to Blaze Services..." level="INFO" doc:name="Info"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+            <spring:property name="contentType" value="application/json"/>
+            <spring:property name="viewName" value="com.vatit.blaze.dto.Views.InvoicePostResponseWithCalcs"/>
+        </custom-transformer>
+        <message-properties-transformer scope="invocation" doc:name="Set request address and http method">
+            <add-message-property key="httpMethod" value="PUT"/>
+            <add-message-property key="blaze.services.path" value="${blaze.services.address}/api/1.0/potentials/invoice-calculations"/>
+        </message-properties-transformer>
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Set Content-Type"/>
+        <flow-ref name="general.callBlazeServices" doc:name="general.callBlazeServices"/>
+        <logger message="Save Invoice Calculations Complete." level="INFO" doc:name="Logger"/>
+    </sub-flow>
+
+    <sub-flow name="potentials.syncReportErrors">
+        <set-variable variableName="sync.hasErrors" value="False" doc:name="Variable"/>
+        <scripting:component doc:name="Look for Sync errors">
+            <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+import com.vatit.blaze.esb.SyncReportConnection
+boolean hasErrors = false
+if (payload.connections != null){
+	for (SyncReportConnection conn : payload.connections){
+		hasErrors = hasErrors || conn.errors.size() > 0
+	}
+}
+if (message.getInvocationProperty('sync.hasErrors') != null){
+	message.setInvocationProperty('sync.hasErrors', hasErrors)
+}
+payload]]></scripting:script>
+        </scripting:component>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars['sync.hasErrors']]">
+                <message-properties-transformer doc:name="Message Properties">
+                    <add-message-property key="http.status" value="500"/>
+                </message-properties-transformer>
+            </when>
+            <otherwise>
+                <logger message="No sync errors" level="INFO" doc:name="Default"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
+
+    <flow name="potentials.invoice.getDocument">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Forward to Blaze Services"/>
+        <flow-ref name="documents.retrieveFromDMS" doc:name="documents.retrieveFromDMS"/>
+        <set-property propertyName="Content-Type" value="#[flowVars['blaze.contenttype']]" doc:name="Set Content-Type"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <sub-flow name="potentials.syncReport">
+        <set-payload value="#[flowVars['sync.report']]" doc:name="Return Sync Report"/>
+        <flow-ref name="potentials.syncReportErrors" doc:name="potentials.syncReportErrors"/>
+        <choice doc:name="Added">
+            <when expression="#[flowVars['blaze.responseContentType'] == 'text/html']">
+                <mulexml:jaxb-object-to-xml-transformer jaxbContext-ref="JAXB_Context" doc:name="JAXB Object to XML"/>
+                <object-to-string-transformer doc:name="Object to String"/>
+                <set-attachment attachmentName="Sync Report Data.xml" value="#[payload]" contentType="text/xml" doc:name="Attach XML"/>
+                <mulexml:xslt-transformer ignoreBadInput="true" encoding="ISO-8859-4" xsl-file="SyncReport.xsl" maxIdleTransformers="2" maxActiveTransformers="5" doc:name="XSLT"/>
+                <set-attachment attachmentName="Detailed Report.html" value="#[payload]" contentType="text/html" doc:name="Attach HTML"/>
+                <set-payload value="#[flowVars['sync.report']]" doc:name="Return Sync Report"/>
+                <expression-transformer expression="#[payload.isSummary = true; payload]" doc:name="Set To Summary"/>
+                <mulexml:jaxb-object-to-xml-transformer jaxbContext-ref="JAXB_Context" doc:name="JAXB Object to XML"/>
+                <mulexml:xslt-transformer ignoreBadInput="true" encoding="ISO-8859-4" maxIdleTransformers="2" maxActiveTransformers="5" xsl-file="SyncReport.xsl" doc:name="XSLT"/>
+                <set-property propertyName="Content-Type" value="text/html" doc:name="Content-Type"/>
+            </when>
+            <otherwise>
+                <logger message="Content-type is not text/html" level="INFO" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
+
+    <flow name="potentials.calculateInvoices">
+		<oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+		<transformer ref="ExchangeRates_Calcs" doc:name="Exchange Rates &amp; Calcs"/>
+    <custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+	    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+    </custom-transformer>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="potentials.internalCalc" doc:name="potentials.internalCalc"/>
+		</enricher>
+		<choice doc:name="Exchange Rates?">
+			<when expression="#[flowVars['blaze.wantsExchangeRates']]">
+				<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal with Exchange Rates">
+					<spring:property name="viewName" value="com.vatit.blaze.dto.Views.InvoiceCalculationResponseWithExchangeRates"/>
+				</custom-transformer>
+			</when>
+			<otherwise>
+				<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+					<spring:property name="viewName" value="com.vatit.blaze.dto.Views.InvoiceCalculationResponse"/>
+				</custom-transformer>
+			</otherwise>
+		</choice>
+		<exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+	</flow>
+
+	<sub-flow name="potentials.internalCalc">
+		<enricher target="#[variable:uniqueExpenseTypesMissingDragonId]" doc:name="Message Enricher">
+			<processor-chain doc:name="Processor Chain">
+				<flow-ref name="potentials.resolveExternalExpenseTypes" doc:name="potentials.resolveExternalExpenseTypes"/>
+			</processor-chain>
+		</enricher>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<processor-chain doc:name="Processor Chain">
+				<set-payload value="#[payload.items]" doc:name="Set Payload"/>
+				<scripting:component doc:name="Unflatten invoices to invoice groups by client id">
+					<scripting:script engine="Groovy" file="groovy/UnflattenInvoicesToInvoiceGroupsMatchedOnClientId.groovy"/>
+				</scripting:component>
+				<foreach collection="payload" doc:name="For Each Invoice Group">
+					<set-payload value="#[payload.getInvoices()]" doc:name="Set Payload"/>
+					<flow-ref name="dragon.calculateInvoices" doc:name="Dragon Calculate Invoices"/>
+				</foreach>
+				<scripting:component doc:name="Flatten invoice groups to invoices">
+					<scripting:script engine="Groovy" file="groovy/flattenInvoiceGroups.groovy"/>
+				</scripting:component>
+			</processor-chain>
+		</enricher>
+		<enricher target="#[variable:junk]" doc:name="Message Enricher">
+			<processor-chain doc:name="Processor Chain">
+				<scripting:component doc:name="Extract Successful Calcs">
+					<scripting:script engine="Groovy" file="groovy/extractSuccessfullyCalculatedInvoices.groovy"/>
+				</scripting:component>
+				<flow-ref name="potentials.becauseStudioIsScrewed" doc:name="potentials.becauseStudioIsScrewed"/>
+			</processor-chain>
+		</enricher>
+	</sub-flow>
+
+	<sub-flow name="potentials.resolveExternalExpenseTypes">
+		<custom-transformer class="com.vatit.blaze.esb.transformer.ExtractExpenseTypesTransformer" doc:name="Extract Expense Types"/>
+		<expression-filter expression="#[groovy: !payload.items?.isEmpty()]" doc:name="Expression"/>
+		<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+			<spring:property name="contentType" value="application/json"/>
+		</custom-transformer>
+		<flow-ref name="potentials.fetchDragonExpenseTypeIds" doc:name="Fetch Dragon Expense Type Id's"/>
+		<custom-transformer returnClass="com.vatit.blaze.dto.ExpenseTypes" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+			<spring:property name="returnClassName" value="com.vatit.blaze.dto.ExpenseTypes"/>
+		</custom-transformer>
+		<custom-transformer class="com.vatit.blaze.esb.transformer.ReconcileExpenseTypesTransformer" doc:name="Reconcile Expense Types"/>
+	</sub-flow>
+
+	<flow name="potentials.thumbsuckInvoices">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+        <transformer ref="ExchangeRates_Calcs" doc:name="Exchange Rates &amp; Calcs"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+				<custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+					<spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+				</custom-transformer>
+	    <flow-ref name="potentials.becauseStudioIsScrewed" doc:name="Resolve Exchange Rates"/>
+        <choice doc:name="Exchange Rates?">
+            <when expression="#[flowVars['blaze.wantsExchangeRates']]">
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal with Exchange Rates">
+                    <spring:property name="viewName" value="com.vatit.blaze.dto.Views.InvoiceThumbsuckingResponseWithExchangeRates"/>
+                </custom-transformer>
+            </when>
+            <otherwise>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+                    <spring:property name="viewName" value="com.vatit.blaze.dto.Views.InvoiceThumbsuckingResponse"/>
+                </custom-transformer>
+            </otherwise>
+        </choice>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+	</flow>
+
+    <sub-flow name="potentials.fetchDragonExpenseTypeIds">
+        <message-properties-transformer scope="invocation" doc:name="Set request path and http method">
+            <add-message-property key="httpMethod" value="POST"/>
+            <add-message-property key="blaze.services.path" value="${blaze.services.address}/api/1.0/expense-types/resolve"/>
+        </message-properties-transformer>
+        <flow-ref name="general.callBlazeServices" doc:name="Fetch dargon expensetype ids from services"/>
+    </sub-flow>
+
+    <flow name="potentials.invoice-groups.aggregates">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <transformer ref="MagicObjectMarshaller" doc:name="Marshal"/>
+    </flow>
+
+    <flow name="potentials.rollBack">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_DELETE" doc:name="DELETE"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <transformer ref="MagicObjectMarshaller" doc:name="Marshal"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.delete">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_DELETE" doc:name="DELETE"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="FILTERED_WRITE" doc:name="FILTERED_WRITE"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.deleteInvoice">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_DELETE" doc:name="DELETE"/>
+        <set-variable variableName="blaze.services.path"
+                      value="${blaze.services.address}/api/1.0/potentials/invoices?id=#[flowVars.id]"
+                      doc:name="Set Path"/>
+        <set-variable variableName="httpMethod" value="DELETE" doc:name="Set Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.deleteInvoicesByClient">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_DELETE" doc:name="DELETE"/>
+        <set-variable variableName="blaze.services.path"
+                      value="${blaze.services.address}/api/1.0/potentials/invoices?clientCode=#[flowVars.code]"
+                      doc:name="Set Path"/>
+        <set-variable variableName="httpMethod" value="DELETE" doc:name="Set Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.deleteInvoiceGroup">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_DELETE" doc:name="DELETE"/>
+        <set-variable variableName="blaze.services.path"
+                      value="${blaze.services.address}/api/1.0/potentials/invoice-groups?id=#[flowVars.id]"
+                      doc:name="Set Path"/>
+        <set-variable variableName="httpMethod" value="DELETE" doc:name="Set Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.deleteInvoiceGroupsByClient">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_DELETE" doc:name="DELETE"/>
+        <set-variable variableName="blaze.services.path"
+                      value="${blaze.services.address}/api/1.0/potentials/invoice-groups?clientCode=#[flowVars.code]"
+                      doc:name="Set Path"/>
+        <set-variable variableName="httpMethod" value="DELETE" doc:name="Set Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.putInvoiceStatus">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="WRITE"/>
+        <scripting:component doc:name="Groovy">
+            <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.utils.Constants;
+
+request = "${blaze.services.address}" 
+request = request + message.getInboundProperty('http.context.path') + "/potentials/status/invoices?"
+
+switch (message.getInboundProperty('http.relative.path')) {
+  case ~/.*reject.*/:
+    request = request + "invoiceStatus=" + Constants.InvoiceStatus.INELIGIBLE.getCode()
+    break;
+  case ~/.*approve.*/:
+    request = request + "invoiceStatus=" + Constants.InvoiceStatus.ELIGIBLE.getCode()
+    break;
+  case ~/.*pending.*/:
+    request = request + "invoiceStatus=" + Constants.InvoiceStatus.PENDING.getCode()
+    break;
+  default:
+    throw new com.vatit.blaze.exception.ResourceNotFoundException("Could not determine what status the invoice should be set to due to the wrong resource details");
+}
+
+def idOrExternal
+
+if(message.getInboundProperty('Blaze-id-is-external') != null || !message.getInvocationProperty('id').isInteger()) 
+  idOrExternal = "ExternalId"
+else
+  idOrExternal = "Id"
+
+switch (message.getInboundProperty('http.relative.path')) {
+  case ~/.*invoice\/.*/:
+    request = request + "&invoice" + idOrExternal + "=" + message.getInvocationProperty('id')
+    break;
+  case ~/.*By-group.*/:
+    request = request + "&invoiceGroup" + idOrExternal + "=" + message.getInvocationProperty('id')
+    break;
+  case ~/.*By-expense-type.*/:
+    request = request + "&expenseType" + idOrExternal + "=" + message.getInvocationProperty('id')
+    break;
+  default:
+    throw new com.vatit.blaze.exception.ResourceNotFoundException("The resource provided is incorrect");
+}
+
+message.setInvocationProperty('blaze.services.path', request + "&" + message.getInboundProperty('http.query.string'))
+payload]]></scripting:script>
+        </scripting:component>
+        <set-variable variableName="httpMethod" value="#[message.inboundProperties['http.method']]" doc:name="Set Http Method variable"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+    </flow>
+
+    <flow name="potentials.invoicesAggregation">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="READ"/>
+		    <custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+			    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+		    </custom-transformer>
+        <enricher target="#[variable:uniqueExpenseTypesMissingDragonId]" doc:name="Message Enricher">
+            <processor-chain doc:name="Processor Chain">
+                <flow-ref name="potentials.resolveExternalExpenseTypes" doc:name="potentials.resolveExternalExpenseTypes"/>
+            </processor-chain>
+        </enricher>
+        <data-mapper:transform config-ref="Blaze_Invoice_to_Dragon_Invoice" doc:name="Blaze Invoice to Dragon Invoice">
+            <data-mapper:input-arguments>
+                <data-mapper:input-argument key="reportingCurrency">#[message.inboundProperties['exchangeRatesFor']]</data-mapper:input-argument>
+            </data-mapper:input-arguments>
+        </data-mapper:transform>
+        <custom-transformer class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" doc:name="Call Dragon - Aggregation">
+            <spring:property name="methodName" value="calculatePotentialAggregate"/>
+            <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.WVPotentialsWSProxy"/>
+            <spring:property name="useServiceAccount" value="true"/>
+        </custom-transformer>
+        <data-mapper:transform config-ref="Dragon_Aggregate_to_Blaze_Aggregate" doc:name="Dragon Aggregate to Blaze Aggregate"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="potentials.putInvoice">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="WRITE"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+    </flow>
+
+    <flow name="potentials.getInvoiceDocuments">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_READ" doc:name="POTENTIALS_READ"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_READ" doc:name="DOCUMENTS_READ"/>
+        <scripting:component doc:name="Append Missing Parameters">
+          <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.exception.BlazeEsbException
+
+request = "${blaze.services.address}"
+request = request + message.getInboundProperty('http.request')
+request = request + '&documentStatus=K'
+if (message.getInboundProperty('waterline') == "CREATED")
+ throw new BlazeEsbException("CREATED-type waterlines are not supported for this call; to initialize the waterline, either specificy MODIFIED, or leave off the waterline.");
+else if (message.getInboundProperty('waterline') == null)
+  request = request + '&waterline=MODIFIED'
+message.setInvocationProperty('blaze.services.path', request)
+
+return payload]]></scripting:script>
+        </scripting:component>
+        <set-variable variableName="httpMethod" value="GET" doc:name="Set Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze Services"/>
+        <object-to-string-transformer doc:name="Stream to JSON"/>
+    </flow>
+</mule>

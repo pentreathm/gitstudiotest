@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:spring="http://www.springframework.org/schema/beans" xmlns:https="http://www.mulesoft.org/schema/mule/https"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd"
+      version="EE-3.5.2">
+    <apikit:config name="blaze-api-config" raml="blaze-api.raml" consoleEnabled="true" consolePath="console" doc:name="Router">
+        <apikit:flow-mapping resource="/client-packs/list" action="post" flow-ref="dragon2-transfer.getClientPackHeaders"/>
+        <apikit:flow-mapping resource="/clients/client/{id}/document" action="post" flow-ref="documents.postClientDocument"/>
+        <apikit:flow-mapping resource="/clients/client/{id}/note" action="post" flow-ref="documents.postClientNote"/>
+        <apikit:flow-mapping resource="/currencies/rates" action="post" flow-ref="currencies.rates"/>
+        <apikit:flow-mapping resource="/documents/document/{id}" action="delete" flow-ref="documents.deleteNoteOrDocument"/>
+        <apikit:flow-mapping resource="/documents/document/{id}" action="get" flow-ref="documents.getDocument"/>
+        <apikit:flow-mapping resource="/documents/note/{id}" action="delete" flow-ref="documents.deleteNoteOrDocument"/>
+        <apikit:flow-mapping resource="/documents/note/{id}" action="get" flow-ref="documents.getNote"/>
+        <apikit:flow-mapping resource="/potentials/invoice-group/{id}" action="delete" flow-ref="potentials.deleteInvoiceGroup"/>
+        <apikit:flow-mapping resource="/potentials/completed-invoice-documents" action="get" flow-ref="potentials.getInvoiceDocuments"/>
+        <apikit:flow-mapping resource="/potentials/invoice-group/{id}/document" action="post" flow-ref="documents.postInvoiceGroupDocument"/>
+        <apikit:flow-mapping resource="/potentials/invoice-group/{id}/note" action="post" flow-ref="documents.postPotentialsNote"/>
+        <apikit:flow-mapping resource="/potentials/invoice-groups" action="delete" flow-ref="potentials.delete"/>
+        <apikit:flow-mapping resource="/potentials/invoice-groups/by-client/{code}" action="delete" flow-ref="potentials.deleteInvoiceGroupsByClient"/>
+        <apikit:flow-mapping resource="/potentials/invoice-groups/with-aggregates" action="get" flow-ref="potentials.invoice-groups.aggregates"/>
+        <apikit:flow-mapping resource="/potentials/invoice/document/{invoiceId}" action="get" flow-ref="potentials.invoice.getDocument"/>
+        <apikit:flow-mapping resource="/potentials/invoice/{id}" action="delete" flow-ref="potentials.deleteInvoice"/>
+        <apikit:flow-mapping resource="/potentials/invoice/{id}" action="put" flow-ref="potentials.putInvoice"/>
+        <apikit:flow-mapping resource="/potentials/invoice/{id}/document" action="post" flow-ref="documents.postInvoiceDocument"/>
+        <apikit:flow-mapping resource="/potentials/invoice/{id}/note" action="post" flow-ref="documents.postPotentialsNote"/>
+        <apikit:flow-mapping resource="/potentials/invoices" action="delete" flow-ref="potentials.delete"/>
+        <apikit:flow-mapping resource="/potentials/invoices" action="get" flow-ref="potentials.getInvoices"/>
+        <apikit:flow-mapping resource="/potentials/invoices" action="post" flow-ref="potentials.postInvoices"/>
+        <apikit:flow-mapping resource="/potentials/invoices/by-client/{code}" action="delete" flow-ref="potentials.deleteInvoicesByClient"/>
+        <apikit:flow-mapping resource="/potentials/invoices/by-group" action="get" flow-ref="potentials.getInvoiceByGroup"/>
+        <apikit:flow-mapping resource="/potentials/invoices/by-group" action="post" flow-ref="potentials.postInvoicesByGroup"/>
+        <apikit:flow-mapping resource="/potentials/invoices/by-group/{id}" action="put" flow-ref="potentials.putInvoice"/>
+        <apikit:flow-mapping resource="/potentials/invoices/calculations" action="post" flow-ref="potentials.calculateInvoices"/>
+        <apikit:flow-mapping resource="/potentials/invoices/calculations/estimates" action="post" flow-ref="potentials.thumbsuckInvoices"/>
+        <apikit:flow-mapping resource="/potentials/invoices/calculations/aggregates" action="post" flow-ref="potentials.invoicesAggregation"/>
+        <apikit:flow-mapping resource="/potentials/rollback" action="post" flow-ref="potentials.rollBack"/>
+        <apikit:flow-mapping resource="/potentials/rollback" action="post" flow-ref="potentials.rollBack"/>
+        <apikit:flow-mapping resource="/potentials/status/approve/invoice/{id}" action="put" flow-ref="potentials.putInvoiceStatus"/>
+        <apikit:flow-mapping resource="/potentials/status/approve/invoices/By-group/{id}" action="put" flow-ref="potentials.putInvoiceStatus"/>
+        <apikit:flow-mapping resource="/potentials/status/move-to-pending/invoice/{id}" action="put" flow-ref="potentials.putInvoiceStatus"/>
+        <apikit:flow-mapping resource="/potentials/status/reject/invoice/{id}" action="put" flow-ref="potentials.putInvoiceStatus"/>
+        <apikit:flow-mapping resource="/potentials/status/reject/invoices/By-expense-type/{id}" action="put" flow-ref="potentials.putInvoiceStatus"/>
+        <apikit:flow-mapping resource="/potentials/status/reject/invoices/By-group/{id}" action="put" flow-ref="potentials.putInvoiceStatus"/>
+        <apikit:flow-mapping resource="/potentials/sync" action="post" flow-ref="potentials.syncExternal"/>
+        <apikit:flow-mapping resource="/security/authorization-ok" action="get" flow-ref="security.authorizationOk"/>
+        <apikit:flow-mapping resource="/vat-schemes/{vatSchemeId}" action="get" flow-ref="dragon2-transfer.getVatScheme"/>
+
+
+    </apikit:config>
+
+    <flow name="blaze-api-main" >
+        <https:inbound-endpoint  doc:name="HTTP" connector-ref="httpsServerConnector" exchange-pattern="request-response" host="0.0.0.0" path="api/1.0" port="${blaze.esb.port.https}"/>
+        <logger message="Incoming #[message.inboundProperties['http.method']] - #[message.inboundProperties['http.request']]  From: #[message.inboundProperties['Origin']]" level="INFO" doc:name="Log Request"/>
+        <message-properties-transformer overwrite="true" scope="invocation" doc:name="Message Properties">
+            <add-message-property key="blaze.responseAcceptEncoding" value="#[message.inboundProperties['Accept-Encoding']]"/>
+            <add-message-property key="blaze.responseContentType" value="#[message.inboundProperties['Accept']]"/>
+            <add-message-property key="blaze.originalRequest.path" value="#[message.inboundProperties['http.request.path']]"/>
+            <add-message-property key="blaze.originalRequest.method" value="#[message.inboundProperties['http.method']]"/>
+            <add-message-property key="blaze.request.contentType" value="#[message.inboundProperties['Content-Type']]"/>
+            <add-message-property key="blaze.request.category" value="#[message.inboundProperties['Blaze-request-category']]"/>
+            <add-message-property key="blaze.request.id" value="#[message.inboundProperties['Blaze-request-id']]"/>
+            <add-message-property key="blaze.request.idIsExternal" value="#[message.inboundProperties['Blaze-id-is-external']]"/>
+        </message-properties-transformer>
+        <custom-transformer class="com.vatit.blaze.esb.dragon.ExtractDragonCookieTransformer" doc:name="Extract Dragon Cookie"/>
+        <apikit:router config-ref="blaze-api-config" doc:name="APIkit Router"/>
+        <response>
+            <choice doc:name="Choice">
+                <when expression="#[message.outboundProperties['http.status'] &gt;= 400]">
+                    <logger message="Problem with #[flowVars['blaze.originalRequest.method']] - #[flowVars['blaze.originalRequest.path']]  Status: #[message.outboundProperties['http.status']]." level="ERROR" doc:name="Error"/>
+                </when>
+                <otherwise>
+                    <logger message="Done #[flowVars['blaze.originalRequest.method']] - #[flowVars['blaze.originalRequest.path']]  Status: #[message.outboundProperties['http.status']]." level="INFO" doc:name="OK"/>
+                </otherwise>
+            </choice>
+        </response>
+
+        <exception-strategy ref="GlobalCatch" doc:name="Reference Exception Strategy"/>
+    </flow>
+</mule>

@@ -1,0 +1,67 @@
+{
+  "items": [
+    {
+      "id": 3678,
+      "externalId": "HGSTYALIS89",
+      "invoices": [
+        {
+          "id": 78635,
+          "externalId": "HSGSKJ658",
+          "supplier": {
+            "id": 4236
+          }
+        },
+        {
+          "id": 7898,
+          "externalId": "JHG65",
+          "supplier": {
+            "id": 342
+          }
+        }
+      ]
+    },
+    {
+      "id": 3679,
+      "externalId": "HTSGRIS89",
+      "invoices": [
+        {
+          "id": 7899,
+          "externalId": "DSGSRET",
+          "items": [
+            {
+              "id": 7900,
+              "externalId": "JJJJ67"
+            },
+            {
+              "id": 7901,
+              "externalId": "JJJJ68"
+            }
+          ],
+          "supplier": {
+            "id": 6543
+          }
+        },
+        {
+          "id": 7902,
+          "externalId": "JDTUYANA",
+          "supplier": {
+            "id": 6544
+          }
+        }
+      ]
+    },
+    {
+      "id": 3680,
+      "externalId": "JHSYTS65675",
+      "invoices": [
+        {
+          "id": 7903,
+          "externalId": "GSFSKYA",
+          "supplier": {
+            "id": 6545
+          }
+        }
+      ]
+    }
+  ]
+}

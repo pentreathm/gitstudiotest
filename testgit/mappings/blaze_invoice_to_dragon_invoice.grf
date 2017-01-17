@@ -1,0 +1,860 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="Anton" created="Tue Aug 04 15:51:41 CAT 2015" description="Blaze Invoice to Dragon Invoice" guiVersion="3.4.4.P" id="1438697181113" licenseCode="Unlicensed" licenseType="Unknown" modified="Tue Aug 04 15:51:41 CAT 2015" modifiedBy="Anton" name="Blaze_Invoice_to_Dragon_Invoice" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="a9e04c4e-7eb9-49bf-9ed2-e106a24bf8d6">
+<Record fieldDelimiter="," name="calculatePotentialAggregateRequest" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/invoiceAggregation/clientCode" containerType="SINGLE" label="clientCode" name="clientCode" type="string"/>
+<Field __index="23" __sourcePath="{}/object/invoiceAggregation/reportingCurrency" containerType="SINGLE" label="reportingCurrency" name="reportingCurrency" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="1" __referenceCounter="1" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="a9e04c4e-7eb9-49bf-9ed2-e106a24bf8d6" _parent_id="__parent_id" _type="Output" id="902d88f3-4e7f-4d7c-b1d6-932a2b10e27b">
+<Record fieldDelimiter="," name="invoiceList" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __index="1" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/VATRate" containerType="SINGLE" label="VATRate" name="VATRate" type="number"/>
+<Field __index="2" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/calculationComment" containerType="SINGLE" label="calculationComment" name="calculationComment" type="string"/>
+<Field __index="3" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/claimableAmount" containerType="SINGLE" label="claimableAmount" name="claimableAmount" type="number"/>
+<Field __index="4" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/claimableAmountRC" containerType="SINGLE" label="claimableAmountRC" name="claimableAmountRC" type="number"/>
+<Field __index="5" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/clientCountry" containerType="SINGLE" label="clientCountry" name="clientCountry" type="string"/>
+<Field __index="6" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/dragonExpenseType" containerType="SINGLE" label="dragonExpenseType" name="dragonExpenseType" type="integer"/>
+<Field __index="7" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/errorComment" containerType="SINGLE" label="errorComment" name="errorComment" type="string"/>
+<Field __index="8" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceAmount" containerType="SINGLE" label="invoiceAmount" name="invoiceAmount" type="number"/>
+<Field __index="9" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceAmountRC" containerType="SINGLE" label="invoiceAmountRC" name="invoiceAmountRC" type="number"/>
+<Field __index="10" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceCountry" containerType="SINGLE" label="invoiceCountry" name="invoiceCountry" type="string"/>
+<Field __index="11" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceCurrency" containerType="SINGLE" label="invoiceCurrency" name="invoiceCurrency" type="string"/>
+<Field __index="12" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceDate" containerType="SINGLE" label="invoiceDate" name="invoiceDate" type="date"/>
+<Field __index="13" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceExpenseType" containerType="SINGLE" label="invoiceExpenseType" name="invoiceExpenseType" type="integer"/>
+<Field __index="14" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceID" containerType="SINGLE" label="invoiceID" name="invoiceID" type="string"/>
+<Field __index="15" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/invoiceValid" containerType="SINGLE" label="invoiceValid" name="invoiceValid" type="boolean"/>
+<Field __index="16" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/isDomesticVAT" containerType="SINGLE" label="isDomesticVAT" name="isDomesticVAT" type="boolean"/>
+<Field __index="17" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/isError" containerType="SINGLE" label="isError" name="isError" type="boolean"/>
+<Field __index="18" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/percentClaimable" containerType="SINGLE" label="percentClaimable" name="percentClaimable" type="number"/>
+<Field __index="19" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/region" containerType="SINGLE" label="region" name="region" type="string"/>
+<Field __index="20" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/reportingCurrency" containerType="SINGLE" label="reportingCurrency" name="reportingCurrency" type="string"/>
+<Field __index="21" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/totalApportionment" containerType="SINGLE" label="totalApportionment" name="totalApportionment" type="number"/>
+<Field __index="22" __sourcePath="{}/object/invoiceAggregation/invoices/invoiceList/vatSchemeId" containerType="SINGLE" label="vatSchemeId" name="vatSchemeId" type="integer"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="7cba2c20-afc2-444e-8b9e-8e3967042854">
+<Record fieldDelimiter="," name="Invoices" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="285" __sourcePath="{}/object/waterline" containerType="SINGLE" label="waterline" name="waterline" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object/items" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="7cba2c20-afc2-444e-8b9e-8e3967042854" _parent_id="__parent_id" _type="Input" id="e24ef762-573c-4ea2-b4a4-144871eeae0a">
+<Record fieldDelimiter="," name="items" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/items/amount" containerType="SINGLE" label="amount" name="amount" type="number"/>
+<Field __index="1" __sourcePath="{}/object/items/approximateReturnPercentage" containerType="SINGLE" label="approximateReturnPercentage" name="approximateReturnPercentage" type="number"/>
+<Field __index="2" __sourcePath="{}/object/items/calculationComments" containerType="SINGLE" label="calculationComments" name="calculationComments" type="string"/>
+<Field __index="3" __sourcePath="{}/object/items/clientCode" containerType="SINGLE" label="clientCode" name="clientCode" type="string"/>
+<Field __index="4" __sourcePath="{}/object/items/clientId" containerType="SINGLE" label="clientId" name="clientId" type="string"/>
+<Field __index="5" __sourcePath="{}/object/items/connection/client/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __index="6" __sourcePath="{}/object/items/connection/client/countryCode" containerType="SINGLE" label="countryCode" name="countryCode" type="string"/>
+<Field __index="7" __sourcePath="{}/object/items/connection/client/empty" containerType="SINGLE" label="empty" name="empty" type="boolean"/>
+<Field __index="8" __sourcePath="{}/object/items/connection/client/id" containerType="SINGLE" label="id" name="id" type="string"/>
+<Field __index="9" __sourcePath="{}/object/items/connection/client/name" containerType="SINGLE" label="name" name="name" type="string"/>
+<Field __index="34" __sourcePath="{}/object/items/connection/client/reportingCurrencyCode" containerType="SINGLE" label="reportingCurrencyCode" name="reportingCurrencyCode" type="string"/>
+<Field __index="35" __sourcePath="{}/object/items/connection/clientCode" containerType="SINGLE" label="clientCode" name="clientCode_1" type="string"/>
+<Field __index="36" __sourcePath="{}/object/items/connection/clientId" containerType="SINGLE" label="clientId" name="clientId_1" type="string"/>
+<Field __index="37" __sourcePath="{}/object/items/connection/connectionExternalId" containerType="SINGLE" label="connectionExternalId" name="connectionExternalId" type="string"/>
+<Field __index="38" __sourcePath="{}/object/items/connection/connectionId" containerType="SINGLE" label="connectionId" name="connectionId" type="integer"/>
+<Field __index="39" __sourcePath="{}/object/items/connection/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode" type="string"/>
+<Field __index="40" __sourcePath="{}/object/items/connection/connectionTypeId" containerType="SINGLE" label="connectionTypeId" name="connectionTypeId" type="integer"/>
+<Field __index="41" __sourcePath="{}/object/items/connection/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated" type="date"/>
+<Field __index="42" __sourcePath="{}/object/items/connection/dateModified" containerType="SINGLE" label="dateModified" name="dateModified" type="date"/>
+<Field __index="43" __sourcePath="{}/object/items/connection/empty" containerType="SINGLE" label="empty" name="empty_1" type="boolean"/>
+<Field __index="44" __sourcePath="{}/object/items/connection/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="45" __sourcePath="{}/object/items/connection/externalId" containerType="SINGLE" label="externalId" name="externalId" type="string"/>
+<Field __index="46" __sourcePath="{}/object/items/connection/id" containerType="SINGLE" label="id" name="id_1" type="integer"/>
+<Field __index="47" __sourcePath="{}/object/items/connection/type/code" containerType="SINGLE" label="code" name="code_1" type="string"/>
+<Field __index="48" __sourcePath="{}/object/items/connection/type/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_1" type="date"/>
+<Field __index="49" __sourcePath="{}/object/items/connection/type/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_1" type="date"/>
+<Field __index="50" __sourcePath="{}/object/items/connection/type/empty" containerType="SINGLE" label="empty" name="empty_2" type="boolean"/>
+<Field __index="51" __sourcePath="{}/object/items/connection/type/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_1" type="string"/>
+<Field __index="52" __sourcePath="{}/object/items/connection/type/id" containerType="SINGLE" label="id" name="id_2" type="integer"/>
+<Field __index="53" __sourcePath="{}/object/items/connectionExternalId" containerType="SINGLE" label="connectionExternalId" name="connectionExternalId_1" type="string"/>
+<Field __index="54" __sourcePath="{}/object/items/connectionId" containerType="SINGLE" label="connectionId" name="connectionId_1" type="integer"/>
+<Field __index="55" __sourcePath="{}/object/items/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode_1" type="string"/>
+<Field __index="56" __sourcePath="{}/object/items/connectionTypeId" containerType="SINGLE" label="connectionTypeId" name="connectionTypeId_1" type="integer"/>
+<Field __index="57" __sourcePath="{}/object/items/countryCode" containerType="SINGLE" label="countryCode" name="countryCode_1" type="string"/>
+<Field __index="58" __sourcePath="{}/object/items/currencyCode" containerType="SINGLE" label="currencyCode" name="currencyCode" type="string"/>
+<Field __index="59" __sourcePath="{}/object/items/date" containerType="SINGLE" label="date" name="date" type="date"/>
+<Field __index="60" __sourcePath="{}/object/items/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_2" type="date"/>
+<Field __index="61" __sourcePath="{}/object/items/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_2" type="date"/>
+<Field __index="62" __sourcePath="{}/object/items/doesReceiptExist" containerType="SINGLE" label="doesReceiptExist" name="doesReceiptExist" type="boolean"/>
+<Field __index="63" __sourcePath="{}/object/items/empty" containerType="SINGLE" label="empty" name="empty_3" type="boolean"/>
+<Field __index="64" __sourcePath="{}/object/items/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_2" type="string"/>
+<Field __index="65" __sourcePath="{}/object/items/exchangeRate/date" containerType="SINGLE" label="date" name="date_1" type="date"/>
+<Field __index="66" __sourcePath="{}/object/items/exchangeRate/empty" containerType="SINGLE" label="empty" name="empty_4" type="boolean"/>
+<Field __index="67" __sourcePath="{}/object/items/exchangeRate/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_3" type="string"/>
+<Field __index="68" __sourcePath="{}/object/items/exchangeRate/fromCurrencyCode" containerType="SINGLE" label="fromCurrencyCode" name="fromCurrencyCode" type="string"/>
+<Field __index="69" __sourcePath="{}/object/items/exchangeRate/id" containerType="SINGLE" label="id" name="id_3" type="integer"/>
+<Field __index="70" __sourcePath="{}/object/items/exchangeRate/rate" containerType="SINGLE" label="rate" name="rate" type="number"/>
+<Field __index="71" __sourcePath="{}/object/items/exchangeRate/toCurrencyCode" containerType="SINGLE" label="toCurrencyCode" name="toCurrencyCode" type="string"/>
+<Field __index="72" __sourcePath="{}/object/items/expenseType/connection/client/code" containerType="SINGLE" label="code" name="code_2" type="string"/>
+<Field __index="73" __sourcePath="{}/object/items/expenseType/connection/client/countryCode" containerType="SINGLE" label="countryCode" name="countryCode_2" type="string"/>
+<Field __index="74" __sourcePath="{}/object/items/expenseType/connection/client/empty" containerType="SINGLE" label="empty" name="empty_5" type="boolean"/>
+<Field __index="75" __sourcePath="{}/object/items/expenseType/connection/client/id" containerType="SINGLE" label="id" name="id_4" type="string"/>
+<Field __index="76" __sourcePath="{}/object/items/expenseType/connection/client/name" containerType="SINGLE" label="name" name="name_1" type="string"/>
+<Field __index="101" __sourcePath="{}/object/items/expenseType/connection/client/reportingCurrencyCode" containerType="SINGLE" label="reportingCurrencyCode" name="reportingCurrencyCode_1" type="string"/>
+<Field __index="102" __sourcePath="{}/object/items/expenseType/connection/clientCode" containerType="SINGLE" label="clientCode" name="clientCode_2" type="string"/>
+<Field __index="103" __sourcePath="{}/object/items/expenseType/connection/clientId" containerType="SINGLE" label="clientId" name="clientId_2" type="string"/>
+<Field __index="104" __sourcePath="{}/object/items/expenseType/connection/connectionExternalId" containerType="SINGLE" label="connectionExternalId" name="connectionExternalId_2" type="string"/>
+<Field __index="105" __sourcePath="{}/object/items/expenseType/connection/connectionId" containerType="SINGLE" label="connectionId" name="connectionId_2" type="integer"/>
+<Field __index="106" __sourcePath="{}/object/items/expenseType/connection/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode_2" type="string"/>
+<Field __index="107" __sourcePath="{}/object/items/expenseType/connection/connectionTypeId" containerType="SINGLE" label="connectionTypeId" name="connectionTypeId_2" type="integer"/>
+<Field __index="108" __sourcePath="{}/object/items/expenseType/connection/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_3" type="date"/>
+<Field __index="109" __sourcePath="{}/object/items/expenseType/connection/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_3" type="date"/>
+<Field __index="110" __sourcePath="{}/object/items/expenseType/connection/empty" containerType="SINGLE" label="empty" name="empty_6" type="boolean"/>
+<Field __index="111" __sourcePath="{}/object/items/expenseType/connection/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_4" type="string"/>
+<Field __index="112" __sourcePath="{}/object/items/expenseType/connection/externalId" containerType="SINGLE" label="externalId" name="externalId_1" type="string"/>
+<Field __index="113" __sourcePath="{}/object/items/expenseType/connection/id" containerType="SINGLE" label="id" name="id_5" type="integer"/>
+<Field __index="114" __sourcePath="{}/object/items/expenseType/connection/type/code" containerType="SINGLE" label="code" name="code_3" type="string"/>
+<Field __index="115" __sourcePath="{}/object/items/expenseType/connection/type/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_4" type="date"/>
+<Field __index="116" __sourcePath="{}/object/items/expenseType/connection/type/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_4" type="date"/>
+<Field __index="117" __sourcePath="{}/object/items/expenseType/connection/type/empty" containerType="SINGLE" label="empty" name="empty_7" type="boolean"/>
+<Field __index="118" __sourcePath="{}/object/items/expenseType/connection/type/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_5" type="string"/>
+<Field __index="119" __sourcePath="{}/object/items/expenseType/connection/type/id" containerType="SINGLE" label="id" name="id_6" type="integer"/>
+<Field __index="120" __sourcePath="{}/object/items/expenseType/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_5" type="date"/>
+<Field __index="121" __sourcePath="{}/object/items/expenseType/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_5" type="date"/>
+<Field __index="122" __sourcePath="{}/object/items/expenseType/dragonId" containerType="SINGLE" label="dragonId" name="dragonId" type="integer"/>
+<Field __index="123" __sourcePath="{}/object/items/expenseType/empty" containerType="SINGLE" label="empty" name="empty_8" type="boolean"/>
+<Field __index="124" __sourcePath="{}/object/items/expenseType/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_6" type="string"/>
+<Field __index="125" __sourcePath="{}/object/items/expenseType/externalId" containerType="SINGLE" label="externalId" name="externalId_2" type="string"/>
+<Field __index="126" __sourcePath="{}/object/items/expenseType/externalName" containerType="SINGLE" label="externalName" name="externalName" type="string"/>
+<Field __index="127" __sourcePath="{}/object/items/expenseType/id" containerType="SINGLE" label="id" name="id_7" type="integer"/>
+<Field __index="128" __sourcePath="{}/object/items/expenseType/orchestrationId" containerType="SINGLE" label="orchestrationId" name="orchestrationId" type="string"/>
+<Field __index="129" __sourcePath="{}/object/items/externalCurrencyCode" containerType="SINGLE" label="externalCurrencyCode" name="externalCurrencyCode" type="string"/>
+<Field __index="130" __sourcePath="{}/object/items/externalId" containerType="SINGLE" label="externalId" name="externalId_3" type="string"/>
+<Field __index="131" __sourcePath="{}/object/items/formOfPayment" containerType="SINGLE" label="formOfPayment" name="formOfPayment" type="string"/>
+<Field __index="132" __sourcePath="{}/object/items/groupId" containerType="SINGLE" label="groupId" name="groupId" type="integer"/>
+<Field __index="133" __sourcePath="{}/object/items/hasCalculationError" containerType="SINGLE" label="hasCalculationError" name="hasCalculationError" type="boolean"/>
+<Field __index="134" __sourcePath="{}/object/items/id" containerType="SINGLE" label="id" name="id_8" type="integer"/>
+<Field __index="135" __sourcePath="{}/object/items/invoiceExternalId" containerType="SINGLE" label="invoiceExternalId" name="invoiceExternalId" type="string"/>
+<Field __index="136" __sourcePath="{}/object/items/invoiceId" containerType="SINGLE" label="invoiceId" name="invoiceId" type="integer"/>
+<Field __index="137" __sourcePath="{}/object/items/invoiceNumber" containerType="SINGLE" label="invoiceNumber" name="invoiceNumber" type="string"/>
+<Field __index="138" __sourcePath="{}/object/items/isInAudit" containerType="SINGLE" label="isInAudit" name="isInAudit" type="boolean"/>
+<Field __index="139" __sourcePath="{}/object/items/isLekker" containerType="SINGLE" label="isLekker" name="isLekker" type="boolean"/>
+<Field __index="140" __sourcePath="{}/object/items/isPersonalExpense" containerType="SINGLE" label="isPersonalExpense" name="isPersonalExpense" type="boolean"/>
+<Field __index="217" __sourcePath="{}/object/items/location/countryCode" containerType="SINGLE" label="countryCode" name="countryCode_3" type="string"/>
+<Field __index="218" __sourcePath="{}/object/items/location/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_6" type="date"/>
+<Field __index="219" __sourcePath="{}/object/items/location/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_6" type="date"/>
+<Field __index="220" __sourcePath="{}/object/items/location/empty" containerType="SINGLE" label="empty" name="empty_9" type="boolean"/>
+<Field __index="221" __sourcePath="{}/object/items/location/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_7" type="string"/>
+<Field __index="222" __sourcePath="{}/object/items/location/externalId" containerType="SINGLE" label="externalId" name="externalId_4" type="string"/>
+<Field __index="223" __sourcePath="{}/object/items/location/id" containerType="SINGLE" label="id" name="id_9" type="integer"/>
+<Field __index="224" __sourcePath="{}/object/items/location/regionCode" containerType="SINGLE" label="regionCode" name="regionCode" type="string"/>
+<Field __index="225" __sourcePath="{}/object/items/mustCalculate" containerType="SINGLE" label="mustCalculate" name="mustCalculate" type="boolean"/>
+<Field __index="226" __sourcePath="{}/object/items/netAmount" containerType="SINGLE" label="netAmount" name="netAmount" type="number"/>
+<Field __index="251" __sourcePath="{}/object/items/ownerId" containerType="SINGLE" label="ownerId" name="ownerId" type="string"/>
+<Field __index="252" __sourcePath="{}/object/items/ownerName" containerType="SINGLE" label="ownerName" name="ownerName" type="string"/>
+<Field __index="253" __sourcePath="{}/object/items/paperInvoiceReference" containerType="SINGLE" label="paperInvoiceReference" name="paperInvoiceReference" type="string"/>
+<Field __index="254" __sourcePath="{}/object/items/regionCode" containerType="SINGLE" label="regionCode" name="regionCode_1" type="string"/>
+<Field __index="255" __sourcePath="{}/object/items/status" containerType="SINGLE" label="status" name="status" type="string"/>
+<Field __index="256" __sourcePath="{}/object/items/statusId" containerType="SINGLE" label="statusId" name="statusId" type="integer"/>
+<Field __index="257" __sourcePath="{}/object/items/statusReason" containerType="SINGLE" label="statusReason" name="statusReason" type="string"/>
+<Field __index="258" __sourcePath="{}/object/items/statusReasonId" containerType="SINGLE" label="statusReasonId" name="statusReasonId" type="integer"/>
+<Field __index="259" __sourcePath="{}/object/items/supplier/address/city" containerType="SINGLE" label="city" name="city" type="string"/>
+<Field __index="260" __sourcePath="{}/object/items/supplier/address/countryCode" containerType="SINGLE" label="countryCode" name="countryCode_4" type="string"/>
+<Field __index="261" __sourcePath="{}/object/items/supplier/address/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_7" type="date"/>
+<Field __index="262" __sourcePath="{}/object/items/supplier/address/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_7" type="date"/>
+<Field __index="263" __sourcePath="{}/object/items/supplier/address/empty" containerType="SINGLE" label="empty" name="empty_10" type="boolean"/>
+<Field __index="264" __sourcePath="{}/object/items/supplier/address/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_8" type="string"/>
+<Field __index="265" __sourcePath="{}/object/items/supplier/address/id" containerType="SINGLE" label="id" name="id_10" type="integer"/>
+<Field __index="266" __sourcePath="{}/object/items/supplier/address/line" containerType="SINGLE" label="line" name="line" type="string"/>
+<Field __index="267" __sourcePath="{}/object/items/supplier/address/postCode" containerType="SINGLE" label="postCode" name="postCode" type="string"/>
+<Field __index="268" __sourcePath="{}/object/items/supplier/address/province" containerType="SINGLE" label="province" name="province" type="string"/>
+<Field __index="269" __sourcePath="{}/object/items/supplier/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_8" type="date"/>
+<Field __index="270" __sourcePath="{}/object/items/supplier/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_8" type="date"/>
+<Field __index="271" __sourcePath="{}/object/items/supplier/empty" containerType="SINGLE" label="empty" name="empty_11" type="boolean"/>
+<Field __index="272" __sourcePath="{}/object/items/supplier/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_9" type="string"/>
+<Field __index="273" __sourcePath="{}/object/items/supplier/externalId" containerType="SINGLE" label="externalId" name="externalId_5" type="string"/>
+<Field __index="274" __sourcePath="{}/object/items/supplier/id" containerType="SINGLE" label="id" name="id_11" type="integer"/>
+<Field __index="275" __sourcePath="{}/object/items/supplier/name" containerType="SINGLE" label="name" name="name_2" type="string"/>
+<Field __index="276" __sourcePath="{}/object/items/supplierName" containerType="SINGLE" label="supplierName" name="supplierName" type="string"/>
+<Field __index="277" __sourcePath="{}/object/items/taxAmount" containerType="SINGLE" label="taxAmount" name="taxAmount" type="number"/>
+<Field __index="278" __sourcePath="{}/object/items/taxPercent" containerType="SINGLE" label="taxPercent" name="taxPercent" type="number"/>
+<Field __index="279" __sourcePath="{}/object/items/taxRate" containerType="SINGLE" label="taxRate" name="taxRate" type="number"/>
+<Field __index="280" __sourcePath="{}/object/items/whatHappened" containerType="SINGLE" label="whatHappened" name="whatHappened" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="141" __referenceCounter="0" __sourcePath="{}/object/items/items" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="e24ef762-573c-4ea2-b4a4-144871eeae0a" _parent_id="__parent_id" _type="Input" id="057c4b9c-b119-4ccd-8d09-61fb97e938f0">
+<Record fieldDelimiter="," name="items" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="141" __sourcePath="{}/object/items/items/amount" containerType="SINGLE" label="amount" name="amount" type="number"/>
+<Field __index="142" __sourcePath="{}/object/items/items/approximateReturnPercentage" containerType="SINGLE" label="approximateReturnPercentage" name="approximateReturnPercentage" type="number"/>
+<Field __index="143" __sourcePath="{}/object/items/items/calculationComments" containerType="SINGLE" label="calculationComments" name="calculationComments" type="string"/>
+<Field __index="144" __sourcePath="{}/object/items/items/date" containerType="SINGLE" label="date" name="date" type="date"/>
+<Field __index="145" __sourcePath="{}/object/items/items/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated" type="date"/>
+<Field __index="146" __sourcePath="{}/object/items/items/dateModified" containerType="SINGLE" label="dateModified" name="dateModified" type="date"/>
+<Field __index="147" __sourcePath="{}/object/items/items/empty" containerType="SINGLE" label="empty" name="empty" type="boolean"/>
+<Field __index="148" __sourcePath="{}/object/items/items/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="149" __sourcePath="{}/object/items/items/expenseType/connection/client/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __index="150" __sourcePath="{}/object/items/items/expenseType/connection/client/countryCode" containerType="SINGLE" label="countryCode" name="countryCode" type="string"/>
+<Field __index="151" __sourcePath="{}/object/items/items/expenseType/connection/client/empty" containerType="SINGLE" label="empty" name="empty_1" type="boolean"/>
+<Field __index="152" __sourcePath="{}/object/items/items/expenseType/connection/client/id" containerType="SINGLE" label="id" name="id" type="string"/>
+<Field __index="153" __sourcePath="{}/object/items/items/expenseType/connection/client/name" containerType="SINGLE" label="name" name="name" type="string"/>
+<Field __index="178" __sourcePath="{}/object/items/items/expenseType/connection/client/reportingCurrencyCode" containerType="SINGLE" label="reportingCurrencyCode" name="reportingCurrencyCode" type="string"/>
+<Field __index="179" __sourcePath="{}/object/items/items/expenseType/connection/clientCode" containerType="SINGLE" label="clientCode" name="clientCode" type="string"/>
+<Field __index="180" __sourcePath="{}/object/items/items/expenseType/connection/clientId" containerType="SINGLE" label="clientId" name="clientId" type="string"/>
+<Field __index="181" __sourcePath="{}/object/items/items/expenseType/connection/connectionExternalId" containerType="SINGLE" label="connectionExternalId" name="connectionExternalId" type="string"/>
+<Field __index="182" __sourcePath="{}/object/items/items/expenseType/connection/connectionId" containerType="SINGLE" label="connectionId" name="connectionId" type="integer"/>
+<Field __index="183" __sourcePath="{}/object/items/items/expenseType/connection/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode" type="string"/>
+<Field __index="184" __sourcePath="{}/object/items/items/expenseType/connection/connectionTypeId" containerType="SINGLE" label="connectionTypeId" name="connectionTypeId" type="integer"/>
+<Field __index="185" __sourcePath="{}/object/items/items/expenseType/connection/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_1" type="date"/>
+<Field __index="186" __sourcePath="{}/object/items/items/expenseType/connection/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_1" type="date"/>
+<Field __index="187" __sourcePath="{}/object/items/items/expenseType/connection/empty" containerType="SINGLE" label="empty" name="empty_2" type="boolean"/>
+<Field __index="188" __sourcePath="{}/object/items/items/expenseType/connection/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_1" type="string"/>
+<Field __index="189" __sourcePath="{}/object/items/items/expenseType/connection/externalId" containerType="SINGLE" label="externalId" name="externalId" type="string"/>
+<Field __index="190" __sourcePath="{}/object/items/items/expenseType/connection/id" containerType="SINGLE" label="id" name="id_1" type="integer"/>
+<Field __index="191" __sourcePath="{}/object/items/items/expenseType/connection/type/code" containerType="SINGLE" label="code" name="code_1" type="string"/>
+<Field __index="192" __sourcePath="{}/object/items/items/expenseType/connection/type/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_2" type="date"/>
+<Field __index="193" __sourcePath="{}/object/items/items/expenseType/connection/type/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_2" type="date"/>
+<Field __index="194" __sourcePath="{}/object/items/items/expenseType/connection/type/empty" containerType="SINGLE" label="empty" name="empty_3" type="boolean"/>
+<Field __index="195" __sourcePath="{}/object/items/items/expenseType/connection/type/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_2" type="string"/>
+<Field __index="196" __sourcePath="{}/object/items/items/expenseType/connection/type/id" containerType="SINGLE" label="id" name="id_2" type="integer"/>
+<Field __index="197" __sourcePath="{}/object/items/items/expenseType/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_3" type="date"/>
+<Field __index="198" __sourcePath="{}/object/items/items/expenseType/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_3" type="date"/>
+<Field __index="199" __sourcePath="{}/object/items/items/expenseType/dragonId" containerType="SINGLE" label="dragonId" name="dragonId" type="integer"/>
+<Field __index="200" __sourcePath="{}/object/items/items/expenseType/empty" containerType="SINGLE" label="empty" name="empty_4" type="boolean"/>
+<Field __index="201" __sourcePath="{}/object/items/items/expenseType/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_3" type="string"/>
+<Field __index="202" __sourcePath="{}/object/items/items/expenseType/externalId" containerType="SINGLE" label="externalId" name="externalId_1" type="string"/>
+<Field __index="203" __sourcePath="{}/object/items/items/expenseType/externalName" containerType="SINGLE" label="externalName" name="externalName" type="string"/>
+<Field __index="204" __sourcePath="{}/object/items/items/expenseType/id" containerType="SINGLE" label="id" name="id_3" type="integer"/>
+<Field __index="205" __sourcePath="{}/object/items/items/expenseType/orchestrationId" containerType="SINGLE" label="orchestrationId" name="orchestrationId" type="string"/>
+<Field __index="206" __sourcePath="{}/object/items/items/externalId" containerType="SINGLE" label="externalId" name="externalId_2" type="string"/>
+<Field __index="207" __sourcePath="{}/object/items/items/hasCalculationError" containerType="SINGLE" label="hasCalculationError" name="hasCalculationError" type="boolean"/>
+<Field __index="208" __sourcePath="{}/object/items/items/id" containerType="SINGLE" label="id" name="id_4" type="integer"/>
+<Field __index="209" __sourcePath="{}/object/items/items/isLekker" containerType="SINGLE" label="isLekker" name="isLekker" type="boolean"/>
+<Field __index="210" __sourcePath="{}/object/items/items/isPersonalExpense" containerType="SINGLE" label="isPersonalExpense" name="isPersonalExpense" type="boolean"/>
+<Field __index="211" __sourcePath="{}/object/items/items/mustCalculate" containerType="SINGLE" label="mustCalculate" name="mustCalculate" type="boolean"/>
+<Field __index="212" __sourcePath="{}/object/items/items/netAmount" containerType="SINGLE" label="netAmount" name="netAmount" type="number"/>
+<Field __index="213" __sourcePath="{}/object/items/items/taxAmount" containerType="SINGLE" label="taxAmount" name="taxAmount" type="number"/>
+<Field __index="214" __sourcePath="{}/object/items/items/taxPercent" containerType="SINGLE" label="taxPercent" name="taxPercent" type="number"/>
+<Field __index="215" __sourcePath="{}/object/items/items/taxRate" containerType="SINGLE" label="taxRate" name="taxRate" type="number"/>
+<Field __index="216" __sourcePath="{}/object/items/items/whatHappened" containerType="SINGLE" label="whatHappened" name="whatHappened" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="10" __referenceCounter="0" __sourcePath="{}/object/items/connection/client/notes" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="e24ef762-573c-4ea2-b4a4-144871eeae0a" _parent_id="__parent_id" _type="Input" id="03ccff7d-5fcf-43c9-9c76-684211154256">
+<Record fieldDelimiter="," name="notes" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="10" __sourcePath="{}/object/items/connection/client/notes/source/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __index="11" __sourcePath="{}/object/items/connection/client/notes/source/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated" type="date"/>
+<Field __index="12" __sourcePath="{}/object/items/connection/client/notes/source/dateModified" containerType="SINGLE" label="dateModified" name="dateModified" type="date"/>
+<Field __index="13" __sourcePath="{}/object/items/connection/client/notes/source/empty" containerType="SINGLE" label="empty" name="empty" type="boolean"/>
+<Field __index="14" __sourcePath="{}/object/items/connection/client/notes/source/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="15" __sourcePath="{}/object/items/connection/client/notes/source/id" containerType="SINGLE" label="id" name="id" type="integer"/>
+<Field __index="16" __sourcePath="{}/object/items/connection/client/notes/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_1" type="date"/>
+<Field __index="17" __sourcePath="{}/object/items/connection/client/notes/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_1" type="date"/>
+<Field __index="18" __sourcePath="{}/object/items/connection/client/notes/document/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode" type="string"/>
+<Field __index="19" __sourcePath="{}/object/items/connection/client/notes/document/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_2" type="date"/>
+<Field __index="20" __sourcePath="{}/object/items/connection/client/notes/document/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_2" type="date"/>
+<Field __index="21" __sourcePath="{}/object/items/connection/client/notes/document/empty" containerType="SINGLE" label="empty" name="empty_1" type="boolean"/>
+<Field __index="22" __sourcePath="{}/object/items/connection/client/notes/document/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_1" type="string"/>
+<Field __index="23" __sourcePath="{}/object/items/connection/client/notes/document/extension" containerType="SINGLE" label="extension" name="extension" type="string"/>
+<Field __index="24" __sourcePath="{}/object/items/connection/client/notes/document/externalId" containerType="SINGLE" label="externalId" name="externalId" type="string"/>
+<Field __index="25" __sourcePath="{}/object/items/connection/client/notes/document/id" containerType="SINGLE" label="id" name="id_1" type="integer"/>
+<Field __index="26" __sourcePath="{}/object/items/connection/client/notes/document/internalUrl" containerType="SINGLE" label="internalUrl" name="internalUrl" type="string"/>
+<Field __index="27" __sourcePath="{}/object/items/connection/client/notes/document/mimeType" containerType="SINGLE" label="mimeType" name="mimeType" type="string"/>
+<Field __index="28" __sourcePath="{}/object/items/connection/client/notes/document/status" containerType="SINGLE" label="status" name="status" type="string"/>
+<Field __index="29" __sourcePath="{}/object/items/connection/client/notes/document/statusText" containerType="SINGLE" label="statusText" name="statusText" type="string"/>
+<Field __index="30" __sourcePath="{}/object/items/connection/client/notes/empty" containerType="SINGLE" label="empty" name="empty_2" type="boolean"/>
+<Field __index="31" __sourcePath="{}/object/items/connection/client/notes/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_2" type="string"/>
+<Field __index="32" __sourcePath="{}/object/items/connection/client/notes/id" containerType="SINGLE" label="id" name="id_2" type="integer"/>
+<Field __index="33" __sourcePath="{}/object/items/connection/client/notes/note" containerType="SINGLE" label="note" name="note" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="77" __referenceCounter="0" __sourcePath="{}/object/items/expenseType/connection/client/notes" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="e24ef762-573c-4ea2-b4a4-144871eeae0a" _parent_id="__parent_id" _type="Input" id="06b34306-ee37-4582-81be-9c0bcec03214">
+<Record fieldDelimiter="," name="notes" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="77" __sourcePath="{}/object/items/expenseType/connection/client/notes/source/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __index="78" __sourcePath="{}/object/items/expenseType/connection/client/notes/source/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated" type="date"/>
+<Field __index="79" __sourcePath="{}/object/items/expenseType/connection/client/notes/source/dateModified" containerType="SINGLE" label="dateModified" name="dateModified" type="date"/>
+<Field __index="80" __sourcePath="{}/object/items/expenseType/connection/client/notes/source/empty" containerType="SINGLE" label="empty" name="empty" type="boolean"/>
+<Field __index="81" __sourcePath="{}/object/items/expenseType/connection/client/notes/source/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="82" __sourcePath="{}/object/items/expenseType/connection/client/notes/source/id" containerType="SINGLE" label="id" name="id" type="integer"/>
+<Field __index="83" __sourcePath="{}/object/items/expenseType/connection/client/notes/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_1" type="date"/>
+<Field __index="84" __sourcePath="{}/object/items/expenseType/connection/client/notes/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_1" type="date"/>
+<Field __index="85" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode" type="string"/>
+<Field __index="86" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_2" type="date"/>
+<Field __index="87" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_2" type="date"/>
+<Field __index="88" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/empty" containerType="SINGLE" label="empty" name="empty_1" type="boolean"/>
+<Field __index="89" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_1" type="string"/>
+<Field __index="90" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/extension" containerType="SINGLE" label="extension" name="extension" type="string"/>
+<Field __index="91" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/externalId" containerType="SINGLE" label="externalId" name="externalId" type="string"/>
+<Field __index="92" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/id" containerType="SINGLE" label="id" name="id_1" type="integer"/>
+<Field __index="93" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/internalUrl" containerType="SINGLE" label="internalUrl" name="internalUrl" type="string"/>
+<Field __index="94" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/mimeType" containerType="SINGLE" label="mimeType" name="mimeType" type="string"/>
+<Field __index="95" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/status" containerType="SINGLE" label="status" name="status" type="string"/>
+<Field __index="96" __sourcePath="{}/object/items/expenseType/connection/client/notes/document/statusText" containerType="SINGLE" label="statusText" name="statusText" type="string"/>
+<Field __index="97" __sourcePath="{}/object/items/expenseType/connection/client/notes/empty" containerType="SINGLE" label="empty" name="empty_2" type="boolean"/>
+<Field __index="98" __sourcePath="{}/object/items/expenseType/connection/client/notes/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_2" type="string"/>
+<Field __index="99" __sourcePath="{}/object/items/expenseType/connection/client/notes/id" containerType="SINGLE" label="id" name="id_2" type="integer"/>
+<Field __index="100" __sourcePath="{}/object/items/expenseType/connection/client/notes/note" containerType="SINGLE" label="note" name="note" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="154" __referenceCounter="0" __sourcePath="{}/object/items/items/expenseType/connection/client/notes" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="057c4b9c-b119-4ccd-8d09-61fb97e938f0" _parent_id="__parent_id" _type="Input" id="0b6d1edf-8799-4bd2-8ef5-f73b8839c220">
+<Record fieldDelimiter="," name="notes" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="154" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/source/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __index="155" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/source/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated" type="date"/>
+<Field __index="156" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/source/dateModified" containerType="SINGLE" label="dateModified" name="dateModified" type="date"/>
+<Field __index="157" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/source/empty" containerType="SINGLE" label="empty" name="empty" type="boolean"/>
+<Field __index="158" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/source/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="159" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/source/id" containerType="SINGLE" label="id" name="id" type="integer"/>
+<Field __index="160" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_1" type="date"/>
+<Field __index="161" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_1" type="date"/>
+<Field __index="162" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode" type="string"/>
+<Field __index="163" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_2" type="date"/>
+<Field __index="164" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_2" type="date"/>
+<Field __index="165" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/empty" containerType="SINGLE" label="empty" name="empty_1" type="boolean"/>
+<Field __index="166" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_1" type="string"/>
+<Field __index="167" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/extension" containerType="SINGLE" label="extension" name="extension" type="string"/>
+<Field __index="168" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/externalId" containerType="SINGLE" label="externalId" name="externalId" type="string"/>
+<Field __index="169" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/id" containerType="SINGLE" label="id" name="id_1" type="integer"/>
+<Field __index="170" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/internalUrl" containerType="SINGLE" label="internalUrl" name="internalUrl" type="string"/>
+<Field __index="171" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/mimeType" containerType="SINGLE" label="mimeType" name="mimeType" type="string"/>
+<Field __index="172" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/status" containerType="SINGLE" label="status" name="status" type="string"/>
+<Field __index="173" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/document/statusText" containerType="SINGLE" label="statusText" name="statusText" type="string"/>
+<Field __index="174" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/empty" containerType="SINGLE" label="empty" name="empty_2" type="boolean"/>
+<Field __index="175" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_2" type="string"/>
+<Field __index="176" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/id" containerType="SINGLE" label="id" name="id_2" type="integer"/>
+<Field __index="177" __sourcePath="{}/object/items/items/expenseType/connection/client/notes/note" containerType="SINGLE" label="note" name="note" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="227" __referenceCounter="0" __sourcePath="{}/object/items/notes" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="e24ef762-573c-4ea2-b4a4-144871eeae0a" _parent_id="__parent_id" _type="Input" id="ac4f8058-bf0c-400d-aac9-71f1491ca82e">
+<Record fieldDelimiter="," name="notes" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="227" __sourcePath="{}/object/items/notes/source/code" containerType="SINGLE" label="code" name="code" type="string"/>
+<Field __index="228" __sourcePath="{}/object/items/notes/source/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated" type="date"/>
+<Field __index="229" __sourcePath="{}/object/items/notes/source/dateModified" containerType="SINGLE" label="dateModified" name="dateModified" type="date"/>
+<Field __index="230" __sourcePath="{}/object/items/notes/source/empty" containerType="SINGLE" label="empty" name="empty" type="boolean"/>
+<Field __index="231" __sourcePath="{}/object/items/notes/source/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="232" __sourcePath="{}/object/items/notes/source/id" containerType="SINGLE" label="id" name="id" type="integer"/>
+<Field __index="233" __sourcePath="{}/object/items/notes/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_1" type="date"/>
+<Field __index="234" __sourcePath="{}/object/items/notes/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_1" type="date"/>
+<Field __index="235" __sourcePath="{}/object/items/notes/document/connectionTypeCode" containerType="SINGLE" label="connectionTypeCode" name="connectionTypeCode" type="string"/>
+<Field __index="236" __sourcePath="{}/object/items/notes/document/dateCreated" containerType="SINGLE" label="dateCreated" name="dateCreated_2" type="date"/>
+<Field __index="237" __sourcePath="{}/object/items/notes/document/dateModified" containerType="SINGLE" label="dateModified" name="dateModified_2" type="date"/>
+<Field __index="238" __sourcePath="{}/object/items/notes/document/empty" containerType="SINGLE" label="empty" name="empty_1" type="boolean"/>
+<Field __index="239" __sourcePath="{}/object/items/notes/document/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_1" type="string"/>
+<Field __index="240" __sourcePath="{}/object/items/notes/document/extension" containerType="SINGLE" label="extension" name="extension" type="string"/>
+<Field __index="241" __sourcePath="{}/object/items/notes/document/externalId" containerType="SINGLE" label="externalId" name="externalId" type="string"/>
+<Field __index="242" __sourcePath="{}/object/items/notes/document/id" containerType="SINGLE" label="id" name="id_1" type="integer"/>
+<Field __index="243" __sourcePath="{}/object/items/notes/document/internalUrl" containerType="SINGLE" label="internalUrl" name="internalUrl" type="string"/>
+<Field __index="244" __sourcePath="{}/object/items/notes/document/mimeType" containerType="SINGLE" label="mimeType" name="mimeType" type="string"/>
+<Field __index="245" __sourcePath="{}/object/items/notes/document/status" containerType="SINGLE" label="status" name="status" type="string"/>
+<Field __index="246" __sourcePath="{}/object/items/notes/document/statusText" containerType="SINGLE" label="statusText" name="statusText" type="string"/>
+<Field __index="247" __sourcePath="{}/object/items/notes/empty" containerType="SINGLE" label="empty" name="empty_2" type="boolean"/>
+<Field __index="248" __sourcePath="{}/object/items/notes/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage_2" type="string"/>
+<Field __index="249" __sourcePath="{}/object/items/notes/id" containerType="SINGLE" label="id" name="id_2" type="integer"/>
+<Field __index="250" __sourcePath="{}/object/items/notes/note" containerType="SINGLE" label="note" name="note" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="281" __referenceCounter="0" __sourcePath="{}/object/resolutionRules" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="7cba2c20-afc2-444e-8b9e-8e3967042854" _parent_id="__parent_id" _type="Input" id="206ba5aa-ab2e-4744-80ff-214a6a9232e7">
+<Record fieldDelimiter="," name="resolutionRules" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="281" __sourcePath="{}/object/resolutionRules/existingItems" containerType="SINGLE" label="existingItems" name="existingItems" type="string"/>
+<Field __index="282" __sourcePath="{}/object/resolutionRules/levels" containerType="list" label="levels" name="levels" type="string"/>
+<Field __index="283" __sourcePath="{}/object/resolutionRules/missingItems" containerType="SINGLE" label="missingItems" name="missingItems" type="string"/>
+<Field __index="284" __sourcePath="{}/object/resolutionRules/newItems" containerType="SINGLE" label="newItems" name="newItems" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+<Entry dictval.__javaType="java.lang.String" id="DictionaryEntry2" input="true" name="reportingCurrency" output="false" type="string"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiName="Pojo READER" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="1" sequenceField="__id" xpath=".">
+  <Mapping cloverField="waterline" trim="true" xpath="waterline"/>
+  <Context generatedKey="__parent_id" outPort="0" parentKey="__id" sequenceField="__id" xpath="items">
+    <Mapping cloverField="amount" trim="true" xpath="amount"/>
+    <Mapping cloverField="approximateReturnPercentage" trim="true" xpath="approximateReturnPercentage"/>
+    <Mapping cloverField="calculationComments" trim="true" xpath="calculationComments"/>
+    <Mapping cloverField="clientCode" trim="true" xpath="clientCode"/>
+    <Mapping cloverField="clientId" trim="true" xpath="clientId"/>
+    <Mapping cloverField="code" trim="true" xpath="connection/client/code"/>
+    <Mapping cloverField="countryCode" trim="true" xpath="connection/client/countryCode"/>
+    <Mapping cloverField="empty" trim="true" xpath="connection/client/empty"/>
+    <Mapping cloverField="id" trim="true" xpath="connection/client/id"/>
+    <Mapping cloverField="name" trim="true" xpath="connection/client/name"/>
+    <Mapping cloverField="reportingCurrencyCode" trim="true" xpath="connection/client/reportingCurrencyCode"/>
+    <Mapping cloverField="clientCode_1" trim="true" xpath="connection/clientCode"/>
+    <Mapping cloverField="clientId_1" trim="true" xpath="connection/clientId"/>
+    <Mapping cloverField="connectionExternalId" trim="true" xpath="connection/connectionExternalId"/>
+    <Mapping cloverField="connectionId" trim="true" xpath="connection/connectionId"/>
+    <Mapping cloverField="connectionTypeCode" trim="true" xpath="connection/connectionTypeCode"/>
+    <Mapping cloverField="connectionTypeId" trim="true" xpath="connection/connectionTypeId"/>
+    <Mapping cloverField="dateCreated" trim="true" xpath="connection/dateCreated"/>
+    <Mapping cloverField="dateModified" trim="true" xpath="connection/dateModified"/>
+    <Mapping cloverField="empty_1" trim="true" xpath="connection/empty"/>
+    <Mapping cloverField="errorMessage" trim="true" xpath="connection/errorMessage"/>
+    <Mapping cloverField="externalId" trim="true" xpath="connection/externalId"/>
+    <Mapping cloverField="id_1" trim="true" xpath="connection/id"/>
+    <Mapping cloverField="code_1" trim="true" xpath="connection/type/code"/>
+    <Mapping cloverField="dateCreated_1" trim="true" xpath="connection/type/dateCreated"/>
+    <Mapping cloverField="dateModified_1" trim="true" xpath="connection/type/dateModified"/>
+    <Mapping cloverField="empty_2" trim="true" xpath="connection/type/empty"/>
+    <Mapping cloverField="errorMessage_1" trim="true" xpath="connection/type/errorMessage"/>
+    <Mapping cloverField="id_2" trim="true" xpath="connection/type/id"/>
+    <Mapping cloverField="connectionExternalId_1" trim="true" xpath="connectionExternalId"/>
+    <Mapping cloverField="connectionId_1" trim="true" xpath="connectionId"/>
+    <Mapping cloverField="connectionTypeCode_1" trim="true" xpath="connectionTypeCode"/>
+    <Mapping cloverField="connectionTypeId_1" trim="true" xpath="connectionTypeId"/>
+    <Mapping cloverField="countryCode_1" trim="true" xpath="countryCode"/>
+    <Mapping cloverField="currencyCode" trim="true" xpath="currencyCode"/>
+    <Mapping cloverField="date" trim="true" xpath="date"/>
+    <Mapping cloverField="dateCreated_2" trim="true" xpath="dateCreated"/>
+    <Mapping cloverField="dateModified_2" trim="true" xpath="dateModified"/>
+    <Mapping cloverField="doesReceiptExist" trim="true" xpath="doesReceiptExist"/>
+    <Mapping cloverField="empty_3" trim="true" xpath="empty"/>
+    <Mapping cloverField="errorMessage_2" trim="true" xpath="errorMessage"/>
+    <Mapping cloverField="date_1" trim="true" xpath="exchangeRate/date"/>
+    <Mapping cloverField="empty_4" trim="true" xpath="exchangeRate/empty"/>
+    <Mapping cloverField="errorMessage_3" trim="true" xpath="exchangeRate/errorMessage"/>
+    <Mapping cloverField="fromCurrencyCode" trim="true" xpath="exchangeRate/fromCurrencyCode"/>
+    <Mapping cloverField="id_3" trim="true" xpath="exchangeRate/id"/>
+    <Mapping cloverField="rate" trim="true" xpath="exchangeRate/rate"/>
+    <Mapping cloverField="toCurrencyCode" trim="true" xpath="exchangeRate/toCurrencyCode"/>
+    <Mapping cloverField="code_2" trim="true" xpath="expenseType/connection/client/code"/>
+    <Mapping cloverField="countryCode_2" trim="true" xpath="expenseType/connection/client/countryCode"/>
+    <Mapping cloverField="empty_5" trim="true" xpath="expenseType/connection/client/empty"/>
+    <Mapping cloverField="id_4" trim="true" xpath="expenseType/connection/client/id"/>
+    <Mapping cloverField="name_1" trim="true" xpath="expenseType/connection/client/name"/>
+    <Mapping cloverField="reportingCurrencyCode_1" trim="true" xpath="expenseType/connection/client/reportingCurrencyCode"/>
+    <Mapping cloverField="clientCode_2" trim="true" xpath="expenseType/connection/clientCode"/>
+    <Mapping cloverField="clientId_2" trim="true" xpath="expenseType/connection/clientId"/>
+    <Mapping cloverField="connectionExternalId_2" trim="true" xpath="expenseType/connection/connectionExternalId"/>
+    <Mapping cloverField="connectionId_2" trim="true" xpath="expenseType/connection/connectionId"/>
+    <Mapping cloverField="connectionTypeCode_2" trim="true" xpath="expenseType/connection/connectionTypeCode"/>
+    <Mapping cloverField="connectionTypeId_2" trim="true" xpath="expenseType/connection/connectionTypeId"/>
+    <Mapping cloverField="dateCreated_3" trim="true" xpath="expenseType/connection/dateCreated"/>
+    <Mapping cloverField="dateModified_3" trim="true" xpath="expenseType/connection/dateModified"/>
+    <Mapping cloverField="empty_6" trim="true" xpath="expenseType/connection/empty"/>
+    <Mapping cloverField="errorMessage_4" trim="true" xpath="expenseType/connection/errorMessage"/>
+    <Mapping cloverField="externalId_1" trim="true" xpath="expenseType/connection/externalId"/>
+    <Mapping cloverField="id_5" trim="true" xpath="expenseType/connection/id"/>
+    <Mapping cloverField="code_3" trim="true" xpath="expenseType/connection/type/code"/>
+    <Mapping cloverField="dateCreated_4" trim="true" xpath="expenseType/connection/type/dateCreated"/>
+    <Mapping cloverField="dateModified_4" trim="true" xpath="expenseType/connection/type/dateModified"/>
+    <Mapping cloverField="empty_7" trim="true" xpath="expenseType/connection/type/empty"/>
+    <Mapping cloverField="errorMessage_5" trim="true" xpath="expenseType/connection/type/errorMessage"/>
+    <Mapping cloverField="id_6" trim="true" xpath="expenseType/connection/type/id"/>
+    <Mapping cloverField="dateCreated_5" trim="true" xpath="expenseType/dateCreated"/>
+    <Mapping cloverField="dateModified_5" trim="true" xpath="expenseType/dateModified"/>
+    <Mapping cloverField="dragonId" trim="true" xpath="expenseType/dragonId"/>
+    <Mapping cloverField="empty_8" trim="true" xpath="expenseType/empty"/>
+    <Mapping cloverField="errorMessage_6" trim="true" xpath="expenseType/errorMessage"/>
+    <Mapping cloverField="externalId_2" trim="true" xpath="expenseType/externalId"/>
+    <Mapping cloverField="externalName" trim="true" xpath="expenseType/externalName"/>
+    <Mapping cloverField="id_7" trim="true" xpath="expenseType/id"/>
+    <Mapping cloverField="orchestrationId" trim="true" xpath="expenseType/orchestrationId"/>
+    <Mapping cloverField="externalCurrencyCode" trim="true" xpath="externalCurrencyCode"/>
+    <Mapping cloverField="externalId_3" trim="true" xpath="externalId"/>
+    <Mapping cloverField="formOfPayment" trim="true" xpath="formOfPayment"/>
+    <Mapping cloverField="groupId" trim="true" xpath="groupId"/>
+    <Mapping cloverField="hasCalculationError" trim="true" xpath="hasCalculationError"/>
+    <Mapping cloverField="id_8" trim="true" xpath="id"/>
+    <Mapping cloverField="invoiceExternalId" trim="true" xpath="invoiceExternalId"/>
+    <Mapping cloverField="invoiceId" trim="true" xpath="invoiceId"/>
+    <Mapping cloverField="invoiceNumber" trim="true" xpath="invoiceNumber"/>
+    <Mapping cloverField="isInAudit" trim="true" xpath="isInAudit"/>
+    <Mapping cloverField="isLekker" trim="true" xpath="isLekker"/>
+    <Mapping cloverField="isPersonalExpense" trim="true" xpath="isPersonalExpense"/>
+    <Mapping cloverField="countryCode_3" trim="true" xpath="location/countryCode"/>
+    <Mapping cloverField="dateCreated_6" trim="true" xpath="location/dateCreated"/>
+    <Mapping cloverField="dateModified_6" trim="true" xpath="location/dateModified"/>
+    <Mapping cloverField="empty_9" trim="true" xpath="location/empty"/>
+    <Mapping cloverField="errorMessage_7" trim="true" xpath="location/errorMessage"/>
+    <Mapping cloverField="externalId_4" trim="true" xpath="location/externalId"/>
+    <Mapping cloverField="id_9" trim="true" xpath="location/id"/>
+    <Mapping cloverField="regionCode" trim="true" xpath="location/regionCode"/>
+    <Mapping cloverField="mustCalculate" trim="true" xpath="mustCalculate"/>
+    <Mapping cloverField="netAmount" trim="true" xpath="netAmount"/>
+    <Mapping cloverField="ownerId" trim="true" xpath="ownerId"/>
+    <Mapping cloverField="ownerName" trim="true" xpath="ownerName"/>
+    <Mapping cloverField="paperInvoiceReference" trim="true" xpath="paperInvoiceReference"/>
+    <Mapping cloverField="regionCode_1" trim="true" xpath="regionCode"/>
+    <Mapping cloverField="status" trim="true" xpath="status"/>
+    <Mapping cloverField="statusId" trim="true" xpath="statusId"/>
+    <Mapping cloverField="statusReason" trim="true" xpath="statusReason"/>
+    <Mapping cloverField="statusReasonId" trim="true" xpath="statusReasonId"/>
+    <Mapping cloverField="city" trim="true" xpath="supplier/address/city"/>
+    <Mapping cloverField="countryCode_4" trim="true" xpath="supplier/address/countryCode"/>
+    <Mapping cloverField="dateCreated_7" trim="true" xpath="supplier/address/dateCreated"/>
+    <Mapping cloverField="dateModified_7" trim="true" xpath="supplier/address/dateModified"/>
+    <Mapping cloverField="empty_10" trim="true" xpath="supplier/address/empty"/>
+    <Mapping cloverField="errorMessage_8" trim="true" xpath="supplier/address/errorMessage"/>
+    <Mapping cloverField="id_10" trim="true" xpath="supplier/address/id"/>
+    <Mapping cloverField="line" trim="true" xpath="supplier/address/line"/>
+    <Mapping cloverField="postCode" trim="true" xpath="supplier/address/postCode"/>
+    <Mapping cloverField="province" trim="true" xpath="supplier/address/province"/>
+    <Mapping cloverField="dateCreated_8" trim="true" xpath="supplier/dateCreated"/>
+    <Mapping cloverField="dateModified_8" trim="true" xpath="supplier/dateModified"/>
+    <Mapping cloverField="empty_11" trim="true" xpath="supplier/empty"/>
+    <Mapping cloverField="errorMessage_9" trim="true" xpath="supplier/errorMessage"/>
+    <Mapping cloverField="externalId_5" trim="true" xpath="supplier/externalId"/>
+    <Mapping cloverField="id_11" trim="true" xpath="supplier/id"/>
+    <Mapping cloverField="name_2" trim="true" xpath="supplier/name"/>
+    <Mapping cloverField="supplierName" trim="true" xpath="supplierName"/>
+    <Mapping cloverField="taxAmount" trim="true" xpath="taxAmount"/>
+    <Mapping cloverField="taxPercent" trim="true" xpath="taxPercent"/>
+    <Mapping cloverField="taxRate" trim="true" xpath="taxRate"/>
+    <Mapping cloverField="whatHappened" trim="true" xpath="whatHappened"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.blaze.dto.Invoices"/>
+  <typed-object type="com.vatit.blaze.dto.Source">
+    <typed-object-ref name="code" type-ref="java.lang.String"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.Document$Status"/>
+  <typed-object type="com.vatit.blaze.dto.ResolutionRule$ExistingItem"/>
+  <typed-object type="java.lang.Double"/>
+  <typed-object type="java.util.Date"/>
+  <typed-object type="com.vatit.blaze.dto.Note">
+    <typed-object-ref name="source" type-ref="com.vatit.blaze.dto.Source"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="document" type-ref="com.vatit.blaze.dto.Document"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="note" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.Integer"/>
+  <typed-object type="com.vatit.blaze.dto.ResolutionRule">
+    <typed-object-ref name="existingItems" type-ref="com.vatit.blaze.dto.ResolutionRule$ExistingItem"/>
+    <schema-collection name="levels" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.ResolutionRule$Level"/>
+    </schema-collection>
+    <typed-object-ref name="missingItems" type-ref="com.vatit.blaze.dto.ResolutionRule$MissingItem"/>
+    <typed-object-ref name="newItems" type-ref="com.vatit.blaze.dto.ResolutionRule$NewItem"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.ResolutionRule$NewItem"/>
+  <typed-object type="com.vatit.blaze.dto.Client">
+    <typed-object-ref name="code" type-ref="java.lang.String"/>
+    <typed-object-ref name="countryCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="id" type-ref="java.lang.String"/>
+    <typed-object-ref name="name" type-ref="java.lang.String"/>
+    <schema-collection name="notes" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.Note"/>
+    </schema-collection>
+    <typed-object-ref name="reportingCurrencyCode" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.ExpenseType">
+    <typed-object-ref name="connection" type-ref="com.vatit.blaze.dto.AttachedConnection"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="dragonId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalName" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="orchestrationId" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.Boolean"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="com.vatit.blaze.dto.LocationMap">
+    <typed-object-ref name="countryCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="regionCode" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.AttachedConnection">
+    <typed-object-ref name="client" type-ref="com.vatit.blaze.dto.Client"/>
+    <typed-object-ref name="clientCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="clientId" type-ref="java.lang.String"/>
+    <typed-object-ref name="connectionExternalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="connectionId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="connectionTypeCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="connectionTypeId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="type" type-ref="com.vatit.blaze.dto.Source"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.Invoices">
+    <schema-collection name="items" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.Invoice"/>
+    </schema-collection>
+    <schema-collection name="resolutionRules" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.ResolutionRule"/>
+    </schema-collection>
+    <typed-object-ref name="waterline" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.ResolutionRule$Level"/>
+  <typed-object type="com.vatit.blaze.dto.ExchangeRate">
+    <typed-object-ref name="date" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="fromCurrencyCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="rate" type-ref="double"/>
+    <typed-object-ref name="toCurrencyCode" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.ResolutionRule$MissingItem"/>
+  <typed-object type="double"/>
+  <typed-object type="com.vatit.blaze.dto.Invoice">
+    <typed-object-ref name="amount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="approximateReturnPercentage" type-ref="java.lang.Double"/>
+    <typed-object-ref name="calculationComments" type-ref="java.lang.String"/>
+    <typed-object-ref name="clientCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="clientId" type-ref="java.lang.String"/>
+    <typed-object-ref name="connection" type-ref="com.vatit.blaze.dto.AttachedConnection"/>
+    <typed-object-ref name="connectionExternalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="connectionId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="connectionTypeCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="connectionTypeId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="countryCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="currencyCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="date" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="doesReceiptExist" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="exchangeRate" type-ref="com.vatit.blaze.dto.ExchangeRate"/>
+    <typed-object-ref name="expenseType" type-ref="com.vatit.blaze.dto.ExpenseType"/>
+    <typed-object-ref name="externalCurrencyCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="formOfPayment" type-ref="java.lang.String"/>
+    <typed-object-ref name="groupId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="hasCalculationError" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="invoiceExternalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="invoiceNumber" type-ref="java.lang.String"/>
+    <typed-object-ref name="isInAudit" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isLekker" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isPersonalExpense" type-ref="java.lang.Boolean"/>
+    <schema-collection name="items" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.InvoiceItem"/>
+    </schema-collection>
+    <typed-object-ref name="location" type-ref="com.vatit.blaze.dto.LocationMap"/>
+    <typed-object-ref name="mustCalculate" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="netAmount" type-ref="java.lang.Double"/>
+    <schema-collection name="notes" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.Note"/>
+    </schema-collection>
+    <typed-object-ref name="ownerId" type-ref="java.lang.String"/>
+    <typed-object-ref name="ownerName" type-ref="java.lang.String"/>
+    <typed-object-ref name="paperInvoiceReference" type-ref="java.lang.String"/>
+    <typed-object-ref name="regionCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="status" type-ref="java.lang.String"/>
+    <typed-object-ref name="statusId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="statusReason" type-ref="java.lang.String"/>
+    <typed-object-ref name="statusReasonId" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="supplier" type-ref="com.vatit.blaze.dto.Supplier"/>
+    <typed-object-ref name="supplierName" type-ref="java.lang.String"/>
+    <typed-object-ref name="taxAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="taxPercent" type-ref="java.lang.Double"/>
+    <typed-object-ref name="taxRate" type-ref="java.lang.Double"/>
+    <typed-object-ref name="whatHappened" type-ref="com.vatit.blaze.utils.BlazeUtils$ImportOperation"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.utils.BlazeUtils$ImportOperation"/>
+  <typed-object type="com.vatit.blaze.dto.Supplier">
+    <typed-object-ref name="address" type-ref="com.vatit.blaze.dto.Address"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="name" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.Address">
+    <typed-object-ref name="city" type-ref="java.lang.String"/>
+    <typed-object-ref name="countryCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="line" type-ref="java.lang.String"/>
+    <typed-object-ref name="postCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="province" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.blaze.dto.InvoiceItem">
+    <typed-object-ref name="amount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="approximateReturnPercentage" type-ref="java.lang.Double"/>
+    <typed-object-ref name="calculationComments" type-ref="java.lang.String"/>
+    <typed-object-ref name="date" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="expenseType" type-ref="com.vatit.blaze.dto.ExpenseType"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="hasCalculationError" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="isLekker" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isPersonalExpense" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="mustCalculate" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="netAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="taxAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="taxPercent" type-ref="java.lang.Double"/>
+    <typed-object-ref name="taxRate" type-ref="java.lang.Double"/>
+    <typed-object-ref name="whatHappened" type-ref="com.vatit.blaze.utils.BlazeUtils$ImportOperation"/>
+  </typed-object>
+  <typed-object type="boolean"/>
+  <typed-object type="com.vatit.blaze.dto.Document">
+    <typed-object-ref name="connectionTypeCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="dateCreated" type-ref="java.util.Date"/>
+    <typed-object-ref name="dateModified" type-ref="java.util.Date"/>
+    <typed-object-ref name="empty" type-ref="boolean"/>
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="extension" type-ref="java.lang.String"/>
+    <typed-object-ref name="externalId" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="internalUrl" type-ref="java.lang.String"/>
+    <typed-object-ref name="mimeType" type-ref="java.lang.String"/>
+    <typed-object-ref name="status" type-ref="com.vatit.blaze.dto.Document$Status"/>
+    <typed-object-ref name="statusText" type-ref="java.lang.String"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Pojo WRITER" guiX="900" guiY="20" id="BEAN_WRITER0" type="BEAN_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" clover:inPort="1">
+  <invoiceAggregation>
+    <clientCode>$1.clientCode</clientCode>
+    <invoices>
+      <clover:collection clover:name="invoiceList">
+        <item clover:inPort="0" clover:key="__parent_id" clover:parentKey="__id">
+          <VATRate>$0.VATRate</VATRate>
+          <calculationComment>$0.calculationComment</calculationComment>
+          <claimableAmount>$0.claimableAmount</claimableAmount>
+          <claimableAmountRC>$0.claimableAmountRC</claimableAmountRC>
+          <clientCountry>$0.clientCountry</clientCountry>
+          <dragonExpenseType>$0.dragonExpenseType</dragonExpenseType>
+          <errorComment>$0.errorComment</errorComment>
+          <invoiceAmount>$0.invoiceAmount</invoiceAmount>
+          <invoiceAmountRC>$0.invoiceAmountRC</invoiceAmountRC>
+          <invoiceCountry>$0.invoiceCountry</invoiceCountry>
+          <invoiceCurrency>$0.invoiceCurrency</invoiceCurrency>
+          <invoiceDate>$0.invoiceDate</invoiceDate>
+          <invoiceExpenseType>$0.invoiceExpenseType</invoiceExpenseType>
+          <invoiceID>$0.invoiceID</invoiceID>
+          <invoiceValid>$0.invoiceValid</invoiceValid>
+          <isDomesticVAT>$0.isDomesticVAT</isDomesticVAT>
+          <isError>$0.isError</isError>
+          <percentClaimable>$0.percentClaimable</percentClaimable>
+          <region>$0.region</region>
+          <reportingCurrency>$0.reportingCurrency</reportingCurrency>
+          <totalApportionment>$0.totalApportionment</totalApportionment>
+          <vatSchemeId>$0.vatSchemeId</vatSchemeId>
+        </item>
+      </clover:collection>
+    </invoices>
+    <reportingCurrency>$1.reportingCurrency</reportingCurrency>
+  </invoiceAggregation>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.calculatePotentialAggregateRequest"/>
+  <typed-object type="java.lang.Double"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.InvoiceCalculationDef">
+    <typed-object-ref name="clientCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoices" type-ref="com.vatit.wyvern.shared.dto.InvoiceDetailsListOTDef"/>
+    <typed-object-ref name="reportingCurrency" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.util.Date"/>
+  <typed-object type="java.lang.Boolean"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.calculatePotentialAggregateRequest">
+    <typed-object-ref name="invoiceAggregation" type-ref="com.vatit.wyvern.shared.dto.InvoiceCalculationDef"/>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.InvoiceDetailsListOTDef">
+    <schema-collection name="invoiceList" type="java.util.ArrayList">
+      <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.InvoiceDetailsOTDef"/>
+    </schema-collection>
+  </typed-object>
+  <typed-object type="java.lang.Integer"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.InvoiceDetailsOTDef">
+    <typed-object-ref name="VATRate" type-ref="java.lang.Double"/>
+    <typed-object-ref name="calculationComment" type-ref="java.lang.String"/>
+    <typed-object-ref name="claimableAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="claimableAmountRC" type-ref="java.lang.Double"/>
+    <typed-object-ref name="clientCountry" type-ref="java.lang.String"/>
+    <typed-object-ref name="dragonExpenseType" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="errorComment" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="invoiceAmountRC" type-ref="java.lang.Double"/>
+    <typed-object-ref name="invoiceCountry" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceDate" type-ref="java.util.Date"/>
+    <typed-object-ref name="invoiceExpenseType" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="invoiceID" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceValid" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isDomesticVAT" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isError" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="percentClaimable" type-ref="java.lang.Double"/>
+    <typed-object-ref name="region" type-ref="java.lang.String"/>
+    <typed-object-ref name="reportingCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="totalApportionment" type-ref="java.lang.Double"/>
+    <typed-object-ref name="vatSchemeId" type-ref="java.lang.Integer"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="For each invoice to Dragon Invoice" guiX="460" guiY="120" id="FOREACH_ITEMS_INVOICE_LIST" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+output.__parent_id = input.__parent_id;
+//END -> DO NOT REMOVE
+
+output.invoiceID = (isnull(input.id_8) ? input.externalId_3 : input.id_8);
+output.invoiceAmount = input.amount;
+output.invoiceDate = input.date;
+output.invoiceCountry = input.countryCode_3;
+output.region = input.regionCode;
+output.clientCountry = input.countryCode;
+output.invoiceExpenseType = input.dragonId;
+output.invoiceValid = true;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="For each list to aggregation request" guiX="460" guiY="120" id="FOREACH_OBJECT_OBJECT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.reportingCurrency = inputArguments.reportingCurrency;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Duplicate items" guiX="240" guiY="20" id="SIMPLE_COPY0" type="SIMPLE_COPY"/>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="e24ef762-573c-4ea2-b4a4-144871eeae0a" outPort="Port 0 (out)" toNode="SIMPLE_COPY0:0"/>
+<Edge debugMode="true" fromNode="BEAN_READER0:1" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="7cba2c20-afc2-444e-8b9e-8e3967042854" outPort="Port 1 (out)" toNode="FOREACH_OBJECT_OBJECT:0"/>
+<Edge debugMode="true" fromNode="FOREACH_ITEMS_INVOICE_LIST:0" guiBendpoints="" id="Edge3" inPort="Port 0 (in)" metadata="902d88f3-4e7f-4d7c-b1d6-932a2b10e27b" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_OBJECT:0" guiBendpoints="" id="Edge4" inPort="Port 1 (in)" metadata="a9e04c4e-7eb9-49bf-9ed2-e106a24bf8d6" outPort="Port 0 (out)" toNode="BEAN_WRITER0:1"/>
+<Edge debugMode="true" fromNode="SIMPLE_COPY0:0" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="e24ef762-573c-4ea2-b4a4-144871eeae0a" outPort="Port 0 (out)" toNode="FOREACH_ITEMS_INVOICE_LIST:0"/>
+</Phase>
+</Graph>

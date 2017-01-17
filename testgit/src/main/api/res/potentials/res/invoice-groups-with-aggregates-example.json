@@ -1,0 +1,30 @@
+[
+  {
+    "id": 274,
+    "externalId": "HGSTYALIS89",
+    "mustFetchInvoices": true,
+    "invoiceAggregations": {
+      "earliestInvoiceDate": "2013-07-30T00:00:00.000+0000",
+      "latestInvoiceDate": "2014-08-12T00:00:00.000+0000",
+      "pendingInvoicesTotalAmount": 873.68,
+      "approvedInvoicesTotalAmount": 93.01,
+      "rejectedInvoicesTotalAmount": 0,
+      "totalVatPotential": 489.23,
+      "totalApprovedVatPotential": 0
+    }
+  },
+  {
+    "id": 275,
+    "externalId": "HTSGRIS89",
+    "mustFetchInvoices": true,
+    "invoiceAggregations": {
+      "earliestInvoiceDate": "2014-03-22T00:00:00.000+0000",
+      "latestInvoiceDate": "2014-12-30T00:00:00.000+0000",
+      "pendingInvoicesTotalAmount": 1774.62,
+      "approvedInvoicesTotalAmount": 882.12,
+      "rejectedInvoicesTotalAmount": 12.30,
+      "totalVatPotential": 932.87,
+      "totalApprovedVatPotential": 200.90
+    }
+  }
+]

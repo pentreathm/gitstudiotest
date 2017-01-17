@@ -1,0 +1,68 @@
+{
+    "type" : "object",
+    "id" : "urn:jsonschema:com:vatit:blaze:dto:InvoiceGroups",
+    "properties" : {
+        "waterline" : {
+            "type" : "string",
+            "description" : "Paging waterline; will be populated by the server when requesting a paged list of invoices"
+        },
+        "items" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:vatit:blaze:dto:InvoiceGroup",
+            "properties" : {
+                "invoices" : {
+                    "type" : "array",
+                    "items" : {
+                        "type" : "object",
+                        "id" : "urn:jsonschema:com:vatit:blaze:dto:Invoice",
+                        "properties" : {
+                            "supplier" : {
+                                "type" : "object",
+                                "id" : "urn:jsonschema:com:vatit:blaze:dto:Supplier",
+                                "description" : "Invoice supplier details.",
+                                "properties" : {
+                                    "id" : {
+                                        "type" : "integer",
+                                        "description" : "Internal Blaze Id"
+                                    }
+                                }
+                            },
+                            "id" : {
+                                "type" : "integer",
+                                "description" : "Internal Blaze Id"
+                            },
+                            "externalId" : {
+                                "type" : "string",
+                                "description" : "External id of an invoice, used to identify artefacts in/by an external system"
+                            },
+                            "items" : {
+                                "type" : "array",
+                                "description" : "List of invoice items - for itemised invoices.",
+                                "items" : {
+                                    "type" : "object",
+                                    "id" : "urn:jsonschema:com:vatit:blaze:dto:InvoiceItem",
+                                    "properties" : {
+                                        "externalId" : {
+                                            "type" : "string",
+                                            "description" : "External id of an invoice, used to identify artefacts in/by an external system"
+                                        },
+                                        "id" : {
+                                            "type" : "integer",
+                                            "description" : "Internal Blaze Id"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "externalId" : {
+                    "type" : "string"
+                },
+                "id" : {
+                    "type" : "integer"
+                }
+            }
+        }
+    }
+}

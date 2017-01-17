@@ -1,0 +1,42 @@
+/document/{id}:
+  description: Gateway to manipulating a single Document.
+  uriParameters:
+    id:
+      type: string
+      description: The Document Id. This can be be either a Blaze Id (integer) or Externally defined Id.
+      example: 12 or d7f6556c-c5ea-429d-b91f-6bb915ec9904
+  get:
+    is: [externalIdSwitchable, documentGet, resourceSecured]
+    securedBy: [OAuth_2: {scopes: [DOCUMENTS_READ]}]
+    description: Fetches the Document with the specified id. 
+    responses:
+      200:
+        body:
+          "*/*":
+        description: Returns the requested Document.
+  delete:
+    is: [externalIdSwitchable, resourceSecured, noContentDelete]
+    securedBy: [OAuth_2: {scopes: [DOCUMENTS_DELETE]}]
+    description: Deletes the specified Document.
+/note/{id}:
+  description: Gateway to manipulating a single Note.
+  uriParameters:
+    id:
+      type: integer
+      description: The Note Id. This is a Blaze Id.
+      example: 12
+  get:
+    is: [acceptEncodingHeader, resourceSecured]
+    securedBy: [OAuth_2: {scopes: [DOCUMENTS_READ]}]
+    description: Fetches the Note with the specified id. 
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include res/note.schema.json
+            example: !include res/note-response.example.json
+  delete:
+    is: [resourceSecured, noContentDelete]
+    securedBy: [OAuth_2: {scopes: [DOCUMENTS_DELETE]}]
+    description: Deletes the specified Note - with associated Document.
+        

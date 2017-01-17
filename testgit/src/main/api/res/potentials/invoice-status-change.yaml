@@ -1,0 +1,65 @@
+invoice-reject:
+  put:
+    description: __<<description-text>>__
+    is: [externalIdSwitchable]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]   
+    queryParameters:
+      reason:
+        description: Blaze id of the reason for the rejection
+        type: integer
+        example: 1
+invoice-approve:
+  put:
+    description: __<<description-text>>__
+    is: [externalIdSwitchable]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+    
+invoice-by-group-reject:
+  put:
+    description: __<<description-text>>__
+    is: [externalIdSwitchable]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]   
+    queryParameters:
+      reason:
+        description: Blaze id of the reason for the rejection
+        type: integer
+        example: 1
+      whereInvoiceStatusIs:
+        description: Specifies the status(es) which must be updated. Invoices with this status(es) will be effected, invoices with different statuses will not be affected.
+        type: string
+        enum: [Pending, Approved, Pending and Approved]
+        example: Pending
+invoice-by-group-approve:
+  put:
+    description: __<<description-text>>__
+    is: [externalIdSwitchable]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+    queryParameters:
+      whereInvoiceStatusIs:
+        description: Specifies the status(es) which must be updated. Invoices with this status(es) will be affected, invoices with different statuses will not be affected.
+        type: string
+        enum: [Pending, Approved, Pending and Approved]
+        example: Pending
+    
+invoice-move-to-pending:
+  put:
+    description: __<<description-text>>__
+    is: [externalIdSwitchable]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+    
+invoice-by-expense-type-reject:
+  put:
+    description: __<<description-text>>__
+    is: [clientQueryParameters, countryQueryParameters]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+    queryParameters:
+      reason:
+        description: Blaze id of the reason for the rejection
+        type: integer
+        example: 1
+      whereInvoiceStatusIs:
+        description: Specifies the status(es) which must be updated. Invoices with this status(es) will be affected, invoices with different statuses will not be affected.
+        type: string
+        enum: [Pending, Approved, Pending and Approved]
+        example: Pending
+    

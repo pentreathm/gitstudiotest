@@ -1,0 +1,13 @@
+{
+    "totalValue" : 1000,
+    "targetCurrency" : "GBP",
+    "nonClaimable" : 900,
+    "vatsaving" : 100,
+    "claimable" : 10,
+    "errors" : [
+      {
+        "id" : "inv-2",
+		"errorMessage" : "The source and destination country do not have a VAT agreement."
+      }
+    ]
+}

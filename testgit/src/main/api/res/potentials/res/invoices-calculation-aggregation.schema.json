@@ -1,0 +1,44 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:vatit:blaze:dto:InvoicesCalculationAggregation",
+  "properties" : {
+    "totalValue" : {
+      "type" : "number",
+      "description" : "The sum of all the invoice amounts for all invoices submitted."
+    },
+    "vatSaving" : {
+      "type" : "number",
+      "description" : "The sum of all the salvageable VAT amounts for claimable invoices."
+    },
+    "targetCurrency" : {
+      "type" : "string",
+      "description" : "The currency of the figures returned."
+    },
+    "nonClaimable" : {
+      "type" : "number",
+      "description" : "The sum of all invoice amounts where an amount is not claimable, excluding erroneous invoices."
+    },
+    "claimable" : {
+      "type" : "number",
+      "description" : "The sum of all invoice amounts where an amount is claimable."
+    },
+    "errors" : {
+      "type" : "array",
+      "description" : "Contains the list invoice ids for invoices that could not be calculated because of errors as well as their respective error messages.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:vatit:blaze:dto:Error",
+        "properties" : {
+          "errorMessage" : {
+            "type" : "string",
+            "description" : "The error message associated with the callers item."
+          },
+          "id" : {
+            "type" : "string",
+            "description" : "The callers id of the item that had an error."
+          }
+        }
+      }
+    }
+  }
+}

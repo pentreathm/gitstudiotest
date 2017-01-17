@@ -1,0 +1,74 @@
+invoiceQueryParameters:
+  queryParameters:
+    mustFetchScan:
+      description: All invoices that have outstanding scan images to fetch from an external system
+      type: boolean
+      example: true
+    hasBeenCalculated: 
+      description: All invoices for which the potential returns have been calculated. Therefore if _hasBeenCalculated_ is set to false then the approximated returns percentage value returned for each invoice is __not__ reliable as it still needs to be calculated.
+      type: boolean
+      example: true
+    hasReturnPotential:
+      description: All invoices for which the approximated potential returns percentage is zero or more.
+      type: boolean
+      example: false
+    isLekker:
+      description: |
+        All potential invoices that are considered by blaze to be fully resolved (good to use when pulling invoices into external systems). The following criteria are evaluated:
+        
+        * Must have an Amount
+        * Must have a valid Country Code
+        * Must have a valid Currency Code
+        * Must have a valid Date
+        * Must have a valid Expense Type
+        * Must have no outstanding calculations
+        * Must either not have an image attachment, or have fully resolved its image attachment 
+      type: boolean
+      example: true 
+
+exchangeRatesForQueryParameter:
+  queryParameters:
+    exchangeRatesFor:
+      default: NONE
+      description: Setting this value to a 3-digit __[ISO 4217](http://www.iso.org/iso/home/standards/currency_codes.htm)__ currency code will cause an exchange rate (from the original currency to this code) to be returned with each invoice. Set to __DEFAULT__ to have the server use the client's _Reporting Currency Code_ as the target currency.
+      type: string
+      example: GBP
+      required: false
+      
+invoicePost:
+  queryParameters:
+    calcs:
+      description: |
+        Do you want to force calculations to be run straight after invoice post? 
+        
+        * **sync**: This will run the calculations immediately, and calculation results will be in the response. Any failure will manifest in an error response.  
+        * **async**: Will run calculations asynchronously, but return immediately (i.e. before the calcs finish). Any errors must be picked up from the administrator logs. No calculation results will be returned.
+        * **none**: Do not run calculations immediately, wait for the Blaze synchronization process.
+        
+        **Note:** Any calculation failure will be picked up, and re-run at normal Blaze synchronization intervals. Failure to run calculations does not necessarily denote failure to insert items. If you want definitive results for the insertion, prefer **async** or **none** calcs. 
+      type: string
+      enum: [sync, async, none]
+      example: sync
+      required: false
+  headers:
+    Content-Type:
+      description: __[Mime](http://en.wikipedia.org/wiki/MIME)__ Type of the body of this request
+      default: application/json
+      enum: [application/json]
+      example: application/json
+      required: true
+invoiceDelete:
+  responses:
+    200:
+      body:
+        application/json:
+          schema: invoices
+          example: !include res/InvoiceDeletionResponseExample.json
+invoiceGroupDelete:
+    responses:
+      200:
+        body:
+          application/json:
+            schema: invoiceGroups
+            example: !include res/GroupDeletionResponseExample.json
+          

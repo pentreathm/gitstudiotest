@@ -1,0 +1,73 @@
+#%RAML 0.8
+title: Blaze API
+baseUri: https://uat.blaze.vatit.com:1611/api/{version}
+protocols: [HTTP, HTTPS]
+version: 1.0
+securitySchemes:
+  - OAuth_2:
+      description: The Blaze API supports OAUth 2.0 for authentication API requests.
+      type: OAuth 2.0
+      describedBy:
+        headers:
+          Authorization:
+            description: |
+              Used to send a valid OAuth 2 access token. Do not use
+              with the "access_token" query string parameter.
+            type: string
+        queryParameters:
+          access_token:
+            description: |
+              Used to send a valid OAuth 2 access token. Do not use together with
+              the "Authorization" header
+            type: string
+        responses:
+          401:
+            description: |
+              Bad or expired token. This can happen if the user or Dropbox
+               revoked or expired an access token. To fix, you should re-
+              authenticate the user.
+          403:
+            description: |
+              Bad OAuth request (wrong consumer key, bad nonce, expired
+              timestamp...). Unfortunately, re-authenticating the user won't help here.
+      settings:
+        authorizationUri: https://uat.blaze.vatit.com/api/1.0/authorize
+        accessTokenUri: https://uat.blaze.vatit.com/api/1.0/token
+        authorizationGrants: [code, token]
+        scopes: [CLIENTS_WRITE POTENTIALS_READ POTENTIALS_WRITE POTENTIALS_DELETE POTENTIALS_SYNC DOCUMENTS_READ DOCUMENTS_WRITE DOCUMENTS_DELETE, FILTERED_WRITE, GUEST]
+schemas: 
+  - invoiceGroups: !include res/potentials/res/invoice-groups.schema.json
+  - invoices: !include res/potentials/res/invoices.schema.json
+traits:
+  - !include res/common/paged-traits.yaml
+  - !include res/common/general-traits.yaml
+  - !include res/potentials/invoice-traits.yaml
+  - !include res/potentials/rate-traits.yaml
+  - !include res/potentials/sync-traits.yaml
+  - !include res/potentials/group-traits.yaml
+  - pagingDescriptionTrait:
+      description: |
+        This api exposes the ability to <<apiDescription>>
+        
+        <<pagingExplained>>
+        
+        ---
+        Sortable Fields for this Resource: __<<sortableFields>>__
+  - uploadingInvoicesDescriptionTrait:
+      description: |
+        Adds a list of <<level>>
+        
+        The schema given below is standard schema __<<schema_name>>__, with field representation for all requests with which it is used. The examples show a more minimalist representation of what can/should be posted. 
+        
+        <<file>>
+resourceTypes:
+  - !include res/documents/document-resourceTypes.yaml
+  - !include res/potentials/invoice-status-change.yaml
+
+/potentials: !include res/potentials/potentials.yaml
+/documents: !include res/documents/documents.yaml
+/currencies: !include res/potentials/currency.yaml
+/clients: !include res/clients/clients.yaml
+/client-packs: !include res/dragon/clientPack.yaml
+/vat-schemes: !include res/dragon/vat-scheme.yaml
+/security: !include res/security/security.yaml

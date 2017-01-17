@@ -1,0 +1,15 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:vatit:blaze:dto:BlazeErrorCause",
+  "properties" : {
+    "cause" : {
+      "type" : "object",
+      "$ref" : "urn:jsonschema:com:vatit:blaze:dto:BlazeErrorCause",
+      "description" : "Error cause, nested error messages."
+    },
+    "message" : {
+      "type" : "string",
+      "description" : "Descriptive error message"
+    }
+  }
+}

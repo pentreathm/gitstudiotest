@@ -1,0 +1,372 @@
+/sync:
+  description: |
+      Manual call to synchronise potentials information from external sources.
+  post:
+    is: [syncQueryParameters, clientQueryParameters, acceptEncodingHeader, resourceSecured]
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_SYNC]}]
+    description: |
+      Manual call to synchronise potentials information from external sources.
+    headers:
+      Accept:
+        description: Specifies the format of the response body
+        default: application/json
+        example: application/json
+        enum: [application/json, application/xml, text/html]
+        required: false
+    responses:
+      200:
+        body:
+          application/xml:
+            example: !include res/potentialsSyncResponseExample.xml
+          application/json:
+            example: !include res/potentialsSyncResponseExample.json
+          text/html:
+            example: !include res/potentialsSyncResponseExample.html
+
+/completed-invoice-documents:
+  description: Deals with lists of invoice documents that have been fully loaded into the Blaze system
+  get:
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_READ, DOCUMENTS_READ]}]
+    is: [acceptEncodingHeader, pagingDescriptionTrait: {apiDescription: "fetch invoice documents", pagingExplained: !include ../common/res/default-modified-waterline-paging-explained.txt, sortableFields: "none"}, clientQueryParameters, resourceSecured]
+    queryParameters:
+      pageSize:
+        description: Limits the number of items returned. The results are ordered by Document Modified date, then by Blaze Document Id.
+        type: integer
+        example: 200
+      waterline:
+        description: |
+          A waterline is usually supplied by the server in the result of a prior paging request. To use waterline paging, simply pass the last waterline back to the server. Because the waterline is supplied by the server, it is the most accurate (and in many situations, the only definitive) form of paging. If you want to instruct the server to use waterline paging, but you don't yet have a waterline (i.e. this is your first time), leave off the waterline parameter; this end-point only supports MODIFIED-type waterlines; i.e. they are sensitive to, and ordered by _ModifiedDate_.
+        type: string
+        example: MTk5NC0xMS0wNVQwODoxNTozMC41NjR8Nzg=
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include ../documents/res/notes.schema.json
+            example: !include res/invoice-note-documents-response.example.json
+
+/invoices:
+  description: Deals with lists of potential invoices
+  get:
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_READ]}]
+    is: [multiFormat, acceptEncodingHeader, pagingQueryParameters, uiPaging, invoiceQueryParameters, connectionQueryParameters, pagingDescriptionTrait: {apiDescription: "fetch invoices", pagingExplained: !include ../common/res/paging-explained.txt, sortableFields: "none"}, clientQueryParameters, resourceSecured]
+    responses:
+      200:
+        body:
+          application/json:
+            schema: invoices
+            example: !include res/invoice-documents-response.example.json
+          application/xml:
+            schema: !include res/PotentialInvoices.xsd
+            example: !include res/invoicesExample.xml
+  delete:
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_DELETE, FILTERED_WRITE]}]
+    description: |
+     Deletes the invoices matching the supplied criteria along with each invoices' linked items, should there be any, from the Blaze system. 
+     
+     Requires that at least one of the following query parameters be set:
+      * connectionId
+      * connectionExternalId
+      * clientId
+      * clientCode
+    is: [multiFormat, acceptEncodingHeader, invoiceQueryParameters,connectionQueryParameters, clientQueryParameters, resourceSecured, dateQueryParameters, idAfterQueryParameters]
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include res/InvoiceDeletionResponseExample.json
+  post:
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+    description: |
+      Adds a list of invoices. If duplicates are encountered (based on externalId or id), a 409 error response will be returned.
+      
+      For more information regarding:
+      * [Uploading invoices - please click here](https://anypoint.mulesoft.com/apiplatform/synthesis-software/admin/#/dashboard/apis/1450/versions/10538/portal/pages/8545/preview)
+      * [Paging - please click here](https://anypoint.mulesoft.com/apiplatform/synthesis-software/admin/#/dashboard/apis/1450/versions/10538/portal/pages/8548/preview)  
+    is: [multiFormat, acceptEncodingHeader, resourceSecured, invoicePost]
+    body:
+      application/json: 
+        schema : !include res/invoices.schema.json
+        example: !include res/invoices-post.example.json
+    responses:
+      200:
+        description: A successful response will have a list of new Blaze Id's matched to the external Id's. The Blaze Id's can be stored for use in further API calls.
+        body:
+          application/json:
+            schema: !include res/invoices.schema.json
+            example: !include res/invoicesResponseExample.json
+      409:
+        description: Conflict with existing invoice(s), use the PUT method to update existing invoices, and do not send them to this method. This method will return the list of conflicting invoices.
+        body:
+          application/json:
+            schema: invoices
+            example: !include res/invoicesResponseExample.json
+  /calculations:
+      description: |
+        Calculates the approximated returns percentage for each invoice in the provided list of invoices
+      post:  
+        is: [exchangeRatesForQueryParameter, acceptEncodingHeader, resourceSecured]  
+        securedBy: [OAuth_2: {scopes: [POTENTIALS_READ]}]
+        description: |
+          Calculates the approximated returns percentage for each invoice in the provided list of invoices.
+          **Note:** For calculations, invoices *must* be supplied with either and id or externalId. 
+          Invoices than cannot be calculated (usually due to insufficient input information) will be returned with ```"hasCalculationError": true```
+        body:
+          application/json: 
+            schema: invoices
+            example: !include res/invoices-calculations.example.json
+        responses:
+          200:
+            body:
+              application/json:
+                schema: invoices  
+                example: !include res/invoices-calculations-response.example.json
+      /aggregates: 
+          description: |
+            Calculate the approximated return percentage and aggregated values for all invoices in the provided list of invoices
+          post:
+            is: [exchangeRatesForQueryParameter, acceptEncodingHeader, resourceSecured]
+            securedBy: [OAuth_2: {scopes: [POTENTIALS_READ]}]
+            description: |
+              Calculates the approximated return percentage and aggregated values for each invoice in the provided list of invoices.
+              **Note:** For calculations, invoices *must* be supplied with either and id or externalId. Erroneous invoices will be returned in the errors array.
+            body:
+              application/json:
+                schema: invoices
+                example: !include res/invoices-calculations.example.json
+            responses:
+              200:
+                body:
+                  application/json:
+                    schema: !include res/invoices-calculation-aggregation.schema.json  
+                    example: !include res/invoices-calculation-aggregation-response.example.json
+      /estimates:
+        description: |
+          Estimates the returns percentage for each invoice in the provided list of invoices
+        post:
+          is: [exchangeRatesForQueryParameter, acceptEncodingHeader, resourceSecured]
+          securedBy: [OAuth_2: {scopes: [POTENTIALS_READ]}]
+          description: |
+            Estimates the returns percentage for each invoice in the provided list of invoices.
+            Certain predetermined expense types are treated as not eligible for tax reclaim.
+            **Note:** For estimates, invoices *must* be supplied with expense types. Otherwise they will be returned with ```"hasCalculationError": true```
+          body:
+            application/json:
+              schema: invoices
+              example: !include res/invoices-thumbsucks.example.json
+          responses:
+            200:
+              body:
+                application/json:
+                  schema: invoices
+                  example: !include res/invoices-thumbsucks-response.example.json
+  /by-group:
+    description: |
+      Manipulates invoices, nested in invoice groups
+    get:
+      securedBy: [OAuth_2: {scopes: [POTENTIALS_READ]}]
+      is: [invoiceQueryParameters, acceptEncodingHeader, pagingQueryParameters, uiPaging, resourceSecured, pagingDescriptionTrait: {apiDescription: "fetch invoices by group", pagingExplained: !include ../common/res/paging-explained.txt, sortableFields: "none"}, clientQueryParameters]
+      responses:
+        200:
+          body:
+            application/json:
+              schema: invoiceGroups
+              example: !include res/invoices-by-group.example.json
+    post:
+      securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+      description: |
+        Adds a list of invoices and groups, invoices are nested inside the groups.
+                
+        For more information regarding:
+        * [Uploading invoices - please click here](https://anypoint.mulesoft.com/apiplatform/synthesis-software/admin/#/dashboard/apis/1450/versions/10538/portal/pages/8545/preview)
+        * [Paging - please click here](https://anypoint.mulesoft.com/apiplatform/synthesis-software/admin/#/dashboard/apis/1450/versions/10538/portal/pages/8548/preview)          
+      is: [resourceSecured, acceptEncodingHeader, invoicePost, uploadingInvoicesDescriptionTrait: {level: "invoices and groups, invoices are nested inside the groups.", schema_name: "InvoiceGroups", file : !include UploadingInvoices.txt}]
+      body:
+        application/json:
+          schema: invoiceGroups
+          example: !include res/invoice-groups-post.example.json
+      responses:
+        200:
+          body:
+            application/json:
+              schema: invoiceGroups
+              example: !include res/invoice-groups-post-response.example.json
+    /{id}:
+      uriParameters:
+        id:
+          type: string
+          description: The Invoice Group Id. This can be be either a Blaze Id (integer) or Externally defined Id.
+          example: 12 or d7f6556c-c5ea-429d-b91f-6bb915ec9904
+      put:
+          is: [externalIdSwitchable]
+          description: |
+            Allows edit of a all invoice for a group. Supply json values only for the fields you want to change - Blaze will edit only those fields.
+            Current supported fields are:
+            * CountryCode
+            * RegionCode
+          securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+          body:
+            application/json:
+              schema: !include res/Invoice.schema.json
+              example: !include res/invoice-put-request.example.json
+           
+/invoice/{id}:
+  uriParameters:
+    id:
+      type: string
+      description: The Invoice Id. This can be be either a Blaze Id (integer) or Externally defined Id.
+      example: 12 or d7f6556c-c5ea-429d-b91f-6bb915ec9904
+  delete:
+      securedBy: [OAuth_2: {scopes: [POTENTIALS_DELETE]}]
+      is: [invoiceDelete, externalIdSwitchable]
+  put:
+      is: [externalIdSwitchable]
+      description: |
+        Allows edit of a single invoice. Supply json values only for the fields you want to change - Blaze will edit only those fields.
+        Current supported fields are:
+        * CountryCode
+        * RegionCode
+      securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE]}]
+      body:
+        application/json:
+          schema: !include res/Invoice.schema.json
+          example: !include res/invoice-put-request.example.json
+  /document:
+    description: Adds a document to an invoice
+    type: 
+      document-post:
+        master-resource: Invoice
+    post:
+      is: [externalIdSwitchable]
+      securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE, POTENTIALS_WRITE]}]
+  /note:
+    description: Adds a note to an invoice
+    type: 
+      note-post:
+        master-resource: Invoice
+    post:
+      is: [externalIdSwitchable]
+      securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE, POTENTIALS_WRITE]}]
+
+/invoice-groups:
+  description: |
+    Deals with the removal of potential invoice groups. 
+  delete:
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_DELETE, FILTERED_WRITE]}]
+    description: |
+      Deals with the removal of potential invoice groups. 
+    
+      Requires that at least one of the following query parameters be set:
+      * connectionId
+      * connectionExternalId
+      * clientId
+      * clientCode 
+    is: [multiFormat, acceptEncodingHeader, clientQueryParameters, dateQueryParameters, idAfterQueryParameters, connectionQueryParameters, resourceSecured]
+    queryParameters:
+      mustFetchInvoices: 
+        description: __This filter applies to the group__. If set to true all __groups__ for which the invoices have not yet been fully resolved from the external system will be returned.
+        type: boolean
+        example: false
+  /by-client/{code}:
+    uriParameters:
+      code:
+        type: string
+        description: The Client Code.
+        example: 15301
+    delete:
+      description: Deleted all Invoices for a single client.
+      securedBy: [OAuth_2: {scopes: [POTENTIALS_DELETE]}]
+      is: [invoiceGroupDelete]
+  /with-aggregates:
+    description: Fetches invoice groups with invoice aggregation information.
+    get:
+      securedBy: [OAuth_2: {scopes: [POTENTIALS_READ]}]
+      is: [resourceSecured, clientQueryParameters, uiPaging, pagingDescriptionTrait: {apiDescription: "fetch a list of invoice groups each containing the aggregated invoice information, for example the total VAT potential of all the invoices for a particular group", pagingExplained: !include ../common/res/ui-paging-explained.txt, sortableFields: "dateCreated, ownerName, externalId"}, clientQueryParameters]
+      queryParameters:
+        returnCurrency:
+          default: GBP
+          description: Setting this value to a 3-digit __[ISO 4217](http://www.iso.org/iso/home/standards/currency_codes.htm)__ currency code will cause the monetary results to be returned in this currency.
+          type: string
+          example: GBP
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example: !include res/invoice-groups-with-aggregates-example.json
+              schema: !include res/invoice-groups.schema.json
+
+/invoice-group/{id}:
+  uriParameters:
+    id:
+      type: string
+      description: The Invoice Group Id. This can be be either a Blaze Id (integer) or Externally defined Id.
+      example: 12 or d7f6556c-c5ea-429d-b91f-6bb915ec9904
+  delete:
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_DELETE]}]
+    is: [invoiceGroupDelete]
+  /document:
+    description: Adds a document to an invoice group
+    type: 
+      document-post:
+        master-resource: Invoice Group
+    post:
+      is: [externalIdSwitchable]
+      securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE, POTENTIALS_WRITE]}]
+  /note:
+    description: Adds a note to an invoice group
+    type: 
+      note-post:
+        master-resource: Invoice Group
+    post:
+      is: [externalIdSwitchable]
+      securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE, POTENTIALS_WRITE]}]
+              
+
+/rollback:
+  description: Allows a calling system to rollback (revert) an import based on the Blaze-request-id header
+  post:
+    description: Allows a calling system to rollback (revert) an import based on the Blaze-request-id header
+    securedBy: [OAuth_2: {scopes: [POTENTIALS_WRITE, POTENTIALS_DELETE]}]
+    is: [clientQueryParameters, resourceSecured]
+    queryParameters:
+      rollbackRequestId:
+        description: Blaze Request Id of the import to be rolled back
+        type: string
+        example: import 1
+
+/status:
+  /reject/invoice:
+    /{id}:
+      description: Reject a single invoice
+      type:
+        invoice-reject:
+          description-text: Set the invoice status to rejected 
+  /reject/invoices:
+    /By-group/{id}:
+      description: Reject all invoices in the invoice group
+      type:
+        invoice-reject:
+          description-text: Set the status to rejected for all invoices in this group
+    /By-expense-type/{id}:
+      description: Reject all invoices with this expense type
+      type:
+        invoice-by-expense-type-reject:
+          description-text: Set the status to rejected for all invoices with this expense type
+  /approve/invoice:
+    /{id}:
+      description: Approve the invoice
+      type:
+        invoice-approve:
+          description-text: Set the invoice status to approved
+  /approve/invoices:
+    /By-group/{id}:
+      description: Approve the invoice group
+      type:
+        invoice-approve:
+          description-text: Set invoice status to approved for all invoices in this group
+  /move-to-pending/invoice/{id}:
+    description: Set the invoice status to pending
+    type:
+      invoice-move-to-pending:
+        description-text: Set the invoice status to pending

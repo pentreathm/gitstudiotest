@@ -1,0 +1,12 @@
+{
+  "items": [
+    {
+      "source": "ACME",
+      "externalId": "my-unique-id"
+    },
+    {
+      "source": "ACME",
+      "externalId": "my-unique-id 2"
+    }
+  ]
+}

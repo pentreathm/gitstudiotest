@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="short" created="Tue Feb 03 12:07:32 SAST 2015" description="VAT Scheme Response" guiVersion="3.4.4.P" id="1422963479760" licenseCode="Unlicensed" licenseType="Unknown" modified="Tue Feb 03 12:07:32 SAST 2015" modifiedBy="short" name="VAT_Scheme_Response" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="5d5a13bd-0669-40bb-9129-5a06e4bdcef0">
+<Record fieldDelimiter="," name="getVATSchemeResponse" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/VATScheme/VATAuthority/elementData" containerType="SINGLE" label="elementData" name="elementData" type="string"/>
+<Field __index="1" __sourcePath="{}/object/VATScheme/VATAuthority/idSource" containerType="SINGLE" label="idSource" name="idSource" type="string"/>
+<Field __index="2" __sourcePath="{}/object/VATScheme/VATAuthority/idString" containerType="SINGLE" label="idString" name="idString" type="string"/>
+<Field __index="3" __sourcePath="{}/object/VATScheme/VATAuthority/idType" containerType="SINGLE" label="idType" name="idType" type="string"/>
+<Field __index="4" __sourcePath="{}/object/VATScheme/VATSchemePeriod/elementData" containerType="SINGLE" label="elementData" name="elementData_1" type="string"/>
+<Field __index="5" __sourcePath="{}/object/VATScheme/VATSchemePeriod/idSource" containerType="SINGLE" label="idSource" name="idSource_1" type="string"/>
+<Field __index="6" __sourcePath="{}/object/VATScheme/VATSchemePeriod/idString" containerType="SINGLE" label="idString" name="idString_1" type="string"/>
+<Field __index="7" __sourcePath="{}/object/VATScheme/VATSchemePeriod/idType" containerType="SINGLE" label="idType" name="idType_1" type="string"/>
+<Field __index="26" __sourcePath="{}/object/VATScheme/VATSchemePeriodYearEndDate" containerType="SINGLE" label="VATSchemePeriodYearEndDate" name="VATSchemePeriodYearEndDate" type="string"/>
+<Field __index="27" __sourcePath="{}/object/VATScheme/VATSchemeType/elementData" containerType="SINGLE" label="elementData" name="elementData_2" type="string"/>
+<Field __index="28" __sourcePath="{}/object/VATScheme/VATSchemeType/idSource" containerType="SINGLE" label="idSource" name="idSource_2" type="string"/>
+<Field __index="29" __sourcePath="{}/object/VATScheme/VATSchemeType/idString" containerType="SINGLE" label="idString" name="idString_2" type="string"/>
+<Field __index="30" __sourcePath="{}/object/VATScheme/VATSchemeType/idType" containerType="SINGLE" label="idType" name="idType_2" type="string"/>
+<Field __index="31" __sourcePath="{}/object/VATScheme/agentRequired" containerType="SINGLE" label="agentRequired" name="agentRequired" type="boolean"/>
+<Field __index="32" __sourcePath="{}/object/VATScheme/claimSpanUnits/elementData" containerType="SINGLE" label="elementData" name="elementData_3" type="string"/>
+<Field __index="33" __sourcePath="{}/object/VATScheme/claimSpanUnits/idSource" containerType="SINGLE" label="idSource" name="idSource_3" type="string"/>
+<Field __index="34" __sourcePath="{}/object/VATScheme/claimSpanUnits/idString" containerType="SINGLE" label="idString" name="idString_3" type="string"/>
+<Field __index="35" __sourcePath="{}/object/VATScheme/claimSpanUnits/idType" containerType="SINGLE" label="idType" name="idType_3" type="string"/>
+<Field __index="36" __sourcePath="{}/object/VATScheme/claimSubmissionRulesActive" containerType="SINGLE" label="claimSubmissionRulesActive" name="claimSubmissionRulesActive" type="boolean"/>
+<Field __index="37" __sourcePath="{}/object/VATScheme/clientPaidDirectly" containerType="SINGLE" label="clientPaidDirectly" name="clientPaidDirectly" type="boolean"/>
+<Field __index="38" __sourcePath="{}/object/VATScheme/countryCode" containerType="SINGLE" label="countryCode" name="countryCode" type="string"/>
+<Field __index="39" __sourcePath="{}/object/VATScheme/currency/idSource" containerType="SINGLE" label="idSource" name="idSource_4" type="string"/>
+<Field __index="40" __sourcePath="{}/object/VATScheme/currency/idString" containerType="SINGLE" label="idString" name="idString_4" type="string"/>
+<Field __index="41" __sourcePath="{}/object/VATScheme/currency/idType" containerType="SINGLE" label="idType" name="idType_4" type="string"/>
+<Field __index="42" __sourcePath="{}/object/VATScheme/deadLineFromPeriodEnd" containerType="SINGLE" label="deadLineFromPeriodEnd" name="deadLineFromPeriodEnd" type="integer"/>
+<Field __index="43" __sourcePath="{}/object/VATScheme/deadLineFromPeriodEndUnit/elementData" containerType="SINGLE" label="elementData" name="elementData_4" type="string"/>
+<Field __index="44" __sourcePath="{}/object/VATScheme/deadLineFromPeriodEndUnit/idSource" containerType="SINGLE" label="idSource" name="idSource_5" type="string"/>
+<Field __index="45" __sourcePath="{}/object/VATScheme/deadLineFromPeriodEndUnit/idString" containerType="SINGLE" label="idString" name="idString_5" type="string"/>
+<Field __index="46" __sourcePath="{}/object/VATScheme/deadLineFromPeriodEndUnit/idType" containerType="SINGLE" label="idType" name="idType_5" type="string"/>
+<Field __index="47" __sourcePath="{}/object/VATScheme/finaliseImageGroup/elementData" containerType="SINGLE" label="elementData" name="elementData_5" type="string"/>
+<Field __index="48" __sourcePath="{}/object/VATScheme/finaliseImageGroup/idSource" containerType="SINGLE" label="idSource" name="idSource_6" type="string"/>
+<Field __index="49" __sourcePath="{}/object/VATScheme/finaliseImageGroup/idString" containerType="SINGLE" label="idString" name="idString_6" type="string"/>
+<Field __index="50" __sourcePath="{}/object/VATScheme/finaliseImageGroup/idType" containerType="SINGLE" label="idType" name="idType_6" type="string"/>
+<Field __index="51" __sourcePath="{}/object/VATScheme/idSource" containerType="SINGLE" label="idSource" name="idSource_7" type="string"/>
+<Field __index="52" __sourcePath="{}/object/VATScheme/idString" containerType="SINGLE" label="idString" name="idString_7" type="string"/>
+<Field __index="53" __sourcePath="{}/object/VATScheme/idType" containerType="SINGLE" label="idType" name="idType_7" type="string"/>
+<Field __index="54" __sourcePath="{}/object/VATScheme/imageForFinalise" containerType="SINGLE" label="imageForFinalise" name="imageForFinalise" type="boolean"/>
+<Field __index="55" __sourcePath="{}/object/VATScheme/imageForSubmission" containerType="SINGLE" label="imageForSubmission" name="imageForSubmission" type="boolean"/>
+<Field __index="56" __sourcePath="{}/object/VATScheme/invoiceCaptureEnableExclAmnt" containerType="SINGLE" label="invoiceCaptureEnableExclAmnt" name="invoiceCaptureEnableExclAmnt" type="boolean"/>
+<Field __index="57" __sourcePath="{}/object/VATScheme/invoiceCaptureEnableExemptVAT" containerType="SINGLE" label="invoiceCaptureEnableExemptVAT" name="invoiceCaptureEnableExemptVAT" type="boolean"/>
+<Field __index="58" __sourcePath="{}/object/VATScheme/invoiceCaptureEnableIncAmnt" containerType="SINGLE" label="invoiceCaptureEnableIncAmnt" name="invoiceCaptureEnableIncAmnt" type="boolean"/>
+<Field __index="59" __sourcePath="{}/object/VATScheme/invoiceCaptureEnableNonVAT" containerType="SINGLE" label="invoiceCaptureEnableNonVAT" name="invoiceCaptureEnableNonVAT" type="boolean"/>
+<Field __index="60" __sourcePath="{}/object/VATScheme/invoiceCaptureEnableVATPaid" containerType="SINGLE" label="invoiceCaptureEnableVATPaid" name="invoiceCaptureEnableVATPaid" type="boolean"/>
+<Field __index="61" __sourcePath="{}/object/VATScheme/invoiceDateCompare/elementData" containerType="SINGLE" label="elementData" name="elementData_6" type="string"/>
+<Field __index="62" __sourcePath="{}/object/VATScheme/invoiceDateCompare/idSource" containerType="SINGLE" label="idSource" name="idSource_8" type="string"/>
+<Field __index="63" __sourcePath="{}/object/VATScheme/invoiceDateCompare/idString" containerType="SINGLE" label="idString" name="idString_8" type="string"/>
+<Field __index="64" __sourcePath="{}/object/VATScheme/invoiceDateCompare/idType" containerType="SINGLE" label="idType" name="idType_8" type="string"/>
+<Field __index="65" __sourcePath="{}/object/VATScheme/invoicePeriodUnits/elementData" containerType="SINGLE" label="elementData" name="elementData_7" type="string"/>
+<Field __index="66" __sourcePath="{}/object/VATScheme/invoicePeriodUnits/idSource" containerType="SINGLE" label="idSource" name="idSource_9" type="string"/>
+<Field __index="67" __sourcePath="{}/object/VATScheme/invoicePeriodUnits/idString" containerType="SINGLE" label="idString" name="idString_9" type="string"/>
+<Field __index="68" __sourcePath="{}/object/VATScheme/invoicePeriodUnits/idType" containerType="SINGLE" label="idType" name="idType_9" type="string"/>
+<Field __index="69" __sourcePath="{}/object/VATScheme/invoiceRulesActive" containerType="SINGLE" label="invoiceRulesActive" name="invoiceRulesActive" type="boolean"/>
+<Field __index="70" __sourcePath="{}/object/VATScheme/invoiceValidPeriod" containerType="SINGLE" label="invoiceValidPeriod" name="invoiceValidPeriod" type="integer"/>
+<Field __index="71" __sourcePath="{}/object/VATScheme/maximumClaimSpan" containerType="SINGLE" label="maximumClaimSpan" name="maximumClaimSpan" type="integer"/>
+<Field __index="72" __sourcePath="{}/object/VATScheme/minimumClaimSpan" containerType="SINGLE" label="minimumClaimSpan" name="minimumClaimSpan" type="integer"/>
+<Field __index="73" __sourcePath="{}/object/VATScheme/name" containerType="SINGLE" label="name" name="name" type="string"/>
+<Field __index="74" __sourcePath="{}/object/VATScheme/outputVAT" containerType="SINGLE" label="outputVAT" name="outputVAT" type="boolean"/>
+<Field __index="75" __sourcePath="{}/object/VATScheme/pastDateInvoiceStatus/elementData" containerType="SINGLE" label="elementData" name="elementData_8" type="string"/>
+<Field __index="76" __sourcePath="{}/object/VATScheme/pastDateInvoiceStatus/idSource" containerType="SINGLE" label="idSource" name="idSource_10" type="string"/>
+<Field __index="77" __sourcePath="{}/object/VATScheme/pastDateInvoiceStatus/idString" containerType="SINGLE" label="idString" name="idString_10" type="string"/>
+<Field __index="78" __sourcePath="{}/object/VATScheme/pastDateInvoiceStatus/idType" containerType="SINGLE" label="idType" name="idType_10" type="string"/>
+<Field __index="79" __sourcePath="{}/object/VATScheme/quartersOverlap" containerType="SINGLE" label="quartersOverlap" name="quartersOverlap" type="boolean"/>
+<Field __index="80" __sourcePath="{}/object/VATScheme/quartlyMinimum" containerType="SINGLE" label="quartlyMinimum" name="quartlyMinimum" type="number"/>
+<Field __index="81" __sourcePath="{}/object/VATScheme/quartlySubmission" containerType="SINGLE" label="quartlySubmission" name="quartlySubmission" type="boolean"/>
+<Field __index="82" __sourcePath="{}/object/VATScheme/schemeYearEnd" containerType="SINGLE" label="schemeYearEnd" name="schemeYearEnd" type="date"/>
+<Field __index="83" __sourcePath="{}/object/VATScheme/schemeYearStart" containerType="SINGLE" label="schemeYearStart" name="schemeYearStart" type="date"/>
+<Field __index="84" __sourcePath="{}/object/VATScheme/scriptPrefix" containerType="SINGLE" label="scriptPrefix" name="scriptPrefix" type="string"/>
+<Field __index="85" __sourcePath="{}/object/VATScheme/strictAnnual" containerType="SINGLE" label="strictAnnual" name="strictAnnual" type="boolean"/>
+<Field __index="86" __sourcePath="{}/object/VATScheme/strictQuarters" containerType="SINGLE" label="strictQuarters" name="strictQuarters" type="boolean"/>
+<Field __index="87" __sourcePath="{}/object/VATScheme/submissionImageGroup/elementData" containerType="SINGLE" label="elementData" name="elementData_9" type="string"/>
+<Field __index="88" __sourcePath="{}/object/VATScheme/submissionImageGroup/idSource" containerType="SINGLE" label="idSource" name="idSource_11" type="string"/>
+<Field __index="89" __sourcePath="{}/object/VATScheme/submissionImageGroup/idString" containerType="SINGLE" label="idString" name="idString_11" type="string"/>
+<Field __index="90" __sourcePath="{}/object/VATScheme/submissionImageGroup/idType" containerType="SINGLE" label="idType" name="idType_11" type="string"/>
+<Field __index="91" __sourcePath="{}/object/VATScheme/yearlyMinimum" containerType="SINGLE" label="yearlyMinimum" name="yearlyMinimum" type="number"/>
+<Field __index="92" __sourcePath="{}/object/VATScheme/yearlySubmission" containerType="SINGLE" label="yearlySubmission" name="yearlySubmission" type="boolean"/>
+</Record>
+</Metadata>
+<Metadata __index="5" __referenceCounter="1" __sourcePath="{}/object/invoicePeriods" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="c341b7f3-4ee0-4802-8e6f-1780ae7800d6" _parent_id="__parent_id" _type="Output" id="d9b53e0f-74d8-45df-9026-a03b0b90b020">
+<Record fieldDelimiter="," name="invoicePeriods" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.String" __index="5" __sourcePath="{}/object/invoicePeriods/description" containerType="SINGLE" label="description" name="description" type="string"/>
+<Field __implementationClass="java.lang.Integer" __index="6" __sourcePath="{}/object/invoicePeriods/value" containerType="SINGLE" label="value" name="value" type="integer"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="c341b7f3-4ee0-4802-8e6f-1780ae7800d6">
+<Record fieldDelimiter="," name="object" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __implementationClass="java.lang.Boolean" __index="0" __sourcePath="{}/object/columns/ExclAmnt" containerType="SINGLE" label="ExclAmnt" name="ExclAmnt" type="boolean"/>
+<Field __implementationClass="java.lang.Boolean" __index="1" __sourcePath="{}/object/columns/ExemptVAT" containerType="SINGLE" label="ExemptVAT" name="ExemptVAT" type="boolean"/>
+<Field __implementationClass="java.lang.Boolean" __index="2" __sourcePath="{}/object/columns/InclAmnt" containerType="SINGLE" label="InclAmnt" name="InclAmnt" type="boolean"/>
+<Field __implementationClass="java.lang.Boolean" __index="3" __sourcePath="{}/object/columns/NonVAT" containerType="SINGLE" label="NonVAT" name="NonVAT" type="boolean"/>
+<Field __implementationClass="java.lang.Boolean" __index="4" __sourcePath="{}/object/columns/VATPaid" containerType="SINGLE" label="VATPaid" name="VATPaid" type="boolean"/>
+<Field __implementationClass="java.lang.Boolean" __index="7" __sourcePath="{}/object/rulesActive" containerType="SINGLE" label="rulesActive" name="rulesActive" type="boolean"/>
+</Record>
+</Metadata>
+<Metadata __index="8" __referenceCounter="1" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="5d5a13bd-0669-40bb-9129-5a06e4bdcef0" _parent_id="__parent_id" _type="Input" id="9beed359-4847-49c2-9e1f-31861f1f4ced">
+<Record fieldDelimiter="," name="periodListList" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="8" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/VSPeriodType/idSource" containerType="SINGLE" label="idSource" name="idSource" type="string"/>
+<Field __index="9" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/VSPeriodType/idString" containerType="SINGLE" label="idString" name="idString" type="string"/>
+<Field __index="10" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/VSPeriodType/idType" containerType="SINGLE" label="idType" name="idType" type="string"/>
+<Field __index="11" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/description" containerType="SINGLE" label="description" name="description" type="string"/>
+<Field __index="12" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/earlySubmissionDate" containerType="SINGLE" label="earlySubmissionDate" name="earlySubmissionDate" type="string"/>
+<Field __index="13" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/endMonth" containerType="SINGLE" label="endMonth" name="endMonth" type="integer"/>
+<Field __index="14" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/endMonthName" containerType="SINGLE" label="endMonthName" name="endMonthName" type="string"/>
+<Field __index="15" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/longDescription" containerType="SINGLE" label="longDescription" name="longDescription" type="string"/>
+<Field __index="16" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/name" containerType="SINGLE" label="name" name="name" type="string"/>
+<Field __index="17" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/periodDescription/idSource" containerType="SINGLE" label="idSource" name="idSource_1" type="string"/>
+<Field __index="18" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/periodDescription/idString" containerType="SINGLE" label="idString" name="idString_1" type="string"/>
+<Field __index="19" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/periodDescription/idType" containerType="SINGLE" label="idType" name="idType_1" type="string"/>
+<Field __index="20" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/periodSubmitted" containerType="SINGLE" label="periodSubmitted" name="periodSubmitted" type="boolean"/>
+<Field __index="21" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/sequence" containerType="SINGLE" label="sequence" name="sequence" type="integer"/>
+<Field __index="22" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/singularPeriod" containerType="SINGLE" label="singularPeriod" name="singularPeriod" type="boolean"/>
+<Field __index="23" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/startMonth" containerType="SINGLE" label="startMonth" name="startMonth" type="integer"/>
+<Field __index="24" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/startMonthName" containerType="SINGLE" label="startMonthName" name="startMonthName" type="string"/>
+<Field __index="25" __sourcePath="{}/object/VATScheme/VATSchemePeriodDetails/periodListList/yearIncrementFromStart" containerType="SINGLE" label="yearIncrementFromStart" name="yearIncrementFromStart" type="integer"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiName="Pojo READER" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Mapping cloverField="elementData" trim="true" xpath="VATScheme/VATAuthority/elementData"/>
+  <Mapping cloverField="idSource" trim="true" xpath="VATScheme/VATAuthority/idSource"/>
+  <Mapping cloverField="idString" trim="true" xpath="VATScheme/VATAuthority/idString"/>
+  <Mapping cloverField="idType" trim="true" xpath="VATScheme/VATAuthority/idType"/>
+  <Mapping cloverField="elementData_1" trim="true" xpath="VATScheme/VATSchemePeriod/elementData"/>
+  <Mapping cloverField="idSource_1" trim="true" xpath="VATScheme/VATSchemePeriod/idSource"/>
+  <Mapping cloverField="idString_1" trim="true" xpath="VATScheme/VATSchemePeriod/idString"/>
+  <Mapping cloverField="idType_1" trim="true" xpath="VATScheme/VATSchemePeriod/idType"/>
+  <Mapping cloverField="VATSchemePeriodYearEndDate" trim="true" xpath="VATScheme/VATSchemePeriodYearEndDate"/>
+  <Mapping cloverField="elementData_2" trim="true" xpath="VATScheme/VATSchemeType/elementData"/>
+  <Mapping cloverField="idSource_2" trim="true" xpath="VATScheme/VATSchemeType/idSource"/>
+  <Mapping cloverField="idString_2" trim="true" xpath="VATScheme/VATSchemeType/idString"/>
+  <Mapping cloverField="idType_2" trim="true" xpath="VATScheme/VATSchemeType/idType"/>
+  <Mapping cloverField="agentRequired" trim="true" xpath="VATScheme/agentRequired"/>
+  <Mapping cloverField="elementData_3" trim="true" xpath="VATScheme/claimSpanUnits/elementData"/>
+  <Mapping cloverField="idSource_3" trim="true" xpath="VATScheme/claimSpanUnits/idSource"/>
+  <Mapping cloverField="idString_3" trim="true" xpath="VATScheme/claimSpanUnits/idString"/>
+  <Mapping cloverField="idType_3" trim="true" xpath="VATScheme/claimSpanUnits/idType"/>
+  <Mapping cloverField="claimSubmissionRulesActive" trim="true" xpath="VATScheme/claimSubmissionRulesActive"/>
+  <Mapping cloverField="clientPaidDirectly" trim="true" xpath="VATScheme/clientPaidDirectly"/>
+  <Mapping cloverField="countryCode" trim="true" xpath="VATScheme/countryCode"/>
+  <Mapping cloverField="idSource_4" trim="true" xpath="VATScheme/currency/idSource"/>
+  <Mapping cloverField="idString_4" trim="true" xpath="VATScheme/currency/idString"/>
+  <Mapping cloverField="idType_4" trim="true" xpath="VATScheme/currency/idType"/>
+  <Mapping cloverField="deadLineFromPeriodEnd" trim="true" xpath="VATScheme/deadLineFromPeriodEnd"/>
+  <Mapping cloverField="elementData_4" trim="true" xpath="VATScheme/deadLineFromPeriodEndUnit/elementData"/>
+  <Mapping cloverField="idSource_5" trim="true" xpath="VATScheme/deadLineFromPeriodEndUnit/idSource"/>
+  <Mapping cloverField="idString_5" trim="true" xpath="VATScheme/deadLineFromPeriodEndUnit/idString"/>
+  <Mapping cloverField="idType_5" trim="true" xpath="VATScheme/deadLineFromPeriodEndUnit/idType"/>
+  <Mapping cloverField="elementData_5" trim="true" xpath="VATScheme/finaliseImageGroup/elementData"/>
+  <Mapping cloverField="idSource_6" trim="true" xpath="VATScheme/finaliseImageGroup/idSource"/>
+  <Mapping cloverField="idString_6" trim="true" xpath="VATScheme/finaliseImageGroup/idString"/>
+  <Mapping cloverField="idType_6" trim="true" xpath="VATScheme/finaliseImageGroup/idType"/>
+  <Mapping cloverField="idSource_7" trim="true" xpath="VATScheme/idSource"/>
+  <Mapping cloverField="idString_7" trim="true" xpath="VATScheme/idString"/>
+  <Mapping cloverField="idType_7" trim="true" xpath="VATScheme/idType"/>
+  <Mapping cloverField="imageForFinalise" trim="true" xpath="VATScheme/imageForFinalise"/>
+  <Mapping cloverField="imageForSubmission" trim="true" xpath="VATScheme/imageForSubmission"/>
+  <Mapping cloverField="invoiceCaptureEnableExclAmnt" trim="true" xpath="VATScheme/invoiceCaptureEnableExclAmnt"/>
+  <Mapping cloverField="invoiceCaptureEnableExemptVAT" trim="true" xpath="VATScheme/invoiceCaptureEnableExemptVAT"/>
+  <Mapping cloverField="invoiceCaptureEnableIncAmnt" trim="true" xpath="VATScheme/invoiceCaptureEnableIncAmnt"/>
+  <Mapping cloverField="invoiceCaptureEnableNonVAT" trim="true" xpath="VATScheme/invoiceCaptureEnableNonVAT"/>
+  <Mapping cloverField="invoiceCaptureEnableVATPaid" trim="true" xpath="VATScheme/invoiceCaptureEnableVATPaid"/>
+  <Mapping cloverField="elementData_6" trim="true" xpath="VATScheme/invoiceDateCompare/elementData"/>
+  <Mapping cloverField="idSource_8" trim="true" xpath="VATScheme/invoiceDateCompare/idSource"/>
+  <Mapping cloverField="idString_8" trim="true" xpath="VATScheme/invoiceDateCompare/idString"/>
+  <Mapping cloverField="idType_8" trim="true" xpath="VATScheme/invoiceDateCompare/idType"/>
+  <Mapping cloverField="elementData_7" trim="true" xpath="VATScheme/invoicePeriodUnits/elementData"/>
+  <Mapping cloverField="idSource_9" trim="true" xpath="VATScheme/invoicePeriodUnits/idSource"/>
+  <Mapping cloverField="idString_9" trim="true" xpath="VATScheme/invoicePeriodUnits/idString"/>
+  <Mapping cloverField="idType_9" trim="true" xpath="VATScheme/invoicePeriodUnits/idType"/>
+  <Mapping cloverField="invoiceRulesActive" trim="true" xpath="VATScheme/invoiceRulesActive"/>
+  <Mapping cloverField="invoiceValidPeriod" trim="true" xpath="VATScheme/invoiceValidPeriod"/>
+  <Mapping cloverField="maximumClaimSpan" trim="true" xpath="VATScheme/maximumClaimSpan"/>
+  <Mapping cloverField="minimumClaimSpan" trim="true" xpath="VATScheme/minimumClaimSpan"/>
+  <Mapping cloverField="name" trim="true" xpath="VATScheme/name"/>
+  <Mapping cloverField="outputVAT" trim="true" xpath="VATScheme/outputVAT"/>
+  <Mapping cloverField="elementData_8" trim="true" xpath="VATScheme/pastDateInvoiceStatus/elementData"/>
+  <Mapping cloverField="idSource_10" trim="true" xpath="VATScheme/pastDateInvoiceStatus/idSource"/>
+  <Mapping cloverField="idString_10" trim="true" xpath="VATScheme/pastDateInvoiceStatus/idString"/>
+  <Mapping cloverField="idType_10" trim="true" xpath="VATScheme/pastDateInvoiceStatus/idType"/>
+  <Mapping cloverField="quartersOverlap" trim="true" xpath="VATScheme/quartersOverlap"/>
+  <Mapping cloverField="quartlyMinimum" trim="true" xpath="VATScheme/quartlyMinimum"/>
+  <Mapping cloverField="quartlySubmission" trim="true" xpath="VATScheme/quartlySubmission"/>
+  <Mapping cloverField="schemeYearEnd" trim="true" xpath="VATScheme/schemeYearEnd"/>
+  <Mapping cloverField="schemeYearStart" trim="true" xpath="VATScheme/schemeYearStart"/>
+  <Mapping cloverField="scriptPrefix" trim="true" xpath="VATScheme/scriptPrefix"/>
+  <Mapping cloverField="strictAnnual" trim="true" xpath="VATScheme/strictAnnual"/>
+  <Mapping cloverField="strictQuarters" trim="true" xpath="VATScheme/strictQuarters"/>
+  <Mapping cloverField="elementData_9" trim="true" xpath="VATScheme/submissionImageGroup/elementData"/>
+  <Mapping cloverField="idSource_11" trim="true" xpath="VATScheme/submissionImageGroup/idSource"/>
+  <Mapping cloverField="idString_11" trim="true" xpath="VATScheme/submissionImageGroup/idString"/>
+  <Mapping cloverField="idType_11" trim="true" xpath="VATScheme/submissionImageGroup/idType"/>
+  <Mapping cloverField="yearlyMinimum" trim="true" xpath="VATScheme/yearlyMinimum"/>
+  <Mapping cloverField="yearlySubmission" trim="true" xpath="VATScheme/yearlySubmission"/>
+  <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="VATScheme/VATSchemePeriodDetails/periodListList">
+    <Mapping cloverField="idSource" trim="true" xpath="VSPeriodType/idSource"/>
+    <Mapping cloverField="idString" trim="true" xpath="VSPeriodType/idString"/>
+    <Mapping cloverField="idType" trim="true" xpath="VSPeriodType/idType"/>
+    <Mapping cloverField="description" trim="true" xpath="description"/>
+    <Mapping cloverField="earlySubmissionDate" trim="true" xpath="earlySubmissionDate"/>
+    <Mapping cloverField="endMonth" trim="true" xpath="endMonth"/>
+    <Mapping cloverField="endMonthName" trim="true" xpath="endMonthName"/>
+    <Mapping cloverField="longDescription" trim="true" xpath="longDescription"/>
+    <Mapping cloverField="name" trim="true" xpath="name"/>
+    <Mapping cloverField="idSource_1" trim="true" xpath="periodDescription/idSource"/>
+    <Mapping cloverField="idString_1" trim="true" xpath="periodDescription/idString"/>
+    <Mapping cloverField="idType_1" trim="true" xpath="periodDescription/idType"/>
+    <Mapping cloverField="periodSubmitted" trim="true" xpath="periodSubmitted"/>
+    <Mapping cloverField="sequence" trim="true" xpath="sequence"/>
+    <Mapping cloverField="singularPeriod" trim="true" xpath="singularPeriod"/>
+    <Mapping cloverField="startMonth" trim="true" xpath="startMonth"/>
+    <Mapping cloverField="startMonthName" trim="true" xpath="startMonthName"/>
+    <Mapping cloverField="yearIncrementFromStart" trim="true" xpath="yearIncrementFromStart"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.getVATSchemeResponse"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.getVSPeriodsForClaimDef">
+    <typed-object-ref name="VSPeriodType" type-ref="com.vatit.wyvern.shared.dto.BaseIDDef"/>
+    <typed-object-ref name="description" type-ref="java.lang.String"/>
+    <typed-object-ref name="earlySubmissionDate" type-ref="java.lang.String"/>
+    <typed-object-ref name="endMonth" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="endMonthName" type-ref="java.lang.String"/>
+    <typed-object-ref name="longDescription" type-ref="java.lang.String"/>
+    <typed-object-ref name="name" type-ref="java.lang.String"/>
+    <typed-object-ref name="periodDescription" type-ref="com.vatit.wyvern.shared.dto.BaseIDDef"/>
+    <typed-object-ref name="periodSubmitted" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="sequence" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="singularPeriod" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="startMonth" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="startMonthName" type-ref="java.lang.String"/>
+    <typed-object-ref name="yearIncrementFromStart" type-ref="java.lang.Integer"/>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.NamedIDDef">
+    <typed-object-ref name="elementData" type-ref="java.lang.String"/>
+    <typed-object-ref name="idSource" type-ref="java.lang.String"/>
+    <typed-object-ref name="idString" type-ref="java.lang.String"/>
+    <typed-object-ref name="idType" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.getVSPeriodsForClaimListDef">
+    <schema-collection name="periodListList" type="java.util.ArrayList">
+      <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.getVSPeriodsForClaimDef"/>
+    </schema-collection>
+  </typed-object>
+  <typed-object type="java.lang.Double"/>
+  <typed-object type="java.util.Date"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.VATSchemeDef">
+    <typed-object-ref name="VATAuthority" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="VATSchemePeriod" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="VATSchemePeriodDetails" type-ref="com.vatit.wyvern.shared.dto.getVSPeriodsForClaimListDef"/>
+    <typed-object-ref name="VATSchemePeriodYearEndDate" type-ref="java.lang.String"/>
+    <typed-object-ref name="VATSchemeType" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="agentRequired" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="claimSpanUnits" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="claimSubmissionRulesActive" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="clientPaidDirectly" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="countryCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="currency" type-ref="com.vatit.wyvern.shared.dto.BaseIDDef"/>
+    <typed-object-ref name="deadLineFromPeriodEnd" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="deadLineFromPeriodEndUnit" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="finaliseImageGroup" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="idSource" type-ref="java.lang.String"/>
+    <typed-object-ref name="idString" type-ref="java.lang.String"/>
+    <typed-object-ref name="idType" type-ref="java.lang.String"/>
+    <typed-object-ref name="imageForFinalise" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="imageForSubmission" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceCaptureEnableExclAmnt" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceCaptureEnableExemptVAT" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceCaptureEnableIncAmnt" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceCaptureEnableNonVAT" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceCaptureEnableVATPaid" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceDateCompare" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="invoicePeriodUnits" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="invoiceRulesActive" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="invoiceValidPeriod" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="maximumClaimSpan" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="minimumClaimSpan" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="name" type-ref="java.lang.String"/>
+    <typed-object-ref name="outputVAT" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="pastDateInvoiceStatus" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="quartersOverlap" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="quartlyMinimum" type-ref="java.lang.Double"/>
+    <typed-object-ref name="quartlySubmission" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="schemeYearEnd" type-ref="java.util.Date"/>
+    <typed-object-ref name="schemeYearStart" type-ref="java.util.Date"/>
+    <typed-object-ref name="scriptPrefix" type-ref="java.lang.String"/>
+    <typed-object-ref name="strictAnnual" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="strictQuarters" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="submissionImageGroup" type-ref="com.vatit.wyvern.shared.dto.NamedIDDef"/>
+    <typed-object-ref name="yearlyMinimum" type-ref="java.lang.Double"/>
+    <typed-object-ref name="yearlySubmission" type-ref="java.lang.Boolean"/>
+  </typed-object>
+  <typed-object type="java.lang.Boolean"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="java.lang.Integer"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.BaseIDDef">
+    <typed-object-ref name="idSource" type-ref="java.lang.String"/>
+    <typed-object-ref name="idString" type-ref="java.lang.String"/>
+    <typed-object-ref name="idType" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.getVATSchemeResponse">
+    <typed-object-ref name="VATScheme" type-ref="com.vatit.wyvern.shared.dto.VATSchemeDef"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'object' -&gt; 'object'" guiX="460" guiY="20" id="FOREACH_OBJECT_OBJECT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.ExclAmnt = input.invoiceCaptureEnableExclAmnt;
+output.ExemptVAT = input.invoiceCaptureEnableExemptVAT;
+output.VATPaid = input.invoiceCaptureEnableVATPaid;
+output.NonVAT = input.invoiceCaptureEnableNonVAT;
+output.rulesActive = input.invoiceRulesActive;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'periodListList' -&gt; 'invoicePeriods'" guiX="460" guiY="120" id="FOREACH_PERIOD_LIST_LIST_INVOICE_PERIODS" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+output.__parent_id = input.__parent_id;
+//END -> DO NOT REMOVE
+output.description = input.name;
+output.value = str2integer(input.idString);]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="JSON WRITER" guiX="900" guiY="20" id="JSON_WRITER0" type="JSON_WRITER">
+<attr name="__isJsonSchema"><![CDATA[true]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" clover:inPort="0">
+  <columns>
+    <ExclAmnt>$0.ExclAmnt</ExclAmnt>
+    <ExemptVAT>$0.ExemptVAT</ExemptVAT>
+    <InclAmnt>$0.InclAmnt</InclAmnt>
+    <NonVAT>$0.NonVAT</NonVAT>
+    <VATPaid>$0.VATPaid</VATPaid>
+  </columns>
+  <clover:collection clover:name="invoicePeriods">
+    <item clover:inPort="1" clover:key="__parent_id" clover:parentKey="__id">
+      <description>$1.description</description>
+      <value>$1.value</value>
+    </item>
+  </clover:collection>
+  <rulesActive>$0.rulesActive</rulesActive>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/api/vat-scheme.schema.json]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="5d5a13bd-0669-40bb-9129-5a06e4bdcef0" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_OBJECT:0"/>
+<Edge debugMode="true" fromNode="BEAN_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="9beed359-4847-49c2-9e1f-31861f1f4ced" outPort="Port 1 (out)" toNode="FOREACH_PERIOD_LIST_LIST_INVOICE_PERIODS:0"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_OBJECT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="c341b7f3-4ee0-4802-8e6f-1780ae7800d6" outPort="Port 0 (out)" toNode="JSON_WRITER0:0"/>
+<Edge debugMode="true" fromNode="FOREACH_PERIOD_LIST_LIST_INVOICE_PERIODS:0" guiBendpoints="" id="Edge3" inPort="Port 1 (in)" metadata="d9b53e0f-74d8-45df-9026-a03b0b90b020" outPort="Port 0 (out)" toNode="JSON_WRITER0:1"/>
+</Phase>
+</Graph>

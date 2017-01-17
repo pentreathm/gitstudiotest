@@ -1,0 +1,80 @@
+[
+  {
+    "clientPackCode":"PC/2013/141849",
+    "claimValue":314,
+    "clientCode":"13864",
+    "gbpRate":1,
+    "clientPackType":"Claim Client Pack",
+    "invoiceCount":"6",
+    "claimValueGBP":314,
+    "id":"141840",
+    "vatSchemeName":"U.K 8th",
+    "clientName":"GREY ADVERTISING B.V.",
+    "branchName":"Netherlands"
+  },
+  {
+    "clientPackCode":"PC/2013/146649",
+    "claimValue":337,
+    "clientCode":"13512",
+    "gbpRate":0.8547432058,
+    "clientPackType":"Claim Client Pack",
+    "invoiceCount":"12",
+    "claimValueGBP":288.0484603546,
+    "id":"146585",
+    "vatSchemeName":"Germany 8th, plus reciprocity",
+    "clientName":"HAWE SYSTEMS EUROPE BV ",
+    "branchName":"Netherlands"
+  },
+  {
+    "clientPackCode":"PC/2013/146647",
+    "claimValue":164,
+    "clientCode":"13512",
+    "gbpRate":0.8547432058,
+    "clientPackType":"Claim Client Pack",
+    "invoiceCount":"1",
+    "claimValueGBP":140.1778857512,
+    "id":"146583",
+    "vatSchemeName":"Finland 8th",
+    "clientName":"HAWE SYSTEMS EUROPE BV ",
+    "branchName":"Netherlands"
+  },
+  {
+    "clientPackCode":"PC/2013/141850",
+    "claimValue":103,
+    "clientCode":"13864",
+    "gbpRate":0.8547432058,
+    "clientPackType":"Claim Client Pack",
+    "invoiceCount":"2",
+    "claimValueGBP":88.0385501974,
+    "id":"141841",
+    "vatSchemeName":"Spain 8th Directive",
+    "clientName":"GREY ADVERTISING B.V.",
+    "branchName":"Netherlands"
+  },
+  {
+    "clientPackCode":"PC/2013/146651",
+    "claimValue":67,
+    "clientCode":"13512",
+    "gbpRate":1,
+    "clientPackType":"Claim Client Pack",
+    "invoiceCount":"3",
+    "claimValueGBP":67,
+    "id":"146587",
+    "vatSchemeName":"U.K 8th",
+    "clientName":"HAWE SYSTEMS EUROPE BV ",
+    "branchName":"Netherlands"
+  },
+  {
+    "clientPackCode":"PC/2013/146698",
+    "claimValue":0,
+    "clientCode":"9980",
+    "gbpRate":1,
+    "clientPackType":"General Client Pack",
+    "invoiceCount":"0",
+    "claimValueGBP":0,
+    "id":"146634",
+    "vatSchemeName":"Pre-Client Pack 8th",
+    "clientName":"CITIZEN SYSTEMS EUROPE GMBH",
+    "branchName":"UK"
+  }
+]

@@ -1,0 +1,41 @@
+---
+##Paging
+  
+There are two forms of paging available to many Blaze GET requests, each with a different purpose:
+* Waterline Paging - for precise (no data loss), resumable (you can have long intervals between page fetches) paging, where row order is not important. This is typically used for bulk imports.
+* Order-Sensitive Paging - for fetching rows in a specific order. Typically used for paging UI lists.
+  
+###Waterline Paging (Bulk, Resumable)
+
+To instruct the Blaze service that waterline paging will be used, the request must contain the waterline query parameter which must be set to either _'CREATED'_ or _'MODIFIED'_
+
+For this example we will request all invoices for client _1234_ to be paged on createdDate, and we want 10 invoices per request
+
+Example: __GET__ ```{server}/api/1.0/potentials/invoices?clientCode=1234&pageSize=10&waterline=CREATED```
+
+Example response:
+```
+{
+  "waterline": "eyJkYXRlIjoiMjAxNS0wNC0xNVQwNzoyODo1My4wMTNaIiwidHlwZSI6Ik1PRElGSUVEIiwiaWQiOjIxNTd9",
+  "items": [
+  ...
+```
+To fetch the next page, we take the waterline hash received in the response from the previous call and assign the value to the waterline query parameter. The rest of the request stays the same.
+
+Example: __GET__ ```{server}/api/1.0/potentials/invoices?clientCode=1234&pageSize=10&waterline=eyJkYXRlIjoiMjAxNS0wNC0xNVQwNzoyODo1My4wMTNaIiwidHlwZSI6Ik1PRElGSUVEIiwiaWQiOjIxNTd9```
+
+Continue replacing the waterline value with the one returned in the response until the result set is empty (or has fewer rows than specified in _pageSize_).
+  
+###Order-Sensitive Paging (UI)
+
+Though Blaze does not currently implement OData, this paging borrows syntax from the [OData protocol](http://www.odata.org/documentation/).
+
+When fetching from Blaze, use the following query parameters:
+* **$skip** - the number of rows to skip; e.g. if you have a page size of 10 and are on page 3: *$skip=20*
+* **$top** - the size of the result set (page size)
+* **$orderby** - the sort order; e.g. to order by client code and descending date created: *$orderby=clientCode,dateCreated desc*. Note, the default sort order (when unspecified) is asc.
+
+Example: __GET__ ```{server}/api/1.0/potentials/invoices?$skip=20&$top=10&$orderby=clientCode,dateCreated desc```
+
+Available ordering fields will be specified on the individual end points.
+Filtering of the result set does not follow the OData protocol; filter fields available with be specified on individual endpoints.

@@ -1,0 +1,11 @@
+---
+###Paging
+  
+Though Blaze does not currently implement OData, this paging borrows syntax from the [OData protocol](http://www.odata.org/documentation/).
+
+When fetching from Blaze, use the following query parameters:
+* **$skip** - the number of rows to skip; e.g. if you have a page size of 10 and are on page 3: *$skip=20*
+* **$top** - the size of the result set (page size)
+* **$orderby** - the sort order; e.g. to order by client code and descending date created: *$orderby=clientCode,dateCreated desc*. Note, the default sort order (when unspecified) is asc.
+
+Example: __GET__ ```{server}/api/1.0/potentials/invoices?$skip=20&$top=10&$orderby=clientCode,dateCreated desc```

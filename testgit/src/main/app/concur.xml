@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:https="http://www.mulesoft.org/schema/mule/https"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd">
+
+	<https:connector name="concurHTTPSConnector" cookieSpec="netscape" validateConnections="true" sendBufferSize="0" receiveBufferSize="0" receiveBacklog="0" clientSoTimeout="${blaze.concur.timeout}"
+	                 serverSoTimeout="${blaze.concur.timeout}" socketSoLinger="0" doc:name="HTTP-HTTPS" connectionTimeout="${blaze.concur.timeout}">
+		<https:tls-server path="concur.truststore" storePassword="B1@zeCert"/>
+	</https:connector>
+
+	<message-properties-transformer overwrite="true" name="ConcurAuthorization" doc:name="Message Properties">
+		<add-message-property key="Authorization" value="#['OAuth ' + flowVars['concurOAuth']]"/>
+		<add-message-property key="Content-Type" value="application/json"/>
+		<add-message-property key="Accept" value="application/json"/>
+	</message-properties-transformer>
+	<expression-transformer expression="#['']" name="Null" doc:name="Expression"/>
+
+	<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+		<spring:property name="contentType" value="application/json"/>
+	</custom-transformer>
+	<expression-transformer returnClass="com.vatit.blaze.dto.InvoiceGroups" expression="#[payload.invoiceGroups]" name="promoteGroupsToPayload" doc:name="Expression"/>
+	<custom-transformer returnClass="com.vatit.blaze.esb.concur.dto.Image" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		<spring:property name="returnClassName" value="com.vatit.blaze.esb.concur.dto.Image"/>
+		<spring:property name="jsonIsPascalCase" value="true"/>
+	</custom-transformer>
+	<custom-transformer class="com.vatit.blaze.esb.transformer.HttpErrorResponseCheckerAllowingNotFound" name="HttpErrorResponseCheckerAllowingNotFound" doc:name="Java"/>
+
+	<flow name="concur.syncConnection">
+		<logger message="Starting Concur Sync Process #[flowVars.'blaze.connection'.]..." level="INFO" doc:name="Logger"/>
+
+		<set-variable variableName="concurOAuth" value="#[message.payload.accessToken]" doc:name="Set Oath Token"/>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="concur.fetchInvoices" doc:name="concur.fetchInvoices"/>
+		</enricher>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="dragon.resolveCalculations" doc:name="dragon.resolveCalculations"/>
+		</enricher>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="concur.resolveEntryImages" doc:name="concur.resolveEntryImages"/>
+		</enricher>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="concur.resolveReportImages" doc:name="concur.resolveReportImages"/>
+		</enricher>
+		<logger message="Concur Sync Process Complete." level="INFO" doc:name="Complete"/>
+
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+			<scripting:component doc:name="Build Sync Report">
+				<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+
+SyncReport report = message.getInvocationProperty('sync.report')
+if (report != null && message.getInvocationProperty('myCount') != null){
+	int iteration = message.getInvocationProperty('myCount') - 1
+    report.connections.get(iteration).errors.add("Connection Level: " + payload.toString())
+}
+
+payload]]></scripting:script>
+			</scripting:component>
+		</catch-exception-strategy>
+	</flow>
+	<sub-flow name="concur.fetchInvoices">
+		<expression-filter expression="#[groovy: !flowVars['syncOmissions']?.contains('external-fetch')]" doc:name="Check Omissions"/>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="concur.resolveReports" doc:name="concur.resolveReports"/>
+		</enricher>
+
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<flow-ref name="concur.resolveEntries" doc:name="concur.resolveEntries"/>
+		</enricher>
+		<logger message="Expense Detail Entry Fetch Complete." level="INFO" doc:name="Complete"/>
+	</sub-flow>
+
+
+	<flow name="concur.resolveReports">
+		<logger message="Resolving Expense Reports..." level="INFO" doc:name="Logger"/>
+
+		<message-properties-transformer overwrite="true" scope="invocation" doc:name="Paging Properties">
+			<add-message-property key="blaze.page.count" value="#[new Integer[${blaze.get.invoiceGroups.fromConcur.page.count}]]"/>
+			<add-message-property key="blaze.page.size" value="#[Integer.parseInt(${blaze.get.invoiceGroups.fromConcur.page.size})]"/>
+			<add-message-property key="blaze.page.done" value="false"/>
+		</message-properties-transformer>
+
+		<flow-ref name="concur.pageResolveReports" doc:name="concur.pageResolveReports"/>
+		<logger message="Get Reports Complete." level="INFO" doc:name="Get Reports Complete"/>
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+
+			<scripting:component doc:name="Build Sync Report">
+				<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).errors.add("Get Reports Level: " + payload.toString())
+
+payload]]></scripting:script>
+			</scripting:component>
+
+		</catch-exception-strategy>
+
+	</flow>
+	<flow name="concur.pageResolveReports">
+		<foreach collection="#[flowVars['blaze.page.count']]" doc:name="For Each Page" counterVariableName="blaze.page.number">
+			<expression-filter expression="#[flowVars['blaze.page.done'] == false]" doc:name="Check end of data"/>
+			<logger message="Processing Page #[flowVars['blaze.page.number']] of #[flowVars['blaze.page.count'].length]..." level="INFO" doc:name="Page Progress"/>
+
+			<scripting:component doc:name="Set Reports Page URL">
+				<scripting:script engine="Groovy" file="groovy/constructConcurReportDigestUrl.groovy">
+					<property key="maxYears" value="2"/>
+				</scripting:script>
+
+			</scripting:component>
+			<logger message="Fetching Page: #[flowVars['ConcurPageURL']]..." level="INFO" doc:name="Log Page URL"/>
+			<until-successful maxRetries="${blaze.concur.retry.count}" millisBetweenRetries="${blaze.concur.retry.interval}" synchronous="true" doc:name="Until Successful">
+				<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector" address="https://#[flowVars['concurPageURL']]"
+				                         responseTimeout="${blaze.concur.timeout}" followRedirects="true" transformer-refs="ConcurAuthorization Null" responseTransformer-refs="HttpErrorResponseChecker"
+				                         metadata:id="fdb24fe2-f94a-46df-b20e-f8c6cfd67dc4" doc:name="Concur Get Report Digests"/>
+
+			</until-successful>
+			<custom-transformer returnClass="com.vatit.blaze.dto.ConcurExpenseReports" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" metadata:id="3860be24-3828-4152-8543-5f0cd9780976"
+			                    doc:name="Unmarshal">
+				<spring:property name="returnClassName" value="com.vatit.blaze.dto.ConcurExpenseReports"/>
+				<spring:property name="jsonIsPascalCase" value="true"/>
+			</custom-transformer>
+			<set-variable variableName="blaze.page.done" value="#[payload.items.size() &lt; flowVars.'blaze.page.size']" doc:name="Is Last Page"/>
+			<scripting:component doc:name="Set Connection Id on all Reports">
+				<scripting:script engine="Groovy"><![CDATA[payload.items.each { it.setConnectionId message.getInvocationProperty('blaze.connection').id }
+payload]]></scripting:script>
+			</scripting:component>
+
+			<expression-filter expression="#[payload.items.size() &gt; 0]" doc:name="Stop on Empty List"/>
+
+			<logger message="#[payload.items.size()] Expense Reports fetched for this Connection. Next Concur Page is #[payload.nextPage]." level="INFO" doc:name="Log Total Report Count"/>
+			<scripting:component metadata:id="d2407bc9-edf8-42a4-bf90-d4bb67b9e68e" doc:name="Build Sync Report">
+				<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).reportsRetrieved += payload.items.size()
+
+payload]]></scripting:script>
+			</scripting:component>
+
+			<logger message="Saving #[payload.items.size()] Concur Expense Reports to Blaze Services, Waterline is: #[payload.nextPage]..." level="INFO" doc:name="Info"/>
+			<expression-component doc:name="Set Connection Waterline">
+				<![CDATA[flowVars.'blaze.connection'.reportDigestWaterline = payload.nextPage == null ? null : payload.nextPage.replace('https://', '')]]></expression-component>
+			<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+				<spring:property name="contentType" value="application/json"/>
+			</custom-transformer>
+			<message-properties-transformer scope="invocation" doc:name="Set request path and http method">
+				<add-message-property key="blaze.services.path" value="${blaze.services.address}/api/1.0/concur/reports"/>
+				<add-message-property key="httpMethod" value="POST"/>
+			</message-properties-transformer>
+
+			<flow-ref name="general.callBlazeServices" doc:name="Call blaze services"/>
+
+		</foreach>
+	</flow>
+	<flow name="concur.resolveEntries">
+		<expression-filter expression="#[groovy: !flowVars['syncOmissions']?.contains('invoices')]" doc:name="Check Omissions"/>
+
+		<logger message="Fetching Reports without Invoices, from Blaze Services..." level="INFO" doc:name="Info"/>
+		<remove-variable variableName="blaze.concur.entries.preferredApi" doc:name="Reset Preferred API"/>
+		<message-properties-transformer overwrite="true" scope="invocation" doc:name="Paging Properties">
+			<add-message-property key="blaze.page.done" value="false"/>
+			<add-message-property key="blaze.page.count" value="#[new Integer[${blaze.get.invoiceGroups.fromBlazeDB.forWhichToGetInvoicesFromConcur.page.count}]]"/>
+			<add-message-property key="blaze.page.size" value="${blaze.get.invoiceGroups.fromBlazeDB.forWhichToGetInvoicesFromConcur.page.size}"/>
+			<add-message-property key="invoice.group.error.count" value="#[0]"/>
+			<add-message-property key="invoice.group.error.maxcount" value="#[Integer.parseInt(${blaze.concur.invoice.error.limit})]"/>
+			<add-message-property key="blaze.get.invoicesInGroup.fromConcur.page.size" value="#[Integer.parseInt(${blaze.get.invoicesInGroup.fromConcur.page.size})]"/>
+			<add-message-property key="blaze.concur.entries.preferredApi" value="#[flowVars['blaze.connection'].preferredEntriesApi]"/>
+			<add-message-property key="blaze.page.waterline" value="MODIFIED"/>
+		</message-properties-transformer>
+		<flow-ref name="concur.pageResolveEntries" doc:name="concur.pageResolveEntries"/>
+		<logger message="Concur Invoice Entry Fetch Complete." level="INFO" doc:name="Entries Complete"/>
+
+
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+			<scripting:component doc:name="Build Sync Report">
+				<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).errors.add("Entries Level: " + payload.toString())
+
+payload]]></scripting:script>
+			</scripting:component>
+		</catch-exception-strategy>
+	</flow>
+	<sub-flow name="concur.pageResolveEntries">
+		<foreach collection="#[flowVars['blaze.page.count']]" doc:name="For Each Page" counterVariableName="blaze.page.number">
+			<expression-filter expression="#[flowVars.'blaze.page.done' == false]" doc:name="Check end of data"/>
+
+			<logger message="Processing Page #[flowVars['blaze.page.number']] of #[flowVars['blaze.page.count'].length]..." level="INFO" doc:name="Page Progress"/>
+			<set-variable variableName="httpMethod" value="GET" doc:name="Method"/>
+			<set-variable variableName="blaze.services.path"
+			              value="${blaze.services.address}/api/1.0/concur/reports?connectionId=#[flowVars['blaze.connection'].Id]&amp;mustFetchInvoices=true&amp;waterline=#[flowVars['blaze.page.waterline']]&amp;pageSize=#[flowVars['blaze.page.size']]"
+			              doc:name="Path"/>
+			<flow-ref name="general.callBlazeServices" doc:name="Call blaze services"/>
+			<custom-transformer returnClass="com.vatit.blaze.dto.ConcurExpenseReports" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" metadata:id="5f17cb1f-5af8-4687-bae9-9c7874a8e394"
+			                    doc:name="Unmarshal">
+				<spring:property name="returnClassName" value="com.vatit.blaze.dto.ConcurExpenseReports"/>
+			</custom-transformer>
+			<scripting:component doc:name="Set Connection Id on all Reports">
+				<scripting:script engine="Groovy"><![CDATA[payload.items.each { it.setConnectionId message.getInvocationProperty('blaze.connection').id }
+payload]]></scripting:script>
+			</scripting:component>
+
+
+			<set-variable variableName="blaze.page.done" value="#[payload.items.size() &lt; flowVars.'blaze.page.size']" doc:name="Is Paging Done?"/>
+			<set-variable variableName="blaze.page.waterline" value="#[payload.waterline]" doc:name="Waterline"/>
+			<expression-filter expression="#[groovy: !payload.items?.isEmpty()]" doc:name="Stop Here on Empty List"/>
+			<foreach collection="#[payload.items]" doc:name="For Each Expense Report">
+
+				<logger message="Processing Report Digest ID: #[payload.concurId]" level="INFO" doc:name="Log Report Header"/>
+				<set-variable variableName="blaze.concur.entries.preferredApi" value="#[flowVars.'blaze.connection'.preferredEntriesApi]" doc:name="Preferred API"/>
+				<scripting:component metadata:id="683784b8-5af2-49b7-bb40-528df1e0c859" doc:name="Expense Report Variable">
+					<scripting:script engine="Groovy"><![CDATA[import java.util.ArrayList
+import com.vatit.blaze.dto.ConcurExpenseEntry
+
+payload.setEntries(new ArrayList<>())
+message.setInvocationProperty('blaze.concur.report', payload)
+message.setInvocationProperty('blaze.concur.entries.errors', new ArrayList<ConcurExpenseEntry>())
+
+payload]]></scripting:script>
+				</scripting:component>
+				<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+					<flow-ref name="concur.resolveReportEntries" doc:name="concur.resolveReportEntries"/>
+				</enricher>
+
+
+				<expression-filter expression="#[!payload.entries.isEmpty()]" doc:name="Stop Here on Empty List"/>
+				<message-properties-transformer scope="invocation" doc:name="Set request path and http method">
+					<add-message-property key="httpMethod" value="POST"/>
+					<add-message-property key="blaze.services.path" value="${blaze.services.address}/api/1.0/concur/report-entries"/>
+				</message-properties-transformer>
+				<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+					<spring:property name="contentType" value="application/json"/>
+				</custom-transformer>
+				<flow-ref name="general.callBlazeServices" doc:name="Call blaze services to save entries"/>
+
+
+			</foreach>
+		</foreach>
+	</sub-flow>
+	<flow name="concur.resolveReportEntries">
+		<choice doc:name="Preferred API?">
+			<when expression="#[flowVars.'blaze.concur.entries.preferredApi'. == 'v3.0']">
+				<remove-variable variableName="blaze.concur.entries.offset" doc:name="Initialise Offset"/>
+				<flow-ref name="concur.resolveV3Entries" doc:name="concur.resolveV3Entries"/>
+			</when>
+			<otherwise>
+				<flow-ref name="concur.resolveV2Entries" doc:name="concur.resolveV2Entries"/>
+
+			</otherwise>
+		</choice>
+
+		<choice doc:name="Switch API's?">
+			<when expression="#[flowVars.'blaze.concur.entries.errors'.size() &gt;= flowVars.'blaze.concur.report'.entries.size() &amp;&amp; flowVars.'blaze.concur.entries.preferredApi' == empty]">
+				<set-variable variableName="blaze.concur.entries.preferredApi" value="#[flowVars.'blaze.concur.entries.preferredApi' == 'v3.0' ? 'v2.0' : 'v3.0']" doc:name="Preferred API"/>
+				<expression-component doc:name="Clear Entries"><![CDATA[flowVars.'blaze.concur.report'.entries.clear();
+flowVars.'blaze.concur.entries.errors'.clear()]]></expression-component>
+
+				<logger message="Switching to #[flowVars.'blaze.concur.entries.preferredApi'] Concur Entries API..." level="INFO" doc:name="Logger"/>
+				<flow-ref name="concur.resolveReportEntries" doc:name="concur.resolveReportEntries"/>
+			</when>
+			<otherwise>
+				<scripting:component doc:name="Build Sync Report">
+					<scripting:script engine="Groovy" file="groovy/buildConcurInvoicesSyncReport.groovy"/>
+
+				</scripting:component>
+				<choice doc:name="Save New Pref?">
+					<when expression="#[flowVars.'blaze.connection'.preferredEntriesApi == empty &amp;&amp; flowVars.'blaze.concur.report'.entries.size() &gt; 0]">
+						<set-variable variableName="blaze.concur.entries.preferredApi" value="#[groovy:flowVars['blaze.concur.entries.preferredApi'] ?: 'v2.0']" doc:name="Update API"/>
+						<logger message="Saving new Concur Entries preferred API as #[flowVars.'blaze.concur.entries.preferredApi']..." level="INFO" doc:name="Logger"/>
+						<expression-component doc:name="Set API Pref"><![CDATA[flowVars.'blaze.connection'.preferredEntriesApi = flowVars.'blaze.concur.entries.preferredApi']]></expression-component>
+						<set-payload value="#[flowVars.'blaze.connection']" doc:name="Set Payload"/>
+						<message-properties-transformer scope="invocation" doc:name="Set request path and http method">
+							<add-message-property key="httpMethod" value="PUT"/>
+							<add-message-property key="blaze.services.path" value="${blaze.services.address}/api/1.0/connections/connection"/>
+						</message-properties-transformer>
+						<custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+							<spring:property name="contentType" value="application/json"/>
+						</custom-transformer>
+
+						<flow-ref name="general.callBlazeServices" doc:name="Call blaze services"/>
+
+					</when>
+					<otherwise>
+						<set-payload value="#[payload]" doc:name="Placeholder"/>
+
+					</otherwise>
+				</choice>
+				<expression-component doc:name="Clear Errors"><![CDATA[flowVars.'blaze.concur.entries.errors'.clear()]]></expression-component>
+			</otherwise>
+		</choice>
+
+	</flow>
+	<sub-flow name="concur.resolveV2Entries">
+		<until-successful maxRetries="${blaze.concur.retry.count}" millisBetweenRetries="${blaze.concur.retry.interval}" synchronous="true" doc:name="Until Successful">
+			<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector"
+			                         address="https://www.concursolutions.com/api/expense/expensereport/v2.0/report/#[flowVars.'blaze.concur.report'.concurId]" responseTimeout="${blaze.concur.timeout}"
+			                         followRedirects="true" transformer-refs="ConcurAuthorization Null" responseTransformer-refs="HttpErrorResponseChecker" doc:name="Concur GET v2 Entries"/>
+		</until-successful>
+		<custom-transformer returnClass="com.vatit.blaze.esb.concur.dto.V2_ExpenseReport" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" metadata:id="426146e7-d6ca-4520-ba9a-22aae4a2fa94" doc:name="Unmarshal">
+			<spring:property name="jsonIsPascalCase" value="true"/>
+			<spring:property name="returnClassName" value="com.vatit.blaze.esb.concur.dto.V2_ExpenseReport"/>
+		</custom-transformer>
+		<custom-transformer returnClass="com.vatit.blaze.dto.ConcurExpenseReport" class="com.vatit.blaze.esb.concur.dto.v2Tov3EntriesTransformer" metadata:id="ea703dde-f186-41f4-b5ac-3eeb93e2af56"
+		                    doc:name="Process Report"/>
+		<scripting:component doc:name="Process Errors">
+			<scripting:script engine="Groovy" file="groovy/collectConcurEntryErrors.groovy"/>
+		</scripting:component>
+
+	</sub-flow>
+	<flow name="concur.resolveV3Entries">
+		<scripting:component metadata:id="d7a3e5b0-efe9-44af-8fcd-8fc5efd171e7" doc:name="Construct URL">
+			<scripting:script engine="Groovy" file="groovy\constructConcurEntriesUrl.groovy"/>
+		</scripting:component>
+
+		<logger message="Fetching Concur Report Entries: #[flowVars.'blaze.concur.pageUrl']..." level="INFO" doc:name="Logger"/>
+		<until-successful maxRetries="${blaze.concur.retry.count}" millisBetweenRetries="${blaze.concur.retry.interval}" synchronous="true" doc:name="Until Successful">
+			<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector" address="https://#[flowVars.'blaze.concur.pageUrl']"
+			                         responseTimeout="${blaze.concur.timeout}" followRedirects="true" transformer-refs="ConcurAuthorization Null" responseTransformer-refs="HttpErrorResponseChecker"
+			                         doc:name="Concur GET v3 Entries"/>
+		</until-successful>
+		<custom-transformer returnClass="com.vatit.blaze.dto.ConcurExpenseEntries" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" metadata:id="426146e7-d6ca-4520-ba9a-22aae4a2fa94"
+		                    doc:name="Unmarshal">
+			<spring:property name="jsonIsPascalCase" value="true"/>
+			<spring:property name="returnClassName" value="com.vatit.blaze.dto.ConcurExpenseEntries"/>
+		</custom-transformer>
+		<scripting:component metadata:id="94fca791-7fca-434e-8b4a-919799016753" doc:name="Process Report">
+			<scripting:script engine="Groovy" file="groovy/processConcurv3Entries.groovy"/>
+		</scripting:component>
+
+		<scripting:component doc:name="Process Errors">
+			<scripting:script engine="Groovy" file="groovy/collectConcurEntryErrors.groovy"/>
+		</scripting:component>
+
+		<choice doc:name="Need Another Page?">
+			<when expression="#[flowVars.'blaze.concur.entries.offset' != empty]">
+				<flow-ref name="concur.resolveV3Entries" doc:name="concur.resolveV3Entries"/>
+			</when>
+			<otherwise>
+				<logger message="Done entry fetch for this Report." level="INFO" doc:name="End of Pages"/>
+			</otherwise>
+		</choice>
+	</flow>
+
+	<flow name="concur.resolveEntryImages">
+		<expression-filter expression="#[groovy: !flowVars['syncOmissions']?.contains('invoice-images')]" doc:name="Check Omissions"/>
+		<logger message="Fetching Images for Concur Expense Entries..." level="INFO" doc:name="Info"/>
+		<message-properties-transformer overwrite="true" scope="invocation" doc:name="Paging Properties">
+			<add-message-property key="blaze.page.waterline" value="CREATED"/>
+			<add-message-property key="blaze.page.count" value="#[new Integer[${blaze.get.invoiceImages.fromConcur.page.count}]]"/>
+			<add-message-property key="blaze.page.size" value="${blaze.get.invoiceImages.fromConcur.page.size}"/>
+		</message-properties-transformer>
+		<flow-ref name="concur.pageResolveEntryImages" doc:name="concur.pageResolveEntryImages"/>
+		<logger message="Concur Entry Image Fetch Complete." level="INFO" doc:name="Images Complete"/>
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+			<scripting:component doc:name="Build Sync Report">
+				<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).errors.add("Entry images Level: " + payload.toString())
+payload]]></scripting:script>
+			</scripting:component>
+		</catch-exception-strategy>
+	</flow>
+
+
+	<flow name="concur.pageResolveEntryImages">
+		<foreach collection="#[flowVars['blaze.page.count']]" doc:name="For Each Page" counterVariableName="blaze.page.number">
+			<expression-filter expression="#[flowVars['blaze.page.waterline'] != 'ImagesDone']" doc:name="Check end of data"/>
+			<logger message="Processing Page #[flowVars['blaze.page.number']] of #[flowVars['blaze.page.count'].length]..." level="INFO" doc:name="Page Progress"/>
+			<set-variable variableName="httpMethod" value="GET" doc:name="Set http Method"/>
+			<set-variable variableName="blaze.services.path"
+			              value="${blaze.services.address}/api/1.0/potentials/invoice-documents/#[flowVars['blaze.connection'].Id]?pageSize=#[flowVars['blaze.page.size']]&amp;waterline=#[flowVars['blaze.page.waterline']]"
+			              doc:name="Set services path"/>
+			<flow-ref name="general.callBlazeServices" doc:name="Call blaze services to fetch invoices in need of images"/>
+			<custom-transformer returnClass="com.vatit.blaze.dto.Invoices" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+				<spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoices"/>
+			</custom-transformer>
+			<set-variable variableName="blaze.page.waterline" value="#[payload.items.size() == flowVars['blaze.page.size'] ? payload.waterline : 'ImagesDone']" doc:name="Update Waterline"/>
+			<expression-filter expression="#[groovy: !payload.items?.isEmpty()]" doc:name="Stop Here on Empty List"/>
+			<flow-ref name="connections.getClientInfo" doc:name="connections.getClientInfo"/>
+			<foreach collection="payload.items" doc:name="For Each Entry">
+				<logger message="Fetching image for Concur Expense Entry #[payload.externalId]" level="INFO" doc:name="Log Entry Header"/>
+				<set-variable variableName="blaze.invoice" value="#[payload]" doc:name="Invoice Var"/>
+				<flow-ref name="concur.getEntryImage" doc:name="concur.getEntryImage"/>
+			</foreach>
+		</foreach>
+	</flow>
+
+	<flow name="concur.getEntryImage">
+		<set-variable variableName="blaze.document" value="#[payload.documents.get(0)]" doc:name="Document"/>
+		<enricher doc:name="Get Image">
+			<processor-chain doc:name="Processor Chain">
+				<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector"
+				                         address="https://www.concursolutions.com/api/image/v1.0/expenseentry/#[flowVars['blaze.invoice'].externalId]" responseTimeout="${blaze.concur.timeout}"
+				                         followRedirects="true" transformer-refs="Null ConcurAuthorization" doc:name="GET Concur Image URL"/>
+				<set-variable variableName="http.status" value="#[message.inboundProperties.'http.status']" doc:name="Save Response Code"/>
+				<custom-transformer class="com.vatit.blaze.esb.transformer.HttpErrorResponseCheckerAllowingNotFound" doc:name="HttpErrorResponseCheckerAllowingNotFound"/>
+				<choice doc:name="Is Successful?">
+					<when expression="#[message.inboundProperties.'http.status' == 200]">
+						<set-variable variableName="image.download.successful" value="true" doc:name="Success"/>
+						<custom-transformer returnClass="com.vatit.blaze.esb.concur.dto.Image" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+							<spring:property name="returnClassName" value="com.vatit.blaze.esb.concur.dto.Image"/>
+							<spring:property name="jsonIsPascalCase" value="true"/>
+						</custom-transformer>
+						<logger message="Fetching Concur Image from: #[payload.Url]" level="INFO" doc:name="Logger"/>
+						<set-variable variableName="blaze.invoice.image.url" value="#[payload.Url]" doc:name="Image URL"/>
+						<until-successful maxRetries="${blaze.concur.retry.count}" millisBetweenRetries="${blaze.concur.retry.interval}" synchronous="true" doc:name="Until Successful">
+							<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector"
+							                         address="https://#[flowVars['blaze.invoice.image.url'].replace('https://', '')]" responseTimeout="${blaze.concur.timeout}" followRedirects="true"
+							                         transformer-refs="Null" responseTransformer-refs="HttpErrorResponseChecker" doc:name="Get Concur Image"/>
+						</until-successful>
+						<scripting:component doc:name="Set document mime-type">
+							<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.dto.Document
+Document document = message.getInvocationProperty('blaze.document')
+document.mimeType = message.getInboundProperty('Content-Type')
+payload]]>
+							</scripting:script>
+						</scripting:component>
+						<logger message="Image received successfully from Concur." level="INFO" doc:name="Logger"/>
+					</when>
+					<otherwise>
+						<set-variable variableName="image.download.successful" value="false" doc:name="Fail"/>
+						<logger message="Image not found (status #[message.inboundProperties.'http.status']); moving on..." level="INFO" doc:name="Logger"/>
+						<scripting:component doc:name="Faulty Document">
+							<scripting:script engine="Groovy" file="groovy/faultySyncDocument.groovy"/>
+						</scripting:component>
+						<set-variable variableName="httpMethod" value="PUT" doc:name="PUT"/>
+						<set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/report-entry/#[flowVars['blaze.invoice'].id]/document" doc:name="Blaze URL"/>
+						<flow-ref name="general.callBlazeServices" doc:name="Call Blaze to Save Document Fault"/>
+					</otherwise>
+				</choice>
+			</processor-chain>
+			<enrich source="#[payload]" target="#[flowVars['blaze.document.content']]"/>
+			<enrich source="#[flowVars['image.download.successful']]" target="#[flowVars['image.download.successful']]"/>
+		</enricher>
+		<message-property-filter pattern="image.download.successful = true" caseSensitive="true" scope="invocation" doc:name="IsSuccessful"/>
+		<set-variable variableName="blaze.document.content.type" value="#[flowVars['blaze.document'].mimeType]" doc:name="Set Document mime type"/>
+		<flow-ref name="documents.saveInvoiceToDMS" doc:name="Save Image to DMS"/>
+		<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+			<processor-chain doc:name="Processor Chain">
+				<scripting:component doc:name="Document Status">
+					<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.dto.Document
+Document document = message.getInvocationProperty('blaze.document')
+document.setStatus(Document.Status.K)
+return document]]></scripting:script>
+				</scripting:component>
+				<set-variable variableName="httpMethod" value="PUT" doc:name="PUT"/>
+				<set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/report-entry/#[flowVars['blaze.invoice'].id]/document" doc:name="URL"/>
+				<flow-ref name="general.callBlazeServices" doc:name="Call Blaze to Save Document"/>
+			</processor-chain>
+		</enricher>
+		<logger message="Invoice image saved to Blaze." level="INFO" doc:name="Status Info"/>
+		<scripting:component doc:name="Sync Report Count">
+			<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).imagesRetrieved += 1
+payload]]></scripting:script>
+		</scripting:component>
+	</flow>
+
+	<flow name="concur.resolveReportImages">
+		<expression-filter expression="#[groovy: !flowVars['syncOmissions']?.contains('invoice-group-images')]" doc:name="Check Omissions"/>
+		<choice doc:name="Has Report Images?">
+			<when expression="#[flowVars['blaze.connection'].hasReportImages == true]">
+				<logger message="Fetching Images for Concur Expense Reports..." level="INFO" doc:name="Yes"/>
+				<message-properties-transformer overwrite="true" scope="invocation" doc:name="Paging Properties">
+					<add-message-property key="blaze.page.count" value="#[new Integer[${blaze.get.invoiceGroupImages.fromConcur.page.count}]]"/>
+					<add-message-property key="blaze.page.size" value="${blaze.get.invoiceGroupImages.fromConcur.page.size}"/>
+				</message-properties-transformer>
+				<flow-ref name="concur.pageResolveReportImages" doc:name="concur.pageResolveReportImages"/>
+				<logger message="Concur Report Image Fetch Complete." level="INFO" doc:name="Images Complete"/>
+			</when>
+			<otherwise>
+				<logger message="This connection has no report images." level="INFO" doc:name="No"/>
+			</otherwise>
+		</choice>
+		<catch-exception-strategy doc:name="Catch Exception Strategy">
+			<flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+			<scripting:component doc:name="Build Sync Report">
+				<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).errors.add("Report images Level: " + payload.toString())
+payload]]></scripting:script>
+			</scripting:component>
+		</catch-exception-strategy>
+	</flow>
+
+	<flow name="concur.pageResolveReportImages">
+		<foreach collection="#[flowVars['blaze.page.count']]" counterVariableName="blaze.page.number" doc:name="For Each Page">
+			<expression-filter expression="#[flowVars['blaze.page.waterline'] != 'ImagesDone']" doc:name="Check end of data"/>
+			<logger message="Processing Page #[flowVars['blaze.page.number']] of #[flowVars['blaze.page.count'].length]..." level="INFO" doc:name="Page Progress"/>
+			<set-variable variableName="httpMethod" value="GET" doc:name="GET"/>
+			<set-variable variableName="blaze.services.path"
+			              value="${blaze.services.address}/api/1.0/potentials/invoice-groups/#[flowVars['blaze.connection'].Id]?data-content=sharepoint-document-storage&amp;pageSize=#[flowVars['blaze.page.size']]&amp;hasReportImages=true&amp;haveLookedForReportImage=false"
+			              doc:name="URL"/>
+			<flow-ref name="general.callBlazeServices" doc:name="Call blaze services to fetch invoice groups in need of images"/>
+			<custom-transformer returnClass="com.vatit.blaze.dto.InvoiceGroups" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+				<spring:property name="returnClassName" value="com.vatit.blaze.dto.InvoiceGroups"/>
+			</custom-transformer>
+			<set-variable variableName="blaze.page.waterline" value="#[payload.items.size() == flowVars['blaze.page.size'] ? payload.waterline : 'ImagesDone']" doc:name="Update Waterline"/>
+			<expression-filter expression="#[groovy: !payload.items?.isEmpty()]" doc:name="Stop Here on Empty List"/>
+			<flow-ref name="connections.getClientInfo" doc:name="connections.getClientInfo"/>
+			<foreach collection="payload.items" doc:name="For Each Report">
+				<logger message="Fetching image for Concur Expense Report #[payload.externalId]" level="INFO" doc:name="Log Report Header"/>
+				<set-variable variableName="blaze.invoiceGroup" value="#[payload]" doc:name="Invoice Group Var"/>
+				<flow-ref name="concur.getReportImage" doc:name="concur.getReportImage"/>
+			</foreach>
+		</foreach>
+	</flow>
+
+	<flow name="concur.getReportImage">
+		<scripting:component doc:name="Sync Polled Report Count">
+			<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).groupImagesPolled += 1
+payload]]></scripting:script>
+		</scripting:component>
+		<scripting:component doc:name="Create Document">
+			<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.dto.Document
+Document document = new Document()
+document.setExternalId(payload.getExternalId())
+document.setStatus(Document.Status.K)
+document.setSourceCode('CONCUR')
+message.setInvocationProperty('blaze.document', document)
+payload]]></scripting:script>
+		</scripting:component>
+
+		<enricher doc:name="Get Image">
+			<processor-chain doc:name="Processor Chain">
+				<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector"
+				                         address="https://www.concursolutions.com/api/image/v1.0/report/#[flowVars['blaze.invoiceGroup'].externalId]" responseTimeout="${blaze.concur.timeout}"
+				                         followRedirects="true" transformer-refs="Null ConcurAuthorization" doc:name="GET Concur Image URL"/>
+				<set-variable variableName="http.status" value="#[message.inboundProperties.'http.status']" doc:name="Save Response Code"/>
+				<custom-transformer class="com.vatit.blaze.esb.transformer.HttpErrorResponseCheckerAllowingNotFound" doc:name="HttpErrorResponseCheckerAllowingNotFound"/>
+				<choice doc:name="Is Successful?">
+					<when expression="#[message.inboundProperties.'http.status' == 200]">
+						<set-variable variableName="image.download.successful" value="true" doc:name="Success"/>
+						<custom-transformer returnClass="com.vatit.blaze.esb.concur.dto.Image" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+							<spring:property name="returnClassName" value="com.vatit.blaze.esb.concur.dto.Image"/>
+							<spring:property name="jsonIsPascalCase" value="true"/>
+						</custom-transformer>
+						<logger message="Fetching Concur Image from: #[payload.Url]" level="INFO" doc:name="Logger"/>
+						<set-variable variableName="blaze.invoice.group.image.url" value="#[payload.Url]" doc:name="Image URL"/>
+						<until-successful maxRetries="${blaze.concur.retry.count}" millisBetweenRetries="${blaze.concur.retry.interval}" synchronous="true" doc:name="Until Successful">
+							<https:outbound-endpoint exchange-pattern="request-response" method="GET" connector-ref="concurHTTPSConnector"
+							                         address="https://#[flowVars['blaze.invoice.group.image.url'].replace('https://', '')]" responseTimeout="${blaze.concur.timeout}" followRedirects="true"
+							                         transformer-refs="Null" responseTransformer-refs="HttpErrorResponseChecker" doc:name="Get Concur Image"/>
+						</until-successful>
+						<logger message="Image received successfully from Concur." level="INFO" doc:name="Logger"/>
+					</when>
+					<otherwise>
+						<set-variable variableName="image.download.successful" value="false" doc:name="Fail"/>
+						<logger message="Image not found (status #[message.inboundProperties.'http.status']); moving on..." level="INFO" doc:name="Logger"/>
+					</otherwise>
+				</choice>
+
+			</processor-chain>
+			<enrich source="#[payload]" target="#[flowVars['blaze.document.content']]"/>
+			<enrich source="#[message.inboundProperties['Content-Type']]" target="#[flowVars['blaze.document.content.type']]"/>
+			<enrich source="#[flowVars['image.download.successful']]" target="#[flowVars['image.download.successful']]"/>
+		</enricher>
+		<choice doc:name="Is Successful?">
+			<when expression="#[flowVars['image.download.successful'] == true]">
+				<message-properties-transformer overwrite="true" scope="invocation" doc:name="Success (flow Vars)">
+					<add-message-property key="blaze.document.masterType" value="invoice-group"/>
+				</message-properties-transformer>
+				<flow-ref name="documents.saveDocumentToDMS" doc:name="Save Image to DMS"/>
+				<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+					<processor-chain doc:name="Processor Chain">
+						<set-payload value="#[flowVars['blaze.document']]" doc:name="Set Payload to Document"/>
+						<set-variable variableName="httpMethod" value="POST" doc:name="POST"/>
+						<set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/concur/report/#[flowVars['blaze.invoiceGroup'].id]/document" doc:name="URL"/>
+						<flow-ref name="general.callBlazeServices" doc:name="Call Blaze to Save Document"/>
+					</processor-chain>
+				</enricher>
+				<logger message="Invoice image saved to Blaze." level="INFO" doc:name="Status Info"/>
+				<scripting:component doc:name="Sync Found Report Count">
+					<scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.esb.SyncReport
+SyncReport report = message.getInvocationProperty('sync.report')
+int iteration = message.getInvocationProperty('myCount') - 1
+report.connections.get(iteration).groupImagesFound += 1
+payload]]></scripting:script>
+				</scripting:component>
+			</when>
+			<otherwise>
+				<logger message="Marking image as 'done' in Blaze..." level="INFO" doc:name="Fail"/>
+				<enricher target="#[variable:junk]" doc:name="Prevent Payload Change">
+					<processor-chain doc:name="Processor Chain">
+						<set-payload value="#[null]" doc:name="Clear Payload"/>
+						<set-variable variableName="httpMethod" value="PUT" doc:name="PUT"/>
+						<set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/concur/report/#[flowVars['blaze.invoiceGroup'].id]/document-polled" doc:name="URL"/>
+						<flow-ref name="general.callBlazeServices" doc:name="Call Blaze to Mark Document as Polled"/>
+					</processor-chain>
+				</enricher>
+			</otherwise>
+		</choice>
+
+	</flow>
+
+</mule>

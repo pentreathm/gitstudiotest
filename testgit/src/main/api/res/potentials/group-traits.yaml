@@ -1,0 +1,11 @@
+groupIdQueryParameters:
+  queryParameters:
+    invoiceGroupId:
+      description: Filter by invoice group Blaze Id. This is the id of the invoice group as it is stored in the Blaze service. Multiple id's can be specified by repeating the query parameter.
+      type: integer
+      example: 1297
+    invoiceGroupExternalId:
+      description: Filter by invoice group external id. This is the id of the connection as it is stored in an external system. Multiple id's can be specified by repeating the query parameter.
+      type: string
+      example: my-invoice-group 
+      

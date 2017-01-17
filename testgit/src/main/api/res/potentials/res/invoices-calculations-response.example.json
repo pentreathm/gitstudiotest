@@ -1,0 +1,22 @@
+{
+  "items": [
+    {
+      "externalId": "inv-1",
+      "approximateReturnPercentage": 0.14,
+      "hasCalculationError": false,
+      "taxPercentage": 0.14
+    },
+    {
+      "externalId": "inv-1-5",
+      "hasCalculationError": true,
+      "calculationComments": "Calculation skipped: expense type is not mapped"
+    },
+    {
+      "externalId": "inv-2",
+      "approximateReturnPercentage": 0.10,
+      "hasCalculationError": false,
+      "calculationComments": "Start Month: 4 End Month: 6 Period Description: Quarter 4 VA Year End: 06/30/2012 00:00:00\ Invoice Rules.....:\ The following rules were run: \ Using VA year end date\ rule captured as 6 months \ \ The start date of the compare is: 06/30/2012 00:00:00\ The last date the invoice is valid till is: 12/30/2012 00:00:00\ The processing date of the invoice is: 05/25/2015 10:00:42\ The invoice is invalid\ ",
+      "taxPercentage": 0.14
+    }
+  ]
+}

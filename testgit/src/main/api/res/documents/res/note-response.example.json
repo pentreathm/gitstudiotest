@@ -1,0 +1,15 @@
+{
+  "id" : 66,
+  "dateCreated" : "2015-06-08T10:29:14.798+0000",
+  "dateModified" : "2015-06-08T10:29:14.798+0000",
+  "note" : "Attaching invoice scan - invoice scan has been revised",
+  "document" : {
+    "id" : 87,
+    "dateCreated" : "2015-06-08T10:29:14.798+0000",
+    "dateModified" : "2015-06-08T10:29:14.798+0000",
+    "externalId" : "d7f6556c-c5ea-429d-b91f-6bb915ec9904",
+    "extension" : "pdf",
+    "mimeType" : "application/pdf",
+    "status" : "K"
+  }
+}

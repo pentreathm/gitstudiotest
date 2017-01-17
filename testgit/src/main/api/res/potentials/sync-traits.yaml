@@ -1,0 +1,13 @@
+syncQueryParameters:
+  queryParameters:
+    omit:
+      description: Specify what parts of the sync are to be omitted
+      type: string
+      enum: [calcs, invoice-images, invoice-group-images, invoices, external-fetch, notifications]
+      example: invoice-images
+      repeat: true
+    source:
+      description: Filter to only sync for specific connection type (VATit partner)
+      type: string
+      enum: [concur]
+      example: concur

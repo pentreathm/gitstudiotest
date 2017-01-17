@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "calculateInvoiceValueOTResponse"
+        }
+    },
+    "id": "277cacd7-4c5a-4e04-8e5c-2af8d66d04ef",
+    "version": "5.2.0.0"
+}

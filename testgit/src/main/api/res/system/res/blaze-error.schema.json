@@ -1,0 +1,30 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:vatit:blaze:dto:BlazeError",
+  "properties" : {
+    "cause" : {
+      "type" : "object",
+      "id" : "urn:jsonschema:com:vatit:blaze:dto:BlazeErrorCause",
+      "description" : "Error cause, nested error messages.",
+      "properties" : {
+        "cause" : {
+          "type" : "object",
+          "$ref" : "urn:jsonschema:com:vatit:blaze:dto:BlazeErrorCause",
+          "description" : "Error cause, nested error messages."
+        },
+        "message" : {
+          "type" : "string",
+          "description" : "Descriptive error message"
+        }
+      }
+    },
+    "id" : {
+      "type" : "string",
+      "description" : "Unique ID, generated for each exception. Used to locate the error in the logs."
+    },
+    "message" : {
+      "type" : "string",
+      "description" : "Descriptive error message"
+    }
+  }
+}

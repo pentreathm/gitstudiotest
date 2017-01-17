@@ -1,0 +1,14 @@
+/list:
+  description: Fetches a list of client-packs, given a filter
+  post:
+    description: Fetches a list of client-packs, given a filter
+    body:
+      application/json: 
+        example: !include res/clientPackFilter.example.json
+        schema: !include res/clientPackFilter.schema.json
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include res/clientPackHeaderList.example.json
+            schema: !include res/clientPackHeaderList.schema.json

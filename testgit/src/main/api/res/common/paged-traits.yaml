@@ -1,0 +1,47 @@
+pagingQueryParameters:
+  queryParameters:
+    idAfter:
+      description: Fetches all rows with primary key after the specified Id. You must supply a Blaze Id for this parameter, and is typically used along with the _pageSize_ query parameter for paging purposes.
+      type: integer
+    pageSize:  
+      description: Limits the number of items returned. The results are ordered by either Modified or Created date, and then by Blaze Id.
+      type: integer
+      example: 200
+    waterline:
+      description: |
+        A waterline is usually supplied by the server in the result of a prior paging request. To use waterline paging, simply pass the last waterline back to the server. Because the waterline is supplied by the server, it is the most accurate (and in many situations, the only definitive) form of paging. If you want to instruct the server to use waterline paging, but you don't yet have a waterline (i.e. this is your first time), set the waterline to either 'CREATED', to page by created date, or 'MODIFIED', to page by modified date. Thereafter, the filter date choice (created or modified) will be baked into the returned waterline.
+        
+        #### Format
+        __Note:__ _This section is included for technical interest only, and is subject to change; although possible, it is not advisable to construct your own waterline._        
+        Blaze's waterlines are typically a serialized (JSON) and base64 encoded pojo; built from the modified (or created) date (__[ISO 8601](http://www.iso.org/iso/home/standards/iso8601.htm)__), the monotonically increasing primary key of the item retrieved, and an enum, indicating the date used for the filter. This is a simple case, and waterlines can become as complex as the need to be to fit the situation.
+      type: string
+      example: MTk5NC0xMS0wNVQwODoxNTozMC41NjR8Nzg=
+uiPaging:
+  queryParameters:
+    $skip:
+      description: The number of rows to skip; e.g. if you have a page size of 10 and are on page 3, *$skip=20*
+      type: integer
+      example: 20
+    $top:
+      description: The size of the result set (page size)
+      type: integer
+      example: 10
+    $orderby:
+      description: the sort order; e.g. to order by client code and descending date created, *$orderby=clientCode,dateCreated desc*. Note, the default sort order (when unspecified) is asc.
+      type: string
+      example: clientCode,dateCreated desc
+idAfterQueryParameters:
+  queryParameters:
+    idAfter:
+      description: Fetches all rows with primary key after the specified Id. You must supply a Blaze Id for this parameter, and is typically used along with the _pageSize_ query parameter for paging purposes.
+      type: integer
+dateQueryParameters:
+  queryParameters:
+    modifiedAfter:
+      description: All invoices that where modified within the Blaze potentials service after the specified date. Please note that it returns for modified date greater than _modifiedAfter_ and does not include invoices where the modified date is equal to _modifiedAfter_. The modified date is altered when ever the record in blaze is effected for example when the invoices' potential returns percentage is calculated or when the status of the invoice is changed. The date must conform to __[ISO 8601](http://www.iso.org/iso/home/standards/iso8601.htm)__
+      type: date
+      example: "2014-10-13T00:38:17.684+00:00"
+    createdAfter:
+      description: All invoices that where created within the Blaze service after the specified date. Please note that it returns for created date greater than _createdAfter_ and not for created date equal to _ceatedAfter_. The date must conform to __[ISO 8601](http://www.iso.org/iso/home/standards/iso8601.htm)__
+      type: date
+      example: "1994-11-05T08:15:30.564-05:00"

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="Gilbert" created="Wed Jan 28 12:09:04 CAT 2015" description="ClientPackFilterRequest" guiVersion="3.4.4.P" id="1422528079752" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Jan 28 12:09:04 CAT 2015" modifiedBy="Gilbert" name="ClientPackFilterRequest" preview-file="${Project_Home}/src/main/api/clientPackFilter.schema.json" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="3b187332-448a-42d3-872f-5f917900309f">
+<Record fieldDelimiter="," name="getClientPackHeaderListRequest" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/filter/bTransmittalUse" containerType="SINGLE" label="bTransmittalUse" name="bTransmittalUse" type="boolean"/>
+<Field __index="1" __sourcePath="{}/object/filter/clientId" containerType="SINGLE" label="clientId" name="clientId" type="string"/>
+<Field __index="2" __sourcePath="{}/object/filter/direction" containerType="SINGLE" label="direction" name="direction" type="string"/>
+<Field __index="3" __sourcePath="{}/object/filter/excludeDocumentClientPacks" containerType="SINGLE" label="excludeDocumentClientPacks" name="excludeDocumentClientPacks" type="boolean"/>
+<Field __index="4" __sourcePath="{}/object/filter/fromDate" containerType="SINGLE" label="fromDate" name="fromDate" type="date"/>
+<Field __index="5" __sourcePath="{}/object/filter/identifier" containerType="SINGLE" label="identifier" name="identifier" type="string"/>
+<Field __index="6" __sourcePath="{}/object/filter/identifierType" containerType="SINGLE" label="identifierType" name="identifierType" type="string"/>
+<Field __index="7" __sourcePath="{}/object/filter/indexFrom" containerType="SINGLE" label="indexFrom" name="indexFrom" type="integer"/>
+<Field __index="8" __sourcePath="{}/object/filter/rowsRequired" containerType="SINGLE" label="rowsRequired" name="rowsRequired" type="integer"/>
+<Field __index="9" __sourcePath="{}/object/filter/sortField" containerType="SINGLE" label="sortField" name="sortField" type="string"/>
+<Field __index="10" __sourcePath="{}/object/filter/sortOrder" containerType="SINGLE" label="sortOrder" name="sortOrder" type="string"/>
+<Field __index="11" __sourcePath="{}/object/filter/status" containerType="SINGLE" label="status" name="status" type="string"/>
+<Field __index="12" __sourcePath="{}/object/filter/toDate" containerType="SINGLE" label="toDate" name="toDate" type="date"/>
+<Field __index="13" __sourcePath="{}/object/filter/transmittalFilter/transmittalID" containerType="SINGLE" label="transmittalID" name="transmittalID" type="string"/>
+<Field __index="14" __sourcePath="{}/object/filter/transmittalFilter/unreconcilledOnly" containerType="SINGLE" label="unreconcilledOnly" name="unreconcilledOnly" type="boolean"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="77e8979a-d121-41b6-9270-6c233a122ebf">
+<Record fieldDelimiter="," name="object" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/branches" containerType="list" label="branches" name="branches" type="string"/>
+<Field __index="1" __sourcePath="{}/object/clientCode" containerType="SINGLE" label="clientCode" name="clientCode" type="string"/>
+<Field __index="2" __sourcePath="{}/object/clientName" containerType="SINGLE" label="clientName" name="clientName" type="string"/>
+<Field __index="3" __sourcePath="{}/object/column" containerType="SINGLE" label="column" name="column" type="string"/>
+<Field __index="4" __sourcePath="{}/object/order" containerType="SINGLE" label="order" name="order" type="string"/>
+<Field __index="5" __sourcePath="{}/object/restricted" containerType="SINGLE" label="restricted" name="restricted" type="string"/>
+<Field __index="6" __sourcePath="{}/object/results" containerType="SINGLE" label="results" name="results" type="string"/>
+<Field __index="7" __sourcePath="{}/object/vatScheme" containerType="list" label="vatScheme" name="vatScheme" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Pojo WRITER" guiX="900" guiY="20" id="BEAN_WRITER0" type="BEAN_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" clover:inPort="0">
+  <filter>
+    <bTransmittalUse>$0.bTransmittalUse</bTransmittalUse>
+    <clientId>$0.clientId</clientId>
+    <direction>$0.direction</direction>
+    <excludeDocumentClientPacks>$0.excludeDocumentClientPacks</excludeDocumentClientPacks>
+    <fromDate>$0.fromDate</fromDate>
+    <identifier>$0.identifier</identifier>
+    <identifierType>$0.identifierType</identifierType>
+    <indexFrom>$0.indexFrom</indexFrom>
+    <rowsRequired>$0.rowsRequired</rowsRequired>
+    <sortField>$0.sortField</sortField>
+    <sortOrder>$0.sortOrder</sortOrder>
+    <status>$0.status</status>
+    <toDate>$0.toDate</toDate>
+    <transmittalFilter>
+      <transmittalID>$0.transmittalID</transmittalID>
+      <unreconcilledOnly>$0.unreconcilledOnly</unreconcilledOnly>
+    </transmittalFilter>
+  </filter>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.getClientPackHeaderListRequest"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.getClientPackHeaderListRequest">
+    <typed-object-ref name="filter" type-ref="com.vatit.wyvern.shared.dto.WVClientPackFilterDef"/>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.FilterSortOrderDef"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.WVCPTransmittalFilterDef">
+    <typed-object-ref name="transmittalID" type-ref="java.lang.String"/>
+    <typed-object-ref name="unreconcilledOnly" type-ref="java.lang.Boolean"/>
+  </typed-object>
+  <typed-object type="java.util.Date"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.WVClientPackFilterDef">
+    <typed-object-ref name="bTransmittalUse" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="branchList" type-ref="com.vatit.wyvern.shared.dto.BaseIDListDef"/>
+    <typed-object-ref name="clientId" type-ref="java.lang.String"/>
+    <typed-object-ref name="direction" type-ref="java.lang.String"/>
+    <typed-object-ref name="employeeList" type-ref="com.vatit.wyvern.shared.dto.BaseIDListDef"/>
+    <typed-object-ref name="excludeDocumentClientPacks" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="fromDate" type-ref="java.util.Date"/>
+    <typed-object-ref name="identifier" type-ref="java.lang.String"/>
+    <typed-object-ref name="identifierType" type-ref="com.vatit.wyvern.shared.dto.FilterIdentifierType"/>
+    <typed-object-ref name="indexFrom" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="rowsRequired" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="sortField" type-ref="com.vatit.wyvern.shared.dto.WVClientPackSortColumnsDef"/>
+    <typed-object-ref name="sortOrder" type-ref="com.vatit.wyvern.shared.dto.FilterSortOrderDef"/>
+    <typed-object-ref name="status" type-ref="com.vatit.wyvern.shared.dto.ClientPackStatusTypeDef"/>
+    <typed-object-ref name="toDate" type-ref="java.util.Date"/>
+    <typed-object-ref name="transmittalFilter" type-ref="com.vatit.wyvern.shared.dto.WVCPTransmittalFilterDef"/>
+    <typed-object-ref name="vatSchemeList" type-ref="com.vatit.wyvern.shared.dto.BaseIDListDef"/>
+  </typed-object>
+  <typed-object type="java.lang.Boolean"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.WVClientPackSortColumnsDef"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.ClientPackStatusTypeDef"/>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.BaseIDListDef"/>
+  <typed-object type="java.lang.Integer"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.FilterIdentifierType"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'object' -&gt; 'object'" guiX="460" guiY="20" id="FOREACH_OBJECT_OBJECT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.clientId = input.clientCode;
+output.identifier = input.clientName;
+output.status = input.restricted;
+output.sortOrder = input.order;
+output.sortField = input.column;
+output.rowsRequired = str2integer(input.results);]]></attr>
+</Node>
+<Node charset="UTF-8" enabled="enabled" fileURL="dict:inputPayload" guiName="JSON READER" guiX="20" guiY="20" id="JSON_READER0" type="JSON_READER">
+<attr name="__isJsonSchema"><![CDATA[true]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context xpath="/root">
+  <Context outPort="0" sequenceField="__id" xpath="object">
+    <Mapping cloverField="branches" trim="true" xpath="branches"/>
+    <Mapping cloverField="clientCode" trim="true" xpath="clientCode"/>
+    <Mapping cloverField="clientName" trim="true" xpath="clientName"/>
+    <Mapping cloverField="column" trim="true" xpath="column"/>
+    <Mapping cloverField="order" trim="true" xpath="order"/>
+    <Mapping cloverField="restricted" trim="true" xpath="restricted"/>
+    <Mapping cloverField="results" trim="true" xpath="results"/>
+    <Mapping cloverField="vatScheme" trim="true" xpath="vatScheme"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/api/clientPackFilter.schema.json]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_OBJECT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="3b187332-448a-42d3-872f-5f917900309f" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
+<Edge debugMode="true" fromNode="JSON_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="77e8979a-d121-41b6-9270-6c233a122ebf" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_OBJECT:0"/>
+</Phase>
+</Graph>

@@ -1,0 +1,37 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:vatit:blaze:dto:ExchangeRates",
+  "properties" : {
+    "items" : {
+      "type" : "array",
+      "description" : "List of exchange rates",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:vatit:blaze:dto:ExchangeRate",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "description" : "Date for which the exchange rate is required",
+            "format" : "DATE_TIME"
+          },
+          "rate" : {
+            "type" : "number",
+            "description" : "The price of the to currency in terms of 1 unit of the from currency"
+          },
+          "toCurrencyCode" : {
+            "type" : "string",
+            "description" : "Dragon currency code to which the amount will be converted. This is also known as the counter currency"
+          },
+          "id" : {
+            "type" : "integer",
+            "description" : "Internal Blaze id"
+          },
+          "fromCurrencyCode" : {
+            "type" : "string",
+            "description" : "Dragon currency code of the amount. This is also known as the base currency"
+          }
+        }
+      }
+    }
+  }
+}

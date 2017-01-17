@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:data-mapper="http://www.mulesoft.org/schema/mule/ee/data-mapper"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.2"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/data-mapper http://www.mulesoft.org/schema/mule/ee/data-mapper/current/mule-data-mapper.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+  <data-mapper:config name="ClientPackHeaderListResponse" transformationGraphPath="clientpackheaderlistresponse.grf" doc:name="ClientPackHeaderListResponse"/>
+  <data-mapper:config name="ClientPackFilterRequest" transformationGraphPath="clientpackfilterrequest.grf" doc:name="ClientPackFilterRequest"/>
+  <data-mapper:config name="VAT_Scheme_Response" transformationGraphPath="vat_scheme_response.grf" doc:name="VAT_Scheme_Response"/>
+
+  <flow name="dragon2-transfer.getClientPackHeaders" doc:name="dragon2-transfer.getClientPackHeaders">
+    <data-mapper:transform config-ref="ClientPackFilterRequest" doc:name="Client Pack Filter Request"/>
+    <custom-transformer class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" doc:name="Call Dragon">
+      <spring:property name="methodName" value="getClientPackHeaderList"/>
+      <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.WVClientPackWSProxy"/>
+    </custom-transformer>
+
+    <data-mapper:transform config-ref="ClientPackHeaderListResponse" doc:name="Client Pack Header List Response"/>
+
+
+    <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+  </flow>
+  <flow name="dragon2-transfer.getVatScheme">
+    <scripting:transformer returnClass="com.vatit.wyvern.shared.dto.getVATSchemeRequest" doc:name="Create VAT Scheme Request">
+      <scripting:script engine="Groovy"><![CDATA[import com.vatit.wyvern.shared.dto.getVATSchemeRequest
+import com.vatit.wyvern.shared.dto.BaseIDDef
+
+req = new com.vatit.wyvern.shared.dto.getVATSchemeRequest()
+baseId = new BaseIDDef()
+baseId.IdString = vatSchemeId
+req.VATScheme = baseId
+
+return req]]></scripting:script>
+    </scripting:transformer>
+    <custom-transformer class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" doc:name="Call Dragon">
+      <spring:property name="methodName" value="getVATScheme"/>
+      <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.VatSchemeWSProxy"/>
+    </custom-transformer>
+    <data-mapper:transform config-ref="VAT_Scheme_Response" doc:name="VAT Scheme Response"/>
+  </flow>
+</mule>

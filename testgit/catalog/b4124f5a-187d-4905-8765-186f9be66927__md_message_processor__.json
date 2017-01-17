@@ -1,0 +1,17 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "connection"
+        },
+        "flowVariables": {
+            "blaze.connection": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "connection"
+            }
+        }
+    },
+    "id": "b4124f5a-187d-4905-8765-186f9be66927",
+    "version": "5.2.0.0"
+}

@@ -1,0 +1,109 @@
+multiFormat:
+  headers:
+    Accept:
+      description: Specifies the format of the response body
+      default: application/json
+      example: application/json
+      enum: [application/json, application/xml] 
+      required: false
+acceptEncodingHeader:
+  headers:
+    Accept-Encoding:
+      description: Specifies the content encodings that are acceptable in the response. If this header is provided the response body will be compressed using the specified content coding. This is usefull when large amounts of data are expected in the response.
+      default: None
+      example: gzip
+clientQueryParameters:
+  queryParameters:
+    clientId:
+      description: Filter for a specific Dragon Client Id (GUID from `VT_ClientCore`)
+      type: string
+      example: 0009c575-a5dc-4152-a4cb-ba34701b6e9a
+    clientCode:
+      description: Filter for a specific Dragon Client Code
+      type: string
+      example: 1672
+documentPush:
+  headers:
+    Content-Type:
+      type: string 
+      description: The mime type of the document
+      example: application/pdf
+      required: true
+  queryParameters:
+    note:
+      type: string
+      description: An optional comment for the document; this will be populated into the note field.
+      example: Client tax certificate
+  responses:
+    200:
+      body:
+        application/json:
+          schema: !include ../documents/res/document.schema.json
+          example: !include ../documents/res/document-post-response.example.json
+documentGet:
+  responses:
+    200:
+      body:
+        "*/*":
+      description: Returns the document.
+noContentDelete:
+  responses:
+    204:
+      description: Deletion success.
+resourceSecured:
+  responses:
+    401: 
+      description: Unauthorized. You have tried to access a part of the system for which you don't have permissions. This is related to your OAuth scope; please contact a Blaze administrator for assistance.
+    403: 
+      description: |
+        The 403  http response status can be the result of:
+        * __OAuth token not provided__
+          + Please ensure the Authorization header is present in the request and the value of the header is set to 'Bearer' followed by the token.
+          + Please see _ __Authentication methods and options__ _
+        * __Incorrect OAuth token__
+         + Please esnure the token is correct. No extra charaters or spaces
+         + Please ensure the token used has the required scopes for the api being called
+        * __Expired token__
+         + Please ensure the token being used has not expired
+         + Please note that when a new version of the Blaze API is released all OAuth tokens are removed, which will require all client's to re-login.
+         + It is strongly advised that an automatic re-login be implemented upon encountering 403 errors.
+      body:
+        application/json:
+          schema: !include ../system/res/blaze-error.schema.json
+connectionQueryParameters:
+  queryParameters:
+    connectionId: 
+      description: Filter by connection (VATit partner). This is the id of the connection as it is stored in the Blaze service.
+      type: integer
+      example: 123
+    connectionExternalId:
+      description: Filter by connection external id. This is the id of the connection as it is stored in an external system.
+      type: string
+      example: my-connection-id
+    connectionTypeCode:
+      description: Filter by connection type code
+      type: string
+      example: MANUAL-IMPORT
+externalIdSwitchable:
+  headers:
+    Blaze-id-is-external:
+      type: boolean
+      description: |
+       The Blaze API is capable of determining whether the resource id provided is a Blaze id or an exetrnal id by checking wheter the id is a string.
+        All Blaze id's are numerical therefore a string indicates the id to be external. Should the external id also be numerical the Blaze-id-is-exetrnal must be set to __true__ to override the check for string.
+      example: true
+countryQueryParameters:
+  queryParameters:
+    countryCode:
+      description: Optional ISO 4217 currency code for which the invoice was issued
+      type: string
+      example: ZA
+    locationId:
+      description: Optional parameter to filter by location map Blaze id 
+      type: integer     
+      example: 1264
+    locationExternalId:
+      description: Optional parameter to filter by location map external id
+      type: string
+      example: 9b731521-aa80-466d-a4d1-4e8df6f2045d
+     

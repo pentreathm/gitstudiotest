@@ -1,0 +1,17 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "ConcurExpenseReport"
+        },
+        "flowVariables": {
+            "blaze.concur.entries.offset": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "String"
+            }
+        }
+    },
+    "id": "94fca791-7fca-434e-8b4a-919799016753",
+    "version": "5.2.0.0"
+}

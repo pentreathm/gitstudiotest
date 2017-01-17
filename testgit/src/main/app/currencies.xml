@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:metadata="http://www.mulesoft.org/schema/mule/metadata" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/3.7/mule-scripting.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd">
+	<flow name="currencies.rates">
+        <custom-transformer returnClass="com.vatit.blaze.dto.ExchangeRates" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" metadata:id="2f268132-f0df-4c7e-9fb6-570ce003840c" doc:name="Unmarshal">
+            <spring:property name="returnClassName" value="com.vatit.blaze.dto.ExchangeRates"/>
+        </custom-transformer>
+        <flow-ref name="currencies.resolveExchangeRates" doc:name="Resolve Rates"/>
+
+		<transformer ref="MagicObjectMarshaller" doc:name="Marshal" doc:description="...because of views and date formats"/>
+		<exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+	</flow>
+	<sub-flow name="currencies.resolveExchangeRates">
+		<logger message="Starting currency conversion..." level="INFO" doc:name="info"/>
+        <enricher target="#[variable:dragon.exchange.rates]" doc:name="Message Enricher">
+            <processor-chain doc:name="Processor Chain">
+                <scripting:component metadata:id="c2b8c890-fd32-453a-90fb-b20dea318bda" doc:name="ExchangeRates to Currency Pairs">
+                    <scripting:script engine="Groovy" file="groovy/exchangeRatesToCurrencyPairs.groovy"/>
+                </scripting:component>
+                <custom-transformer class="com.vatit.blaze.esb.dragon.DragonRequestTransformer" doc:name="Call Dragon">
+                    <spring:property name="proxyClass" value="com.vatit.wyvern.server.service.wsproxy.WVCommonWSProxy"/>
+                    <spring:property name="useServiceAccount" value="true"/>
+                    <spring:property name="methodName" value="convertCurrencyMultiple"/>
+                </custom-transformer>
+            </processor-chain>
+        </enricher>
+        <scripting:component metadata:id="001f24df-b122-43b1-8e0d-fd4eb434935c" doc:name="Currency Pairs to Exchange Rates">
+            <scripting:script engine="Groovy" file="groovy/currencyPairsToExchangeRates.groovy"/>
+        </scripting:component>
+
+		<logger message="Finished conversion" level="INFO" doc:name="Info"/>
+
+	</sub-flow>
+</mule>

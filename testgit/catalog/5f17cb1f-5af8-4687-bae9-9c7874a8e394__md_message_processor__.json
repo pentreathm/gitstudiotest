@@ -1,0 +1,11 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "messagePayload": {
+            "connectorName": "#_custom_mule_metadata_type_#",
+            "typeId": "ConcurExpenseReports"
+        }
+    },
+    "id": "5f17cb1f-5af8-4687-bae9-9c7874a8e394",
+    "version": "5.2.0.0"
+}

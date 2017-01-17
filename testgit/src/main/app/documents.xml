@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:spring="http://www.springframework.org/schema/beans"
+      xmlns:oauth2-provider="http://www.mulesoft.org/schema/mule/oauth2-provider"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:sharepoint="http://www.mulesoft.org/schema/mule/sharepoint"
+      xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/sharepoint http://www.mulesoft.org/schema/mule/sharepoint/current/mule-sharepoint.xsd
+http://www.mulesoft.org/schema/mule/oauth2-provider http://www.mulesoft.org/schema/mule/oauth2-provider/current/mule-oauth2-provider.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd">
+
+    <flow name="documents.postInvoiceDocument">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_WRITE" doc:name="DOCUMENTS_WRITE"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="POTENTIALS_WRITE"/>
+        <set-variable variableName="blaze.param.sourceCode" value="#[message.inboundProperties['sourceCode']]" doc:name="sourceCode"/>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/potentials/invoice/#[flowVars['id']]/new-document-info?#[message.inboundProperties.'http.query.string']" doc:name="Blaze Path"/>
+        <message-properties-transformer scope="invocation" doc:name="Document Properties">
+            <add-message-property key="blaze.document.content" value="#[payload]"/>
+            <add-message-property key="blaze.document.content.type" value="#[flowVars['blaze.request.contentType']]"/>
+            <add-message-property key="httpMethod" value="GET"/>
+        </message-properties-transformer>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+	    <custom-transformer returnClass="com.vatit.blaze.dto.Invoice" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Invoice"/>
+		    <spring:property name="jsonIsPascalCase" value="true"/>
+	    </custom-transformer>
+        <enricher target="#[variable:blaze.dragon.data.client]" doc:name="Get Dragon Client">
+            <processor-chain doc:name="Processor Chain">
+                <set-payload value="#[payload.connection.client.id]" doc:name="Set Payload"/>
+                <flow-ref name="dragon.getClientInfo" doc:name="Get Client"/>
+            </processor-chain>
+        </enricher>
+        <flow-ref name="documents.saveInvoiceToDMS" doc:name="Save to DMS"/>
+        <message-properties-transformer scope="invocation" doc:name="Blaze Properties">
+            <add-message-property key="httpMethod" value="POST"/>
+            <delete-message-property key="blaze.request.idIsExternal"/>
+        </message-properties-transformer>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/potentials/invoice/#[payload.id]/note#[flowVars['blaze.param.sourceCode'] == empty ? '' : '?sourceCode=' + flowVars['blaze.param.sourceCode']]" doc:name="Blaze URL"/>
+        <set-payload value="#[payload.notes.get(0)]" doc:name="Promote Note"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Save Note to Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <logger message="New Note and Document saved to Blaze." level="INFO" doc:name="Status Info"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.postInvoiceGroupDocument">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_WRITE" doc:name="DOCUMENTS_WRITE"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="POTENTIALS_WRITE"/>
+        <set-variable variableName="blaze.param.sourceCode" value="#[message.inboundProperties['sourceCode']]" doc:name="sourceCode"/>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/potentials/invoice-group/#[flowVars['id']]/new-document-info?#[message.inboundProperties.'http.query.string']" doc:name="Blaze Path"/>
+        <message-properties-transformer scope="invocation" doc:name="Document Properties">
+            <add-message-property key="blaze.document.content" value="#[payload]"/>
+            <add-message-property key="blaze.document.content.type" value="#[flowVars['blaze.request.contentType']]"/>
+            <add-message-property key="httpMethod" value="GET"/>
+        </message-properties-transformer>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+	    <custom-transformer returnClass="com.vatit.blaze.dto.InvoiceGroup" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		    <spring:property name="returnClassName" value="com.vatit.blaze.dto.InvoiceGroup"/>
+	    </custom-transformer>
+        <enricher target="#[variable:blaze.dragon.data.client]" doc:name="Get Dragon Client">
+            <processor-chain doc:name="Processor Chain">
+                <set-payload value="#[payload.connection.client.id]" doc:name="Set Payload"/>
+                <flow-ref name="dragon.getClientInfo" doc:name="Get Client"/>
+            </processor-chain>
+        </enricher>
+        <message-properties-transformer overwrite="true" scope="invocation" doc:name="Flow Vars">
+            <add-message-property key="blaze.invoiceGroup" value="#[payload]"/>
+            <add-message-property key="blaze.document" value="#[payload.notes.get(0).document]"/>
+            <add-message-property key="blaze.document.masterType" value="invoice-group"/>
+        </message-properties-transformer>
+        <flow-ref name="documents.saveDocumentToDMS" doc:name="Save to DMS"/>
+        <message-properties-transformer scope="invocation" doc:name="Blaze Properties">
+            <add-message-property key="httpMethod" value="POST"/>
+            <delete-message-property key="blaze.request.idIsExternal"/>
+        </message-properties-transformer>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/potentials/invoice-group/#[payload.id]/note#[flowVars['blaze.param.sourceCode'] == empty ? '' : '?sourceCode=' + flowVars['blaze.param.sourceCode']]" doc:name="Blaze URL"/>
+        <set-payload value="#[payload.notes.get(0)]" doc:name="Promote Note"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Save Note to Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <logger message="New Note and Document saved to Blaze." level="INFO" doc:name="Status Info"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.postClientDocument">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_WRITE" doc:name="DOCUMENTS_WRITE"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="CLIENTS_WRITE" doc:name="CLIENTS_WRITE"/>
+        <set-variable variableName="blaze.param.sourceCode" value="#[message.inboundProperties['sourceCode']]" doc:name="sourceCode"/>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/clients/client/#[flowVars['id']]/new-document-info?#[message.inboundProperties.'http.query.string']" doc:name="Blaze Path"/>
+        <message-properties-transformer scope="invocation" doc:name="Document Properties">
+            <add-message-property key="blaze.document.content" value="#[payload]"/>
+            <add-message-property key="blaze.document.content.type" value="#[flowVars['blaze.request.contentType']]"/>
+            <add-message-property key="httpMethod" value="GET"/>
+        </message-properties-transformer>
+        <flow-ref name="general.callBlazeServices" doc:name="Call Blaze"/>
+	    <custom-transformer returnClass="com.vatit.blaze.dto.Client" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Client"/>
+	    </custom-transformer>
+        <enricher target="#[variable:blaze.dragon.data.client]" doc:name="Get Dragon Client">
+            <processor-chain doc:name="Processor Chain">
+                <set-payload value="#[payload.id]" doc:name="Set Payload"/>
+                <flow-ref name="dragon.getClientInfo" doc:name="Get Client"/>
+            </processor-chain>
+        </enricher>
+        <message-properties-transformer overwrite="true" scope="invocation" doc:name="Flow Vars">
+            <add-message-property key="blaze.document" value="#[payload.notes.get(0).document]"/>
+            <add-message-property key="blaze.document.masterType" value="client"/>
+        </message-properties-transformer>
+        <flow-ref name="documents.saveDocumentToDMS" doc:name="Save to DMS"/>
+        <message-properties-transformer scope="invocation" doc:name="Blaze Properties">
+            <add-message-property key="httpMethod" value="POST"/>
+            <delete-message-property key="blaze.request.idIsExternal"/>
+        </message-properties-transformer>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/clients/client/#[payload.id]/note#[flowVars['blaze.param.sourceCode'] == empty ? '' : '?sourceCode=' + flowVars['blaze.param.sourceCode']]" doc:name="Blaze URL"/>
+        <set-payload value="#[payload.notes.get(0)]" doc:name="Promote Note"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Save Note to Blaze"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <logger message="New Note and Document saved to Blaze." level="INFO" doc:name="Status Info"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.getDocument">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_READ" doc:name="DOCUMENTS_READ"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <flow-ref name="documents.retrieveFromDMS" doc:name="Retrieve from DMS"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.postPotentialsNote">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_WRITE" doc:name="DOCUMENTS_WRITE"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="POTENTIALS_WRITE" doc:name="POTENTIALS_WRITE"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.postClientNote">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_WRITE" doc:name="DOCUMENTS_WRITE"/>
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="CLIENTS_WRITE" doc:name="CLIENTS_WRITE"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.getNote">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_READ" doc:name="DOCUMENTS_READ"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <transformer ref="MagicObjectMarshaller" doc:name="Marshal"/>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <flow name="documents.deleteNoteOrDocument">
+        <oauth2-provider:validate config-ref="blazeOauth2Provider" scopes="DOCUMENTS_WRITE" doc:name="DOCUMENTS_WRITE"/>
+        <flow-ref name="general.fwdToBlazeServices" doc:name="Call Blaze"/>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}/api/1.0/documents/deleted/#[message.inboundProperties[com.vatit.blaze.utils.Constants.Headers.REQUEST_ID]]" doc:name="Blaze Path"/>
+        <set-variable variableName="httpMethod" value="GET" doc:name="Blaze Method"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Get Deleted Documents"/>
+	    <custom-transformer returnClass="com.vatit.blaze.dto.Documents" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Documents"/>
+	    </custom-transformer>
+        <foreach collection="#[payload.items]" doc:name="For Each Document">
+            <sharepoint:file-delete config-ref="Sharepoint" fileServerRelativeUrl="#[payload.internalUrl]" doc:name="Delete Document"/>
+        </foreach>
+        <exception-strategy ref="GlobalCatch" doc:name="Global Catch"/>
+    </flow>
+
+    <sub-flow name="documents.retrieveFromDMS">
+	    <custom-transformer returnClass="com.vatit.blaze.dto.Document" class="com.vatit.blaze.esb.transformer.UnmarshalObjectTransformer" doc:name="Unmarshal">
+		    <spring:property name="returnClassName" value="com.vatit.blaze.dto.Document"/>
+	    </custom-transformer>
+        <set-variable variableName="blaze.contenttype" value="#[payload.getMimeType()]" doc:name="Store Content Type"/>
+        <sharepoint:file-get-content config-ref="Sharepoint" fileServerRelativeUrl="#[payload.getInternalUrl()]" doc:name="Get Doc"/>
+        <set-property propertyName="Content-Type" value="#[flowVars['blaze.contenttype']]" doc:name="Set Content-Type"/>
+    </sub-flow>
+
+    <sub-flow name="documents.saveInvoiceToDMS">
+        <message-properties-transformer overwrite="true" scope="invocation" doc:name="Flow Vars">
+            <add-message-property key="blaze.invoice" value="#[payload]"/>
+            <add-message-property key="blaze.document" value="#[payload.documents.get(0)]"/>
+            <add-message-property key="blaze.document.masterType" value="invoice"/>
+        </message-properties-transformer>
+        <flow-ref name="documents.saveDocumentToDMS" doc:name="Save Document to DMS"/>
+    </sub-flow>
+
+    <sub-flow name="documents.saveDocumentToDMS">
+        <enricher source="#[flowVars['blaze.sharepoint.usingExisting']]" target="#[flowVars['blaze.sharepoint.usingExisting']]" doc:name="Prevent Payload Change">
+            <processor-chain doc:name="Processor Chain">
+                <scripting:component doc:name="Setup Document">
+                    <scripting:script engine="Groovy" file="groovy/setupSharepointObjects.groovy"/>
+                </scripting:component>
+                <choice doc:name="Doc Type?">
+                    <when expression="#[flowVars['blaze.document.masterType'] == 'invoice']">
+                        <set-variable variableName="blaze.sharepoint.library.name" value="${blaze.sharepoint.library.invoices}" doc:name="Invoice"/>
+                    </when>
+                    <when expression="#[flowVars['blaze.document.masterType'] == 'invoice-group']">
+                        <set-variable variableName="blaze.sharepoint.library.name" value="${blaze.sharepoint.library.invoiceGroup}" doc:name="Invoice Group"/>
+                    </when>
+                    <when expression="#[flowVars['blaze.document.masterType'] == 'client']">
+                        <set-variable variableName="blaze.sharepoint.library.name" value="${blaze.sharepoint.library.clientDocuments}" doc:name="Client"/>
+                    </when>
+                    <otherwise>
+                        <scripting:component doc:name="Throw Empty Response Exception">
+                            <scripting:script engine="Groovy"><![CDATA[throw new Exception("Attempt to save a document with no recognised Master Type")]]></scripting:script>
+                        </scripting:component>
+                    </otherwise>
+                </choice>
+                <set-variable variableName="blaze.sharepoint.file.url" value="/#[flowVars['blaze.sharepoint.library.name']]/#[flowVars['blaze.sharepoint.file.name']]" doc:name="Set SP URL"/>
+                <logger message="Saving file to Sharepoint: [${blaze.sharepoint.address}#[flowVars['blaze.sharepoint.file.url']] with user ${blaze.sharepoint.domain}\${blaze.sharepoint.username}..." level="INFO" doc:name="Logger"/>
+                <flow-ref name="documents.addSharepointImage" doc:name="addSharepointImage"/>
+                <scripting:component doc:name="Set Image URL">
+                    <scripting:script engine="Groovy"><![CDATA[message.getInvocationProperty('blaze.document').internalUrl = payload.serverRelativeUrl
+message.setInvocationProperty('blaze.sharepoint.file.deferredUrl', payload.listItemAllFields.__deferred.uri)
+payload]]></scripting:script>
+                </scripting:component>
+                <sharepoint:resolve-object config-ref="Sharepoint" url="#[flowVars['blaze.sharepoint.file.deferredUrl']]" doc:name="Get Id"/>
+                <logger message="File added to Sharepoint Successfully, Id: #[payload.get('Id')]" level="INFO" doc:name="Logger"/>
+                <choice doc:name="Doc Type?">
+                    <when expression="#[flowVars['blaze.document.masterType'] == 'invoice']">
+                        <sharepoint:list-item-update config-ref="Sharepoint" itemId="#[payload.get('Id')]" listId="${blaze.sharepoint.library.invoices.id}" doc:name="Invoice">
+                            <sharepoint:updated-properties>
+                                <sharepoint:updated-property key="ClientName">#[com.vatit.blaze.utils.BlazeUtils.convertToUTF8(flowVars['blaze.dragon.data.client'].getName())]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="ClientCode">#[flowVars['blaze.dragon.data.client'].getCode()]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="ClientEntityCode">#[flowVars['blaze.dragon.data.client'].getId()]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="SupplierName">#[com.vatit.blaze.utils.BlazeUtils.convertToUTF8(flowVars['blaze.invoice'].getSupplier() == null ? null : flowVars['blaze.invoice'].getSupplier().getName())]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="InvoiceDate">#[org.joda.time.format.ISODateTimeFormat.date().print(new org.joda.time.DateTime(flowVars['blaze.invoice'].getDate()))]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="InvoiceNumber">#[com.vatit.blaze.utils.BlazeUtils.convertToUTF8(flowVars['blaze.invoice'].getInvoiceNumber())]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="TotalAmount">#[flowVars['blaze.invoice'].getAmount().toString()]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="AttachedToExternalId">#[flowVars['blaze.invoice'].getExternalId()]</sharepoint:updated-property>
+                            </sharepoint:updated-properties>
+                        </sharepoint:list-item-update>
+                    </when>
+                    <when expression="#[flowVars['blaze.document.masterType'] == 'invoice-group']">
+                        <sharepoint:list-item-update config-ref="Sharepoint" itemId="#[payload.get('Id')]" listId="${blaze.sharepoint.library.invoiceGroupDocuments.id}" doc:name="Invoice Group">
+                            <sharepoint:updated-properties>
+                                <sharepoint:updated-property key="ClientName">#[com.vatit.blaze.utils.BlazeUtils.convertToUTF8(flowVars['blaze.dragon.data.client'].getName())]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="ClientCode">#[flowVars['blaze.dragon.data.client'].getCode()]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="ClientEntityCode">#[flowVars['blaze.dragon.data.client'].getId()]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="AttachedToExternalId">#[flowVars['blaze.invoiceGroup'].getExternalId()]</sharepoint:updated-property>
+                            </sharepoint:updated-properties>
+                        </sharepoint:list-item-update>
+                    </when>
+                    <when expression="#[flowVars['blaze.document.masterType'] == 'client']">
+                        <sharepoint:list-item-update config-ref="Sharepoint" itemId="#[payload.get('Id')]" listId="${blaze.sharepoint.library.clientDocuments.id}" doc:name="Client">
+                            <sharepoint:updated-properties>
+                                <sharepoint:updated-property key="ClientName">#[com.vatit.blaze.utils.BlazeUtils.convertToUTF8(flowVars['blaze.dragon.data.client'].getName())]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="ClientCode">#[flowVars['blaze.dragon.data.client'].getCode()]</sharepoint:updated-property>
+                                <sharepoint:updated-property key="ClientEntityCode">#[flowVars['blaze.dragon.data.client'].getId()]</sharepoint:updated-property>
+                            </sharepoint:updated-properties>
+                        </sharepoint:list-item-update>
+                    </when>
+                    <otherwise>
+                        <scripting:component doc:name="Throw Empty Response Exception">
+                            <scripting:script engine="Groovy"><![CDATA[throw new Exception("Attempt to save a document with no recognised Master Type")]]></scripting:script>
+                        </scripting:component>
+                    </otherwise>
+                </choice>
+            </processor-chain>
+        </enricher>
+        <message-filter throwOnUnaccepted="true" doc:name="Throw on Error">
+            <message-property-filter pattern="blaze.exception.message=null" caseSensitive="false" scope="invocation"/>
+        </message-filter>
+        <logger message="#[flowVars['blaze.sharepoint.usingExisting'] == true ? 'Existing Document properties updated on Sharepoint, No new file added' : 'New Document Added to Sharepoint']: #[flowVars['blaze.document'].internalUrl]." level="INFO" doc:name="Status"/>
+    </sub-flow>
+
+    <flow name="documents.addSharepointImage">
+        <sharepoint:file-add config-ref="Sharepoint" fileServerRelativeUrl="#[flowVars['blaze.sharepoint.file.url']]" doc:name="Add Image"/>
+        <set-variable variableName="blaze.sharepoint.usingExisting" value="#[false]" doc:name="Use Existing Flag"/>
+        <choice-exception-strategy doc:name="Choice Exception Strategy">
+            <catch-exception-strategy when="#[groovy:com.vatit.blaze.esb.sharepoint.SharepointExceptionValidator.isExistingFileException(message)]" doc:name="Existing File">
+                <logger message="Document already found on Sharepoint, re-using..." level="INFO" doc:name="Logger"/>
+                <sharepoint:file-get-metadata config-ref="Sharepoint" fileServerRelativeUrl="#[flowVars['blaze.sharepoint.file.url']]" doc:name="Get Existing File Meta Data"/>
+                <set-variable variableName="blaze.sharepoint.usingExisting" value="#[true]" doc:name="Use Existing Flag"/>
+            </catch-exception-strategy>
+        </choice-exception-strategy>
+    </flow>
+</mule>

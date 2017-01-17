@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:stdio="http://www.mulesoft.org/schema/mule/stdio"
+      
+      xsi:schemaLocation="
+			  http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.1/mule.xsd
+			  http://www.mulesoft.org/schema/mule/stdio http://www.mulesoft.org/schema/mule/stdio/3.1/mule-stdio.xsd">
+  
+  <model>
+    <service name="ConcurInvoices">
+      <inbound-endpoint address="http://localhost:8081/api/1.0/potentials/invoices"/>
+    </service>
+    <service name="ConcurConnection" >
+      <inbound-endpoint address="http://localhost:8081/api/1.0/concur/expense-reports/detailed-list"/>
+    </service>
+  </model>
+</mule>
+<!--<mule>
+  <model>
+    <service name="GreeterUMO">
+      <inbound....>
+	<filtering-router>
+	  ....
+	</filtering-router>
+      </inbound>
+      <component..../>
+      <outbound....>
+	.......
+      </outbound>
+      <default-service-exception-strategy>
+	.....
+      </default-service-exception-strategy>
+    </service>
+    <service name="GreeterUMO2" initialState="stopped">
+      ...
+    </service>
+  </model>
+</mule>-->

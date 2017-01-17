@@ -1,0 +1,84 @@
+[ {
+  "externalId" : "my-unique-id",
+  "amount" : 75.15,
+  "date" : "2012-04-14",
+  "expenseType" : {
+    "externalId" : "OFCSP",
+    "externalName" : "Office Supplies"
+  },
+  "connection" : {
+    "client" : {
+      "code" : "20354"
+    }
+  },
+  "invoiceNumber" : "1NV01C3#",
+  "location" : {
+    "countryCode" : "ZA",
+    "regionCode" : "GP"
+  },
+  "currencyCode" : "ZAR",
+  "items" : [ ],
+  "notes" : [ ],
+  "supplier" : {
+    "externalId" : "JSGSY4443",
+    "name" : "ACME Computers",
+    "address" : {
+      "line" : "11 Industrial Parkway",
+      "city" : "Pocklington",
+      "province" : "Kwazulu",
+      "postCode" : "5423"
+    }
+  }
+}, {
+  "externalId" : "my-unique-id 2",
+  "amount" : 3307.29,
+  "date" : "2012-04-08",
+  "expenseType" : {
+    "externalId" : "BEV",
+    "externalName" : "Bar Items"
+  },
+  "connection" : {
+    "client" : {
+      "code" : "20354"
+    }
+  },
+  "invoiceNumber" : "Itemised Invoice #1",
+  "location" : {
+    "countryCode" : "GP",
+    "regionCode" : "SXW"
+  },
+  "currencyCode" : "GBP",
+  "items" : [ {
+    "externalId" : "my-unique-item-id 1",
+    "amount" : 562.43,
+    "expenseType" : {
+      "externalId" : "ACCOM",
+      "externalName" : "Accommodation"
+    }
+  }, {
+    "externalId" : "my-unique-item-id 2",
+    "amount" : 1372.43,
+    "expenseType" : {
+      "externalId" : "BEV",
+      "externalName" : "Bar Items"
+    }
+  }, {
+    "externalId" : "my-unique-item-id 3",
+    "amount" : 1372.43,
+    "expenseType" : {
+      "externalId" : "net",
+      "externalName" : "Internet"
+    }
+  } ],
+  "notes" : [ ],
+  "supplier" : {
+    "externalId" : "4238746",
+    "name" : "Barbara's B&B",
+    "address" : {
+      "line" : "2 Rose Avenue",
+      "city" : "Stoke-on-Trent",
+      "province" : "Warwickshire",
+      "postCode" : "EH5-7AZ"
+    }
+  }
+} ]

@@ -1,0 +1,7 @@
+{
+  "id": "257c1d0f-c631-4a61-8f06-1e7554ea5b89",
+  "message": "Forbidden; You have tried to add, update or delete an item that is outside your realm of influence (e.g. controlled by another system)",
+  "cause": {
+    "message": "You have tried to update an invoice from the ACME, system, for which you don't have permissions"
+  }
+}

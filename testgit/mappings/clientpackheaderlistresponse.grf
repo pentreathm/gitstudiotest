@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="Gilbert" created="Wed Jan 28 12:09:04 CAT 2015" description="ClientPackHeaderListResponse" guiVersion="3.4.4.P" id="1422514460182" licenseCode="Unlicensed" licenseType="Unknown" modified="Wed Jan 28 12:09:04 CAT 2015" modifiedBy="Gilbert" name="ClientPackHeaderListResponse" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="2" __sourcePath="{}/array" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _type="Output" id="45ebd3fa-a868-4ab5-a997-0888e2d19568">
+<Record fieldDelimiter="," name="array" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/array/branchName" containerType="SINGLE" label="branchName" name="branchName" type="string"/>
+<Field __index="1" __sourcePath="{}/array/claimValue" containerType="SINGLE" label="claimValue" name="claimValue" type="number"/>
+<Field __index="2" __sourcePath="{}/array/claimValueGBP" containerType="SINGLE" label="claimValueGBP" name="claimValueGBP" type="number"/>
+<Field __index="3" __sourcePath="{}/array/clientCode" containerType="SINGLE" label="clientCode" name="clientCode" type="string"/>
+<Field __index="4" __sourcePath="{}/array/clientName" containerType="SINGLE" label="clientName" name="clientName" type="string"/>
+<Field __index="5" __sourcePath="{}/array/clientPackCode" containerType="SINGLE" label="clientPackCode" name="clientPackCode" type="string"/>
+<Field __index="6" __sourcePath="{}/array/clientPackType" containerType="SINGLE" label="clientPackType" name="clientPackType" type="string"/>
+<Field __index="7" __sourcePath="{}/array/gbpRate" containerType="SINGLE" label="gbpRate" name="gbpRate" type="number"/>
+<Field __index="8" __sourcePath="{}/array/id" containerType="SINGLE" label="id" name="id" type="integer"/>
+<Field __index="9" __sourcePath="{}/array/invoiceCount" containerType="SINGLE" label="invoiceCount" name="invoiceCount" type="string"/>
+<Field __index="10" __sourcePath="{}/array/vatSchemeName" containerType="SINGLE" label="vatSchemeName" name="vatSchemeName" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="031b1365-29fa-40d2-bc7c-922f25b89360">
+<Record fieldDelimiter="," name="getClientPackHeaderListResponse" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object/list/idList" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="031b1365-29fa-40d2-bc7c-922f25b89360" _parent_id="__parent_id" _type="Input" id="890d3b93-77b6-44e7-b459-6b99ef7758fe">
+<Record fieldDelimiter="," name="idList" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/list/idList/GBPRate" containerType="SINGLE" label="GBPRate" name="GBPRate" type="number"/>
+<Field __index="1" __sourcePath="{}/object/list/idList/branchName" containerType="SINGLE" label="branchName" name="branchName" type="string"/>
+<Field __index="2" __sourcePath="{}/object/list/idList/claimCurrency" containerType="SINGLE" label="claimCurrency" name="claimCurrency" type="string"/>
+<Field __index="3" __sourcePath="{}/object/list/idList/claimValue" containerType="SINGLE" label="claimValue" name="claimValue" type="number"/>
+<Field __index="4" __sourcePath="{}/object/list/idList/claimValueGBP" containerType="SINGLE" label="claimValueGBP" name="claimValueGBP" type="number"/>
+<Field __index="5" __sourcePath="{}/object/list/idList/clientCode" containerType="SINGLE" label="clientCode" name="clientCode" type="string"/>
+<Field __index="6" __sourcePath="{}/object/list/idList/clientName" containerType="SINGLE" label="clientName" name="clientName" type="string"/>
+<Field __index="7" __sourcePath="{}/object/list/idList/clientPackCode" containerType="SINGLE" label="clientPackCode" name="clientPackCode" type="string"/>
+<Field __index="8" __sourcePath="{}/object/list/idList/clientPackType" containerType="SINGLE" label="clientPackType" name="clientPackType" type="string"/>
+<Field __index="9" __sourcePath="{}/object/list/idList/id" containerType="SINGLE" label="id" name="id" type="integer"/>
+<Field __index="10" __sourcePath="{}/object/list/idList/invoicesCheckedCount" containerType="SINGLE" label="invoicesCheckedCount" name="invoicesCheckedCount" type="integer"/>
+<Field __index="11" __sourcePath="{}/object/list/idList/vatSchemeName" containerType="SINGLE" label="vatSchemeName" name="vatSchemeName" type="string"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiName="Pojo READER" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="list/idList">
+    <Mapping cloverField="GBPRate" trim="true" xpath="GBPRate"/>
+    <Mapping cloverField="branchName" trim="true" xpath="branchName"/>
+    <Mapping cloverField="claimCurrency" trim="true" xpath="claimCurrency"/>
+    <Mapping cloverField="claimValue" trim="true" xpath="claimValue"/>
+    <Mapping cloverField="claimValueGBP" trim="true" xpath="claimValueGBP"/>
+    <Mapping cloverField="clientCode" trim="true" xpath="clientCode"/>
+    <Mapping cloverField="clientName" trim="true" xpath="clientName"/>
+    <Mapping cloverField="clientPackCode" trim="true" xpath="clientPackCode"/>
+    <Mapping cloverField="clientPackType" trim="true" xpath="clientPackType"/>
+    <Mapping cloverField="id" trim="true" xpath="id"/>
+    <Mapping cloverField="invoicesCheckedCount" trim="true" xpath="invoicesCheckedCount"/>
+    <Mapping cloverField="vatSchemeName" trim="true" xpath="vatSchemeName"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.getClientPackHeaderListResponse"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.ClientPackHeaderType">
+    <typed-object-ref name="GBPRate" type-ref="java.lang.Double"/>
+    <typed-object-ref name="branchName" type-ref="java.lang.String"/>
+    <typed-object-ref name="claimCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="claimValue" type-ref="java.lang.Double"/>
+    <typed-object-ref name="claimValueGBP" type-ref="java.lang.Double"/>
+    <typed-object-ref name="clientCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="clientName" type-ref="java.lang.String"/>
+    <typed-object-ref name="clientPackCode" type-ref="java.lang.String"/>
+    <typed-object-ref name="clientPackType" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="invoicesCheckedCount" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="vatSchemeName" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.Double"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.ClientPackHeaderList">
+    <schema-collection name="idList" type="java.util.ArrayList">
+      <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.ClientPackHeaderType"/>
+    </schema-collection>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.getClientPackHeaderListResponse">
+    <typed-object-ref name="list" type-ref="com.vatit.wyvern.shared.dto.ClientPackHeaderList"/>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="java.lang.Integer"/>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'idList' -&gt; 'array'" guiX="460" guiY="120" id="FOREACH_ID_LIST_ARRAY" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.gbpRate = input.GBPRate + input.GBPRate;
+output.branchName = input.branchName;
+output.claimValue = input.claimValue;
+output.claimValueGBP = input.claimValueGBP;
+output.clientCode = input.clientCode;
+output.clientName = input.clientName;
+output.clientPackCode = input.clientPackCode;
+output.clientPackType = input.clientPackType;
+output.id = input.id;
+output.vatSchemeName = input.vatSchemeName;
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="Foreach 'object' -&gt; 'array'" guiX="460" guiY="20" id="FOREACH_OBJECT_ARRAY" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+]]></attr>
+</Node>
+<Node cacheInMemory="true" charset="UTF-8" enabled="enabled" fileURL="dict:outputPayload" guiName="JSON WRITER" guiX="900" guiY="20" id="JSON_WRITER0" type="JSON_WRITER">
+<attr name="__isJsonSchema"><![CDATA[true]]></attr>
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<clover:collection clover:name="array" xmlns:clover="http://www.cloveretl.com/ns/xmlmapping">
+  <item clover:inPort="0">
+    <branchName>$0.branchName</branchName>
+    <claimValue>$0.claimValue</claimValue>
+    <claimValueGBP>$0.claimValueGBP</claimValueGBP>
+    <clientCode>$0.clientCode</clientCode>
+    <clientName>$0.clientName</clientName>
+    <clientPackCode>$0.clientPackCode</clientPackCode>
+    <clientPackType>$0.clientPackType</clientPackType>
+    <gbpRate>$0.gbpRate</gbpRate>
+    <id>$0.id</id>
+    <invoiceCount>$0.invoiceCount</invoiceCount>
+    <vatSchemeName>$0.vatSchemeName</vatSchemeName>
+  </item>
+  <item clover:inPort="1">
+    <branchName>$1.branchName</branchName>
+    <claimValue>$1.claimValue</claimValue>
+    <claimValueGBP>$1.claimValueGBP</claimValueGBP>
+    <clientCode>$1.clientCode</clientCode>
+    <clientName>$1.clientName</clientName>
+    <clientPackCode>$1.clientPackCode</clientPackCode>
+    <clientPackType>$1.clientPackType</clientPackType>
+    <gbpRate>$1.gbpRate</gbpRate>
+    <id>$1.id</id>
+    <invoiceCount>$1.invoiceCount</invoiceCount>
+    <vatSchemeName>$1.vatSchemeName</vatSchemeName>
+  </item>
+</clover:collection>]]></attr>
+<attr name="_data_format"><![CDATA[JSON]]></attr>
+<attr name="jsonSchemaURL"><![CDATA[./src/main/api/clientPackHeaderList.schema.json]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="031b1365-29fa-40d2-bc7c-922f25b89360" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_ARRAY:0"/>
+<Edge debugMode="true" fromNode="BEAN_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="890d3b93-77b6-44e7-b459-6b99ef7758fe" outPort="Port 1 (out)" toNode="FOREACH_ID_LIST_ARRAY:0"/>
+<Edge debugMode="true" fromNode="FOREACH_ID_LIST_ARRAY:0" guiBendpoints="" id="Edge3" inPort="Port 1 (in)" metadata="45ebd3fa-a868-4ab5-a997-0888e2d19568" outPort="Port 0 (out)" toNode="JSON_WRITER0:1"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_ARRAY:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="45ebd3fa-a868-4ab5-a997-0888e2d19568" outPort="Port 0 (out)" toNode="JSON_WRITER0:0"/>
+</Phase>
+</Graph>

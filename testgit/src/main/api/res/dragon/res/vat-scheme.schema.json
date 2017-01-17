@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "description": "Contains the details of a VAT scheme",
+  "title": "VAT scheme",
+  "type": "object",
+  "properties": {
+    "invoicePeriods": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string",
+            "description": "The period name",
+            "enum": [
+              "Q1",
+              "Q2",
+              "Q3",
+              "Q4",
+              "A"
+            ]            
+          },
+          "value": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "description",
+          "value"
+        ]
+      }
+    },
+    "columns": {
+      "type": "object",
+      "properties": {
+        "InclAmnt": {
+          "type": "boolean"
+        },
+        "ExclAmnt": {
+          "type": "boolean"
+        },
+        "VATPaid": {
+          "type": "boolean"
+        },
+        "ExemptVAT": {
+          "type": "boolean"
+        },
+        "NonVAT": {
+          "type": "boolean"
+        }
+      }
+    },
+    "rulesActive": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "invoicePeriods",
+    "columns",
+    "rulesActive"
+  ]
+}

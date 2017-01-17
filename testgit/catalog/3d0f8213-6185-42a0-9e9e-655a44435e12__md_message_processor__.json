@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "blaze.dragon.data.client": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "Client"
+            }
+        }
+    },
+    "id": "3d0f8213-6185-42a0-9e9e-655a44435e12",
+    "version": "5.2.0.0"
+}

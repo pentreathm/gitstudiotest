@@ -1,0 +1,19 @@
+{
+  "items": [
+    {
+      "date":"2014-04-12",
+      "fromCurrencyCode": "USD",
+      "toCurrencyCode": "GBP"
+    },
+    {
+      "date":"2014-04-12",
+      "fromCurrencyCode": "USD",
+      "toCurrencyCode": "EUR"
+    },
+    {
+      "date":"2014-04-12",
+      "fromCurrencyCode": "USD",
+      "toCurrencyCode": "ILS"
+    }
+  ]
+}

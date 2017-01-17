@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="urn:vatit-com:blaze"
+            xmlns:blaze="urn:vatit-com:blaze"
+			      xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			      elementFormDefault="qualified">
+
+<xsd:complexType name="PotentialInvoiceDef">
+	<xsd:sequence>
+		<xsd:element name="Id"  type="xsd:string" minOccurs="1"  />   
+		<xsd:element name="Source" type="xsd:string" minOccurs="0" /> 
+		<xsd:element name="ClientId" type="xsd:string" minOccurs="1" /> 
+		<xsd:element name="DateCreated" type="xsd:dateTime" minOccurs="1" /> 
+		<xsd:element name="CountryCode" type="xsd:string" minOccurs="1" /> 
+		<xsd:element name="CurrencyCode" type="xsd:string" minOccurs="1" /> 			
+		<xsd:element name="Amount" type="xsd:float" minOccurs="1" /> 			
+		<xsd:element name="Date" type="xsd:date" minOccurs="1" /> 			
+		<xsd:element name="ExpenseTypeId" type="xsd:integer" minOccurs="1" /> 			
+		<xsd:element name="SupplierDescription" type="xsd:string" minOccurs="0" /> 
+		<xsd:element name="SupplierVATNumber" type="xsd:string" minOccurs="0" /> 
+		<xsd:element name="ScanURL" type="xsd:string" minOccurs="0" /> 	
+    </xsd:sequence>
+</xsd:complexType>
+
+
+<xsd:complexType name="PotentialInvoiceListDef">
+   	<xsd:sequence>
+        <xsd:element name="PotentialInvoices" type="blaze:PotentialInvoiceDef" minOccurs="0" maxOccurs="unbounded"/>
+	</xsd:sequence>
+</xsd:complexType>
+
+<xsd:element name="Potentials" type="blaze:PotentialInvoiceListDef"/>
+
+</xsd:schema>

@@ -1,0 +1,108 @@
+buildscript {
+
+	dependencies {
+		classpath group: 'org.mulesoft.build', name: 'mule-gradle-plugin', version: '1.2.0'
+	}
+
+	repositories {
+		mavenLocal()
+		maven { url 'http://repository.mulesoft.org/releases' }
+	}
+}
+
+repositories {
+	maven { url 'http://repository.mulesoft.org/releases' }
+	maven { url 'http://repository-master.mulesoft.org/nexus/content/groups/public' }
+	maven { url 'http://xqj.net/maven' }
+}
+
+apply plugin: 'mulestudio'
+apply plugin: 'mmc'
+
+dependencies {
+	compile project(':Shared')
+	compile project(':DragonDto')
+
+	compile group: 'javax.activation', name: 'activation', version: '1.1'
+	compile group: 'javax.xml.stream', name: 'stax-api', version: '1.0-2'
+	compile group: 'log4j', name: 'apache-log4j-extras', version: '1.2.17'
+	compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5'
+}
+
+idea {
+  module {
+    excludeDirs += file('bin')
+    excludeDirs += file('target')
+  }
+}
+
+mule.version = '3.7.1'
+
+mule.muleEnterprise = true
+mule.enterpriseRepoUsername = 'vatit.nexus'
+mule.enterpriseRepoPassword = 'lsd02@vhw0(w'
+project.mulezip.archiveName = 'blaze.zip'
+
+version = rootProject.version
+
+mmc.environments {
+	uat url: 'http://uat.blaze.vatit.com:8585/mmc', username: 'deploy', password: 'D3pl0yU5er', appName: 'Blaze', version: "$rootProject.version.$project.ext.deployNum"
+	live url: 'http://blaze.vatit.com:8585/mmc', username: 'deploy', password: 'D3pl0yU5er', appName: 'Blaze', version: "$rootProject.version.$project.ext.deployNum"
+	if (project.ext.has('deployEnv'))
+		defaultEnvironment = project.ext.deployEnv
+}
+
+mule.components {
+	module name: 'mule-module-sharepoint', version: '2.1.1', noClassifier: true, noExt: true
+	module name: 'mule-module-apikit-plugin', version: '1.5.2', noClassifier: true
+
+	module name: 'mule-module-objectstore', version: '1.3.1'
+
+	plugin group: 'org.mule.modules', name: 'mule-module-objectstore', version: '1.3.1'
+	plugin group: 'com.mulesoft.security', name: 'mule-module-security-oauth2-provider', version: '1.3.0', noClassifier: true, noExt: true
+	plugin group: 'com.mulesoft.security', name: 'mule-module-security-property-placeholder', version: '1.3.0', noClassifier: true, noExt: true
+}
+
+uploadToRepository.doFirst {
+	if (!project.ext.has('deployEnv'))
+		throw new GradleScriptException("No deployment environment specified, cannot upload Blaze ESB to MMC repository!", null);
+	println "Deploying Blaze v$rootProject.version.$project.ext.deployNum to ${project.ext.deployEnv.toUpperCase()}"
+}
+
+classes.doLast {
+	copy {
+		from("${project(':Shared').buildDir}/classes")
+		from "${project(':DragonDto').buildDir}/classes"
+		into 'build/classes'
+	}
+	copy {
+		from("${project(':Shared').projectDir}/src/main/java")
+		from('src/main/java')
+		include '**/jaxb.index'
+		into 'build/classes/main'
+	}
+	copy {
+		from 'src/main/resources'
+		into 'build/resources/main'
+	}
+	if (project.ext.has('deployEnv'))
+		copy {
+			from "${project.rootDir}/Documentation/Properties/${project.ext.deployEnv}/ESB"
+			into 'build/resources/main'
+		}
+}
+
+eclipse.classpath.file {
+	whenMerged { classpath ->
+		classpath.entries -= classpath.entries.findAll { it.kind == 'src' && it.path in ['/DragonDto', '/Shared'] }
+	}
+	withXml { provider ->
+		def root = provider.asNode()
+		root.appendNode('classpathentry', [kind: 'src', path: '/DragonDto', combineaccessrules: 'false'])
+		root.appendNode('classpathentry', [kind: 'src', path: '/Shared', combineaccessrules: 'false'])
+	}
+}
+
+task deploy(dependsOn: 'uploadToRepository')
+
+task blazeRefresh(dependsOn: 'deployLocally')

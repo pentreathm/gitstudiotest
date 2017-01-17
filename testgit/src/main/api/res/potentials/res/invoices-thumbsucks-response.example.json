@@ -1,0 +1,18 @@
+{
+  "items": [
+    {
+      "externalId": "inv-1",
+      "approximateReturnPercentage": 0.14
+    },
+    {
+      "externalId": "inv-2",
+      "hasCalculationError": true,
+      "calculationComments": "Estimation skipped: expense type is not mapped"
+    },
+    {
+      "externalId": "inv-3",
+      "approximateReturnPercentage": 0,
+      "calculationComments": "Expense type MISCL is not eligible for tax return"
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+document-post:
+  post:
+    securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE]}]
+    is: [documentPush, resourceSecured]
+    description: | 
+      Adds a new Document to the <<master-resource>>.
+      The __Body__ of this request should the the document itself - no encoding.
+    queryParameters: 
+      externalId:
+        type: string
+        description: Optional identifier for this document. It can be used for future document reference. If one is not supplied, it will be auto-assigned by Blaze.
+        example: 3bfcde64-cf4e-413f-b53d-1b79a85a9c77
+      connectionTypeCode:
+        type: string
+        description: If you (as an API client) have rights to post from multiple information sources, use this field to specify the source of the document.
+        example: MANUAL-IMPORT
+    responses:
+      200:
+        description: |
+          Although you have posted a document, in Blaze documents are always attachements to notes; creating a document will result in creation of a note. Respose is a new note;
+        body:
+          application/json:
+            schema: !include ../documents/res/note.schema.json
+            example: !include ../documents/res/note-post-response.example.json
+note-post:
+  post:
+    securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE]}]
+    is: [resourceSecured]
+    description: |
+      Adds a new Note to the <<master-resource>>. The note will be added without a document attachment. If you want to add a document, use __<<master-resource>>/document__ resource.
+    body:
+      application/json:
+        schema: !include ../documents/res/note.schema.json
+        example: !include ../documents/res/note-put.example.json
+    responses:
+      200:
+        body:
+          application/json:
+            schema: !include ../documents/res/note.schema.json
+            example: !include ../documents/res/note-without-document-post-response.example.json
+            

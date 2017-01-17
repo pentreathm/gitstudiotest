@@ -1,0 +1,1111 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:vatit:blaze:dto:Invoices",
+  "properties" : {
+    "waterline" : {
+      "type" : "string",
+      "description" : "Paging waterline; will be populated by the server when requesting a paged list"
+    },
+    "items" : {
+      "type" : "array",
+      "description" : "List of items",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:vatit:blaze:dto:Invoice",
+        "properties" : {
+          "date" : {
+            "type" : "string",
+            "description" : "The date on which the invoice was issued; must be ISO 8601 format",
+            "format" : "DATE_TIME"
+          },
+          "notes" : {
+            "type" : "array",
+            "description" : "List of notes attached to this invoice",
+            "items" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:vatit:blaze:dto:Note",
+              "properties" : {
+                "note" : {
+                  "type" : "string",
+                  "description" : "The text of the note"
+                },
+                "dateCreated" : {
+                  "type" : "string",
+                  "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                  "format" : "DATE_TIME"
+                },
+                "attachedToEntityId" : {
+                  "type" : "integer",
+                  "description" : "The Blaze Id of the entity to which the note is attached. E.g. is this is an invoice note, it will be a Blaze invoice id; if this is an invoice group note this will be the invoice group id."
+                },
+                "document" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:vatit:blaze:dto:Document",
+                  "description" : "A document attached to the note",
+                  "properties" : {
+                    "extension" : {
+                      "type" : "string",
+                      "description" : "The file extension of the document"
+                    },
+                    "dateCreated" : {
+                      "type" : "string",
+                      "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                      "format" : "DATE_TIME"
+                    },
+                    "connectionTypeCode" : {
+                      "type" : "string",
+                      "description" : "Identifies the source system of the document"
+                    },
+                    "statusText" : {
+                      "type" : "string",
+                      "description" : "Can contain informative text about the document status, especially for Broken documents"
+                    },
+                    "externalId" : {
+                      "type" : "string",
+                      "description" : "The id of the document provided by the external system"
+                    },
+                    "dateModified" : {
+                      "type" : "string",
+                      "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                      "format" : "DATE_TIME"
+                    },
+                    "id" : {
+                      "type" : "integer",
+                      "description" : "Internal Blaze Id"
+                    },
+                    "internalUrl" : {
+                      "type" : "string",
+                      "description" : "Image URL for the document in the internal document store"
+                    },
+                    "mimeType" : {
+                      "type" : "string",
+                      "description" : "The mime type of the document - used internally to resolve HTTP responses"
+                    },
+                    "status" : {
+                      "type" : "string",
+                      "description" : "The status (health) of the document: P = Pending resolution from an external system, K = OK, X = Broken, I = Ignored",
+                      "enum" : [ "P", "K", "X", "I" ]
+                    }
+                  }
+                },
+                "dateModified" : {
+                  "type" : "string",
+                  "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                  "format" : "DATE_TIME"
+                },
+                "id" : {
+                  "type" : "integer",
+                  "description" : "Internal Blaze Id"
+                },
+                "connectionType" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                  "properties" : {
+                    "dateCreated" : {
+                      "type" : "string",
+                      "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                      "format" : "DATE_TIME"
+                    },
+                    "code" : {
+                      "type" : "string",
+                      "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                    },
+                    "dateModified" : {
+                      "type" : "string",
+                      "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                      "format" : "DATE_TIME"
+                    },
+                    "id" : {
+                      "type" : "integer",
+                      "description" : "Internal Blaze Id"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "groupId" : {
+            "type" : "integer"
+          },
+          "formOfPayment" : {
+            "type" : "string",
+            "description" : "How the invoice was paid"
+          },
+          "ownerId" : {
+            "type" : "string",
+            "description" : "The external system id of the invoice group owner"
+          },
+          "approximateReturnPercentage" : {
+            "type" : "number",
+            "description" : "Indicates the approximate VAT return for this invoice, as per VATit calculations & fees"
+          },
+          "regionCode" : {
+            "type" : "string",
+            "description" : "Blaze internal region code - for regions like states and provinces"
+          },
+          "dateCreated" : {
+            "type" : "string",
+            "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+            "format" : "DATE_TIME"
+          },
+          "isPersonalExpense" : {
+            "type" : "boolean",
+            "description" : "True, if this invoice (or invoice item) is flagged as a personal expense - i.e. not a business expense"
+          },
+          "statusReason" : {
+            "type" : "string",
+            "description" : "The reason for the current status of the invoice"
+          },
+          "ownerName" : {
+            "type" : "string",
+            "description" : "The name of the invoice group owner - usually a person's name"
+          },
+          "exchangeRate" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:vatit:blaze:dto:ExchangeRate",
+            "description" : "The exchange rate applicable to the invoice",
+            "properties" : {
+              "date" : {
+                "type" : "string",
+                "description" : "Date for which the exchange rate is required",
+                "format" : "DATE_TIME"
+              },
+              "rate" : {
+                "type" : "number",
+                "description" : "The price of the to currency in terms of 1 unit of the from currency"
+              },
+              "toCurrencyCode" : {
+                "type" : "string",
+                "description" : "Dragon currency code to which the amount will be converted. This is also known as the counter currency"
+              },
+              "id" : {
+                "type" : "integer",
+                "description" : "Internal Blaze Id"
+              },
+              "fromCurrencyCode" : {
+                "type" : "string",
+                "description" : "Dragon currency code of the amount. This is also known as the base currency"
+              }
+            }
+          },
+          "statusReasonId" : {
+            "type" : "integer",
+            "description" : "The Blaze id of the status reason of the invoice"
+          },
+          "countryCode" : {
+            "type" : "string",
+            "description" : "ISO 3611 country code where the invoice was issued"
+          },
+          "supplier" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:vatit:blaze:dto:Supplier",
+            "description" : "Invoice supplier details.",
+            "properties" : {
+              "dateCreated" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "address" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:vatit:blaze:dto:Address",
+                "description" : "Address details for this supplier",
+                "properties" : {
+                  "dateCreated" : {
+                    "type" : "string",
+                    "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                    "format" : "DATE_TIME"
+                  },
+                  "province" : {
+                    "type" : "string",
+                    "description" : "Region / province / state"
+                  },
+                  "city" : {
+                    "type" : "string",
+                    "description" : "City name"
+                  },
+                  "line" : {
+                    "type" : "string",
+                    "description" : "Address free format"
+                  },
+                  "countryCode" : {
+                    "type" : "string",
+                    "description" : "ISO 3611 country code"
+                  },
+                  "dateModified" : {
+                    "type" : "string",
+                    "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                    "format" : "DATE_TIME"
+                  },
+                  "postCode" : {
+                    "type" : "string",
+                    "description" : "Postal code"
+                  },
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "Internal Blaze Id"
+                  }
+                }
+              },
+              "name" : {
+                "type" : "string",
+                "description" : "Supplier name"
+              },
+              "externalId" : {
+                "type" : "string",
+                "description" : "Identifier, as defined in an external system"
+              },
+              "dateModified" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "id" : {
+                "type" : "integer",
+                "description" : "Internal Blaze Id"
+              }
+            }
+          },
+          "invoiceNumber" : {
+            "type" : "string",
+            "description" : "Number of the Invoice as stated on the invoice"
+          },
+          "taxPercentage" : {
+            "type" : "number",
+            "description" : "Tax percent or tax rate of the invoice set at the national/federal level [Optional]"
+          },
+          "regionalTaxPercentage" : {
+            "type" : "number",
+            "description" : "Tax percentage or tax rate of the invoice set at the regional/provincial level [Optional]"
+          },
+          "connection" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:vatit:blaze:dto:AttachedConnection",
+            "description" : "The connection to which this invoice is linked",
+            "properties" : {
+              "dateCreated" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "externalId" : {
+                "type" : "string",
+                "description" : "Unique Id for this connection, as defined by an external system"
+              },
+              "client" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:vatit:blaze:dto:Client",
+                "description" : "Reference to a VAT IT client",
+                "properties" : {
+                  "code" : {
+                    "type" : "string"
+                  },
+                  "notes" : {
+                    "type" : "array",
+                    "description" : "List of notes attached to this Client",
+                    "items" : {
+                      "type" : "object",
+                      "id" : "urn:jsonschema:com:vatit:blaze:dto:Note",
+                      "properties" : {
+                        "note" : {
+                          "type" : "string",
+                          "description" : "The text of the note"
+                        },
+                        "dateCreated" : {
+                          "type" : "string",
+                          "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                          "format" : "DATE_TIME"
+                        },
+                        "attachedToEntityId" : {
+                          "type" : "integer",
+                          "description" : "The Blaze Id of the entity to which the note is attached. E.g. is this is an invoice note, it will be a Blaze invoice id; if this is an invoice group note this will be the invoice group id."
+                        },
+                        "document" : {
+                          "type" : "object",
+                          "id" : "urn:jsonschema:com:vatit:blaze:dto:Document",
+                          "description" : "A document attached to the note",
+                          "properties" : {
+                            "extension" : {
+                              "type" : "string",
+                              "description" : "The file extension of the document"
+                            },
+                            "dateCreated" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "connectionTypeCode" : {
+                              "type" : "string",
+                              "description" : "Identifies the source system of the document"
+                            },
+                            "statusText" : {
+                              "type" : "string",
+                              "description" : "Can contain informative text about the document status, especially for Broken documents"
+                            },
+                            "externalId" : {
+                              "type" : "string",
+                              "description" : "The id of the document provided by the external system"
+                            },
+                            "dateModified" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "id" : {
+                              "type" : "integer",
+                              "description" : "Internal Blaze Id"
+                            },
+                            "internalUrl" : {
+                              "type" : "string",
+                              "description" : "Image URL for the document in the internal document store"
+                            },
+                            "mimeType" : {
+                              "type" : "string",
+                              "description" : "The mime type of the document - used internally to resolve HTTP responses"
+                            },
+                            "status" : {
+                              "type" : "string",
+                              "description" : "The status (health) of the document: P = Pending resolution from an external system, K = OK, X = Broken, I = Ignored",
+                              "enum" : [ "P", "K", "X", "I" ]
+                            }
+                          }
+                        },
+                        "dateModified" : {
+                          "type" : "string",
+                          "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                          "format" : "DATE_TIME"
+                        },
+                        "id" : {
+                          "type" : "integer",
+                          "description" : "Internal Blaze Id"
+                        },
+                        "connectionType" : {
+                          "type" : "object",
+                          "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                          "properties" : {
+                            "dateCreated" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "code" : {
+                              "type" : "string",
+                              "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                            },
+                            "dateModified" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "id" : {
+                              "type" : "integer",
+                              "description" : "Internal Blaze Id"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "countryCode" : {
+                    "type" : "string"
+                  },
+                  "name" : {
+                    "type" : "string"
+                  },
+                  "id" : {
+                    "type" : "string"
+                  },
+                  "reportingCurrencyCode" : {
+                    "type" : "string"
+                  }
+                }
+              },
+              "dateModified" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "id" : {
+                "type" : "integer",
+                "description" : "Internal Blaze Id"
+              },
+              "type" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                "description" : "Connection type code; an external facing code that identifies the source system for the connection",
+                "properties" : {
+                  "dateCreated" : {
+                    "type" : "string",
+                    "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                    "format" : "DATE_TIME"
+                  },
+                  "code" : {
+                    "type" : "string",
+                    "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                  },
+                  "dateModified" : {
+                    "type" : "string",
+                    "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                    "format" : "DATE_TIME"
+                  },
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "Internal Blaze Id"
+                  }
+                }
+              }
+            }
+          },
+          "id" : {
+            "type" : "integer",
+            "description" : "Internal Blaze Id"
+          },
+          "externalCurrencyCode" : {
+            "type" : "string",
+            "description" : "Use this only if the external system has a registered alternate currency map with Blaze - contact a Blaze representative for more information on this"
+          },
+          "amount" : {
+            "type" : "number",
+            "description" : "The full amount (including VAT etc.) for which the invoice was issued"
+          },
+          "expenseType" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:vatit:blaze:dto:ExpenseType",
+            "description" : "Expense type info",
+            "properties" : {
+              "dateCreated" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "orchestrationId" : {
+                "type" : "string"
+              },
+              "externalName" : {
+                "type" : "string",
+                "description" : "Descriptive name for the expense type in the external system. This is not a required field"
+              },
+              "externalId" : {
+                "type" : "string",
+                "description" : "External expense type Id - a unique identifier to the expense type in an external system"
+              },
+              "dateModified" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "connection" : {
+                "type" : "object",
+                "id" : "urn:jsonschema:com:vatit:blaze:dto:AttachedConnection",
+                "properties" : {
+                  "dateCreated" : {
+                    "type" : "string",
+                    "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                    "format" : "DATE_TIME"
+                  },
+                  "externalId" : {
+                    "type" : "string",
+                    "description" : "Unique Id for this connection, as defined by an external system"
+                  },
+                  "client" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:vatit:blaze:dto:Client",
+                    "description" : "Reference to a VAT IT client",
+                    "properties" : {
+                      "code" : {
+                        "type" : "string"
+                      },
+                      "notes" : {
+                        "type" : "array",
+                        "description" : "List of notes attached to this Client",
+                        "items" : {
+                          "type" : "object",
+                          "id" : "urn:jsonschema:com:vatit:blaze:dto:Note",
+                          "properties" : {
+                            "note" : {
+                              "type" : "string",
+                              "description" : "The text of the note"
+                            },
+                            "dateCreated" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "attachedToEntityId" : {
+                              "type" : "integer",
+                              "description" : "The Blaze Id of the entity to which the note is attached. E.g. is this is an invoice note, it will be a Blaze invoice id; if this is an invoice group note this will be the invoice group id."
+                            },
+                            "document" : {
+                              "type" : "object",
+                              "id" : "urn:jsonschema:com:vatit:blaze:dto:Document",
+                              "description" : "A document attached to the note",
+                              "properties" : {
+                                "extension" : {
+                                  "type" : "string",
+                                  "description" : "The file extension of the document"
+                                },
+                                "dateCreated" : {
+                                  "type" : "string",
+                                  "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                                  "format" : "DATE_TIME"
+                                },
+                                "connectionTypeCode" : {
+                                  "type" : "string",
+                                  "description" : "Identifies the source system of the document"
+                                },
+                                "statusText" : {
+                                  "type" : "string",
+                                  "description" : "Can contain informative text about the document status, especially for Broken documents"
+                                },
+                                "externalId" : {
+                                  "type" : "string",
+                                  "description" : "The id of the document provided by the external system"
+                                },
+                                "dateModified" : {
+                                  "type" : "string",
+                                  "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                                  "format" : "DATE_TIME"
+                                },
+                                "id" : {
+                                  "type" : "integer",
+                                  "description" : "Internal Blaze Id"
+                                },
+                                "internalUrl" : {
+                                  "type" : "string",
+                                  "description" : "Image URL for the document in the internal document store"
+                                },
+                                "mimeType" : {
+                                  "type" : "string",
+                                  "description" : "The mime type of the document - used internally to resolve HTTP responses"
+                                },
+                                "status" : {
+                                  "type" : "string",
+                                  "description" : "The status (health) of the document: P = Pending resolution from an external system, K = OK, X = Broken, I = Ignored",
+                                  "enum" : [ "P", "K", "X", "I" ]
+                                }
+                              }
+                            },
+                            "dateModified" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "id" : {
+                              "type" : "integer",
+                              "description" : "Internal Blaze Id"
+                            },
+                            "connectionType" : {
+                              "type" : "object",
+                              "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                              "properties" : {
+                                "dateCreated" : {
+                                  "type" : "string",
+                                  "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                                  "format" : "DATE_TIME"
+                                },
+                                "code" : {
+                                  "type" : "string",
+                                  "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                                },
+                                "dateModified" : {
+                                  "type" : "string",
+                                  "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                                  "format" : "DATE_TIME"
+                                },
+                                "id" : {
+                                  "type" : "integer",
+                                  "description" : "Internal Blaze Id"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "countryCode" : {
+                        "type" : "string"
+                      },
+                      "name" : {
+                        "type" : "string"
+                      },
+                      "id" : {
+                        "type" : "string"
+                      },
+                      "reportingCurrencyCode" : {
+                        "type" : "string"
+                      }
+                    }
+                  },
+                  "dateModified" : {
+                    "type" : "string",
+                    "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                    "format" : "DATE_TIME"
+                  },
+                  "id" : {
+                    "type" : "integer",
+                    "description" : "Internal Blaze Id"
+                  },
+                  "type" : {
+                    "type" : "object",
+                    "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                    "description" : "Connection type code; an external facing code that identifies the source system for the connection",
+                    "properties" : {
+                      "dateCreated" : {
+                        "type" : "string",
+                        "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                        "format" : "DATE_TIME"
+                      },
+                      "code" : {
+                        "type" : "string",
+                        "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                      },
+                      "dateModified" : {
+                        "type" : "string",
+                        "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                        "format" : "DATE_TIME"
+                      },
+                      "id" : {
+                        "type" : "integer",
+                        "description" : "Internal Blaze Id"
+                      }
+                    }
+                  }
+                }
+              },
+              "id" : {
+                "type" : "integer",
+                "description" : "Internal Blaze Id"
+              },
+              "dragonId" : {
+                "type" : "integer",
+                "description" : "References the expense type id in Dragon - this is usually mapped by system administrators"
+              }
+            }
+          },
+          "calculationComments" : {
+            "type" : "string",
+            "description" : "Details of any calculation failures of anomalies"
+          },
+          "netAmount" : {
+            "type" : "number",
+            "description" : "Net amount of the invoice, before tax [Optional]"
+          },
+          "externalId" : {
+            "type" : "string",
+            "description" : "External id of an invoice, used to identify artefacts in/by an external system"
+          },
+          "isLekker" : {
+            "type" : "boolean",
+            "description" : "The invoice detail is fully resolved"
+          },
+          "dateModified" : {
+            "type" : "string",
+            "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+            "format" : "DATE_TIME"
+          },
+          "mustCalculate" : {
+            "type" : "boolean",
+            "description" : "Internal status flag - indicates the invoice VAT return is still to be calculated"
+          },
+          "paperInvoiceReference" : {
+            "type" : "string",
+            "description" : "Use to provide a reference between an electronic invoice and a pare invoice. Usually a system-provided value that is written onto the invoice."
+          },
+          "isInAudit" : {
+            "type" : "boolean",
+            "description" : "This will be true if audit has been started on this invoice."
+          },
+          "statusId" : {
+            "type" : "integer",
+            "description" : "Not yet implemented"
+          },
+          "doesReceiptExist" : {
+            "type" : "boolean",
+            "description" : "Set to true if it is know that a paper receipt exists for this invoice"
+          },
+          "whatHappened" : {
+            "type" : "string",
+            "description" : "Action that was performed on the imported item. This is returned in responses from import operations.",
+            "enum" : [ "ADDED", "UPDATED", "IGNORED_EXISTING", "IGNORED_NEW", "DELETED", "CAUSED_ERROR" ]
+          },
+          "location" : {
+            "type" : "object",
+            "id" : "urn:jsonschema:com:vatit:blaze:dto:LocationMap",
+            "description" : "Information about the location of issue of this invoice. If supplied and an entry matching could not be found in the database the location map will be added provided.",
+            "properties" : {
+              "regionCode" : {
+                "type" : "string",
+                "description" : "Blaze internal region code - for regions like states and provinces"
+              },
+              "dateCreated" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "countryCode" : {
+                "type" : "string",
+                "description" : "ISO 3611 country code where the invoice was issued"
+              },
+              "externalId" : {
+                "type" : "string",
+                "description" : "External identification for location. Usually used for mapping free-form locations to country codes"
+              },
+              "dateModified" : {
+                "type" : "string",
+                "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                "format" : "DATE_TIME"
+              },
+              "id" : {
+                "type" : "integer",
+                "description" : "Internal Blaze Id"
+              }
+            }
+          },
+          "hasCalculationError" : {
+            "type" : "boolean",
+            "description" : "Indicates the VAt return calculation was unsuccessful"
+          },
+          "taxAmount" : {
+            "type" : "number",
+            "description" : "Tax charged on the invoice. Specifying this from an external system, can ensure greater accuracy in tax calculations."
+          },
+          "currencyCode" : {
+            "type" : "string",
+            "description" : "ISO 4217 currency code for which the invoice was issued"
+          },
+          "items" : {
+            "type" : "array",
+            "description" : "List of invoice items - for itemised invoices.",
+            "items" : {
+              "type" : "object",
+              "id" : "urn:jsonschema:com:vatit:blaze:dto:InvoiceItem",
+              "properties" : {
+                "date" : {
+                  "type" : "string",
+                  "description" : "The date on which the invoice was issued; must be ISO 8601 format",
+                  "format" : "DATE_TIME"
+                },
+                "amount" : {
+                  "type" : "number",
+                  "description" : "The full amount (including VAT etc.) for which the invoice was issued"
+                },
+                "expenseType" : {
+                  "type" : "object",
+                  "id" : "urn:jsonschema:com:vatit:blaze:dto:ExpenseType",
+                  "description" : "Expense type info",
+                  "properties" : {
+                    "dateCreated" : {
+                      "type" : "string",
+                      "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                      "format" : "DATE_TIME"
+                    },
+                    "orchestrationId" : {
+                      "type" : "string"
+                    },
+                    "externalName" : {
+                      "type" : "string",
+                      "description" : "Descriptive name for the expense type in the external system. This is not a required field"
+                    },
+                    "externalId" : {
+                      "type" : "string",
+                      "description" : "External expense type Id - a unique identifier to the expense type in an external system"
+                    },
+                    "dateModified" : {
+                      "type" : "string",
+                      "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                      "format" : "DATE_TIME"
+                    },
+                    "connection" : {
+                      "type" : "object",
+                      "id" : "urn:jsonschema:com:vatit:blaze:dto:AttachedConnection",
+                      "properties" : {
+                        "dateCreated" : {
+                          "type" : "string",
+                          "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                          "format" : "DATE_TIME"
+                        },
+                        "externalId" : {
+                          "type" : "string",
+                          "description" : "Unique Id for this connection, as defined by an external system"
+                        },
+                        "client" : {
+                          "type" : "object",
+                          "id" : "urn:jsonschema:com:vatit:blaze:dto:Client",
+                          "description" : "Reference to a VAT IT client",
+                          "properties" : {
+                            "code" : {
+                              "type" : "string"
+                            },
+                            "notes" : {
+                              "type" : "array",
+                              "description" : "List of notes attached to this Client",
+                              "items" : {
+                                "type" : "object",
+                                "id" : "urn:jsonschema:com:vatit:blaze:dto:Note",
+                                "properties" : {
+                                  "note" : {
+                                    "type" : "string",
+                                    "description" : "The text of the note"
+                                  },
+                                  "dateCreated" : {
+                                    "type" : "string",
+                                    "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                                    "format" : "DATE_TIME"
+                                  },
+                                  "attachedToEntityId" : {
+                                    "type" : "integer",
+                                    "description" : "The Blaze Id of the entity to which the note is attached. E.g. is this is an invoice note, it will be a Blaze invoice id; if this is an invoice group note this will be the invoice group id."
+                                  },
+                                  "document" : {
+                                    "type" : "object",
+                                    "id" : "urn:jsonschema:com:vatit:blaze:dto:Document",
+                                    "description" : "A document attached to the note",
+                                    "properties" : {
+                                      "extension" : {
+                                        "type" : "string",
+                                        "description" : "The file extension of the document"
+                                      },
+                                      "dateCreated" : {
+                                        "type" : "string",
+                                        "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                                        "format" : "DATE_TIME"
+                                      },
+                                      "connectionTypeCode" : {
+                                        "type" : "string",
+                                        "description" : "Identifies the source system of the document"
+                                      },
+                                      "statusText" : {
+                                        "type" : "string",
+                                        "description" : "Can contain informative text about the document status, especially for Broken documents"
+                                      },
+                                      "externalId" : {
+                                        "type" : "string",
+                                        "description" : "The id of the document provided by the external system"
+                                      },
+                                      "dateModified" : {
+                                        "type" : "string",
+                                        "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                                        "format" : "DATE_TIME"
+                                      },
+                                      "id" : {
+                                        "type" : "integer",
+                                        "description" : "Internal Blaze Id"
+                                      },
+                                      "internalUrl" : {
+                                        "type" : "string",
+                                        "description" : "Image URL for the document in the internal document store"
+                                      },
+                                      "mimeType" : {
+                                        "type" : "string",
+                                        "description" : "The mime type of the document - used internally to resolve HTTP responses"
+                                      },
+                                      "status" : {
+                                        "type" : "string",
+                                        "description" : "The status (health) of the document: P = Pending resolution from an external system, K = OK, X = Broken, I = Ignored",
+                                        "enum" : [ "P", "K", "X", "I" ]
+                                      }
+                                    }
+                                  },
+                                  "dateModified" : {
+                                    "type" : "string",
+                                    "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                                    "format" : "DATE_TIME"
+                                  },
+                                  "id" : {
+                                    "type" : "integer",
+                                    "description" : "Internal Blaze Id"
+                                  },
+                                  "connectionType" : {
+                                    "type" : "object",
+                                    "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                                    "properties" : {
+                                      "dateCreated" : {
+                                        "type" : "string",
+                                        "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                                        "format" : "DATE_TIME"
+                                      },
+                                      "code" : {
+                                        "type" : "string",
+                                        "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                                      },
+                                      "dateModified" : {
+                                        "type" : "string",
+                                        "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                                        "format" : "DATE_TIME"
+                                      },
+                                      "id" : {
+                                        "type" : "integer",
+                                        "description" : "Internal Blaze Id"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "countryCode" : {
+                              "type" : "string"
+                            },
+                            "name" : {
+                              "type" : "string"
+                            },
+                            "id" : {
+                              "type" : "string"
+                            },
+                            "reportingCurrencyCode" : {
+                              "type" : "string"
+                            }
+                          }
+                        },
+                        "dateModified" : {
+                          "type" : "string",
+                          "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                          "format" : "DATE_TIME"
+                        },
+                        "id" : {
+                          "type" : "integer",
+                          "description" : "Internal Blaze Id"
+                        },
+                        "type" : {
+                          "type" : "object",
+                          "id" : "urn:jsonschema:com:vatit:blaze:dto:ConnectionType",
+                          "description" : "Connection type code; an external facing code that identifies the source system for the connection",
+                          "properties" : {
+                            "dateCreated" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "code" : {
+                              "type" : "string",
+                              "description" : "External-facing code, that will never change between systems; usually used to reference the connection type from external calls"
+                            },
+                            "dateModified" : {
+                              "type" : "string",
+                              "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                              "format" : "DATE_TIME"
+                            },
+                            "id" : {
+                              "type" : "integer",
+                              "description" : "Internal Blaze Id"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "id" : {
+                      "type" : "integer",
+                      "description" : "Internal Blaze Id"
+                    },
+                    "dragonId" : {
+                      "type" : "integer",
+                      "description" : "References the expense type id in Dragon - this is usually mapped by system administrators"
+                    }
+                  }
+                },
+                "calculationComments" : {
+                  "type" : "string",
+                  "description" : "Details of any calculation failures of anomalies"
+                },
+                "netAmount" : {
+                  "type" : "number",
+                  "description" : "Net amount of the invoice, before tax [Optional]"
+                },
+                "externalId" : {
+                  "type" : "string",
+                  "description" : "External id of an invoice, used to identify artefacts in/by an external system"
+                },
+                "isLekker" : {
+                  "type" : "boolean",
+                  "description" : "The invoice detail is fully resolved"
+                },
+                "dateModified" : {
+                  "type" : "string",
+                  "description" : "Internal field, indicates when the invoice was last modified in the Blaze system",
+                  "format" : "DATE_TIME"
+                },
+                "mustCalculate" : {
+                  "type" : "boolean",
+                  "description" : "Internal status flag - indicates the invoice VAT return is still to be calculated"
+                },
+                "approximateReturnPercentage" : {
+                  "type" : "number",
+                  "description" : "Indicates the approximate VAT return for this invoice, as per VATit calculations & fees"
+                },
+                "dateCreated" : {
+                  "type" : "string",
+                  "description" : "Internal field, indicates when the invoice was first created in the Blaze system",
+                  "format" : "DATE_TIME"
+                },
+                "isPersonalExpense" : {
+                  "type" : "boolean",
+                  "description" : "True, if this invoice (or invoice item) is flagged as a personal expense - i.e. not a business expense"
+                },
+                "taxPercentage" : {
+                  "type" : "number",
+                  "description" : "Tax percent or tax rate of the invoice set at the national/federal level [Optional]"
+                },
+                "regionalTaxPercentage" : {
+                  "type" : "number",
+                  "description" : "Tax percentage or tax rate of the invoice set at the regional/provincial level [Optional]"
+                },
+                "whatHappened" : {
+                  "type" : "string",
+                  "description" : "Action that was performed on the imported item. This is returned in responses from import operations.",
+                  "enum" : [ "ADDED", "UPDATED", "IGNORED_EXISTING", "IGNORED_NEW", "DELETED", "CAUSED_ERROR" ]
+                },
+                "id" : {
+                  "type" : "integer",
+                  "description" : "Internal Blaze Id"
+                },
+                "hasCalculationError" : {
+                  "type" : "boolean",
+                  "description" : "Indicates the VAt return calculation was unsuccessful"
+                },
+                "taxAmount" : {
+                  "type" : "number",
+                  "description" : "Tax charged on the invoice. Specifying this from an external system, can ensure greater accuracy in tax calculations."
+                }
+              }
+            }
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Not yet implemented"
+          }
+        }
+      }
+    },
+    "resolutionRules" : {
+      "type" : "array",
+      "description" : "List of import resolution rules.",
+      "items" : {
+        "type" : "object",
+        "id" : "urn:jsonschema:com:vatit:blaze:dto:ResolutionRule",
+        "properties" : {
+          "newItems" : {
+            "type" : "string",
+            "description" : "Action to be applied to new items found at this level.",
+            "enum" : [ "Add", "Ignore" ]
+          },
+          "missingItems" : {
+            "type" : "string",
+            "description" : "Action to be applied to items are in the target database, but not in the import structure.",
+            "enum" : [ "Delete", "Ignore" ]
+          },
+          "levels" : {
+            "type" : "array",
+            "description" : "List of import item levels to which this rule must apply.",
+            "items" : {
+              "type" : "string",
+              "enum" : [ "InvoiceGroup", "Invoice", "InvoiceItem" ]
+            }
+          },
+          "existingItems" : {
+            "type" : "string",
+            "description" : "Action to be applied to items that already exist in the target database.",
+            "enum" : [ "Update", "Ignore", "DrillDown", "Error" ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting" xmlns:spring="http://www.springframework.org/schema/beans" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:file="http://www.mulesoft.org/schema/mule/file"
+      xmlns:quartz="http://www.mulesoft.org/schema/mule/quartz"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http"
+      xmlns:https="http://www.mulesoft.org/schema/mule/https"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/quartz http://www.mulesoft.org/schema/mule/quartz/current/mule-quartz.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd">
+
+    <quartz:connector name="XpenditureOcrQuartz" validateConnections="true" doc:name="Cron Job"/>
+
+    <https:connector name="XpenditureOcrHttpConnector"
+                     validateConnections="true"
+                     clientSoTimeout="${blaze.xpenditureOcr.timeout}"
+                     connectionTimeout="${blaze.xpenditureOcr.timeout}"
+                     serverSoTimeout="${blaze.xpenditureOcr.timeout}"
+                     doc:name="HTTP">
+        <https:tls-server path="xpenditure.truststore" storePassword="B1@zeCert"/>
+    </https:connector>
+
+    <file:connector name="RecursiveFileConnector" recursive="true" doc:name="File">
+        <service-overrides messageReceiver="com.vatit.blaze.esb.ocr.OcrFileMessageReceiver"/>
+    </file:connector>
+
+    <flow name="ocr.vatChecking.sendImages">
+        <file:inbound-endpoint connector-ref="RecursiveFileConnector" path="${blaze.xpenditureOcr.vatChecking.root.folder}"
+                               moveToDirectory="${blaze.xpenditureOcr.vatChecking.root.folder}${blaze.xpenditureOcr.working.folder}"
+                               pollingFrequency="${blaze.xpenditure.ocr.vatCheck.createProcess.pollingFrequency}"
+                               responseTimeout="${blaze.xpenditureOcr.timeout}" doc:name="Read Source File"/>
+        <logger message="Found file #[flowVars['originalFilename']] to submit for VAT checking" level="INFO" doc:name="Log File Discovery"/>
+        <flow-ref name="ocr.vatChecking.sendImages.submitFileToXpenditure" doc:name="Submit File to Xpenditure"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.ThrowExceptionTransformer" doc:name="Throw Exception on Submission Failure"/>
+        <logger message="Created OCR process #[payload.getExternalProcessId()] for image #[flowVars['originalFilename']] and client code #[flowVars['clientCode']]" level="INFO" doc:name="Log Xpenditure response"/>
+        <flow-ref name="ocr.vatChecking.sendImages.changeFileStatusToSent" doc:name="Change File Status to Sent"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <expression-filter expression="#[flowVars['originalFilename'] != null]" doc:name="Skip If No File to Move"/>
+            <set-variable variableName="currentFilename" value="#[flowVars['originalFilename']]" doc:name="Set Current File Name"/>
+            <set-variable variableName="currentDirectory" value="${blaze.xpenditureOcr.vatChecking.root.folder}${blaze.xpenditureOcr.working.folder}" doc:name="Set Current File Path"/>
+            <set-variable variableName="newDirectory" value="#[flowVars['originalDirectory']]${blaze.xpenditureOcr.failed.folder}" doc:name="Set New File Path"/>
+            <custom-transformer class="com.vatit.blaze.esb.transformer.FileMoverTransformer" doc:name="Move File to Failed Folder"/>
+            <logger message="File #[flowVars['currentFilename']] moved to folder #[flowVars['newDirectory']]" level="INFO" doc:name="Log File Move"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <sub-flow name="ocr.vatChecking.sendImages.submitFileToXpenditure">
+        <set-variable variableName="clientCode" value="#[flowVars['originalDirectory'].substring(flowVars['originalDirectory'].lastIndexOf(&quot;\\&quot;)+1)]" doc:name="Determine Client Code"/>
+        <base64-encoder-transformer/>
+        <set-payload value="#[new com.vatit.blaze.dto.xpenditureOcr.CreateNewProcessRequest().withApiKey(&quot;${blaze.xpenditureOcr.apiKey}&quot;).withClientCode(flowVars['clientCode']).withImageId(flowVars['originalFilename']).withImage(payload)]" doc:name="Create CreateProcess Request"/>
+        <set-variable variableName="blaze.responseContentType" value="application/xml" doc:name="Set Content-Type"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Object to XML"/>
+        <https:outbound-endpoint exchange-pattern="request-response" method="POST" connector-ref="XpenditureOcrHttpConnector"
+                                 address="${blaze.xpenditureOcr.host}${blaze.xpenditureOcr.vatChecking.createProcess.service}"
+                                 responseTimeout="${blaze.xpenditureOcr.timeout}" contentType="application/json" encoding="UTF-8"
+                                 responseTransformer-refs="HttpErrorResponseChecker" doc:name="Call Xpenditure CreateProcess Service"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.DejunkUnmarshalObjectTransformer" doc:name="JSON to Object">
+            <spring:property name="returnClassName" value="com.vatit.blaze.dto.xpenditureOcr.CreateProcessResponse"/>
+        </custom-transformer>
+        <set-variable variableName="throwException" value="#[!payload.getIsSuccess()]" doc:name="Extract Status from Xpenditure Response"/>
+        <set-variable variableName="errorCode" value="#[payload.getErrorCode()]" doc:name="Extract Error Code from Xpenditure Response"/>
+        <set-variable variableName="errorMessage" value="Image submission failed with error code " doc:name="Set Error Message"/>
+    </sub-flow>
+
+    <sub-flow name="ocr.vatChecking.sendImages.changeFileStatusToSent">
+        <set-variable variableName="currentFilename" value="#[flowVars['originalFilename']]" doc:name="Set Current File Name"/>
+        <set-variable variableName="currentDirectory" value="${blaze.xpenditureOcr.vatChecking.root.folder}${blaze.xpenditureOcr.working.folder}" doc:name="Set Current File Path"/>
+        <set-variable variableName="newFilename" value="#[payload.getExternalProcessId()],#[flowVars['originalFilename']]" doc:name="Set New File Name"/>
+        <set-variable variableName="newDirectory" value="#[flowVars['originalDirectory']]${blaze.xpenditureOcr.sent.folder}" doc:name="Set New File Path"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.FileMoverTransformer" doc:name="Move File to Sent Folder"/>
+        <logger message="File #[flowVars['originalFilename']] moved to folder #[flowVars['newDirectory']]" level="INFO" doc:name="Log File Move"/>
+    </sub-flow>
+
+    <flow name="ocr.vatChecking.getResults.cronJob">
+        <quartz:inbound-endpoint jobName="ocr.xpenditureOcr.getResults.cronJob" connector-ref="XpenditureOcrQuartz"
+                                 cronExpression="${blaze.xpenditure.ocr.vatCheck.getResults.cron}"
+                                 responseTimeout="${blaze.xpenditureOcr.timeout}" doc:name="Quartz Event Generator">
+            <quartz:event-generator-job/>
+        </quartz:inbound-endpoint>
+        <logger message="ocr.xpenditureOcr.getResults.cronJob has fired" level="INFO" doc:name="Log Cron Job Activation"/>
+        <flow-ref name="ocr.vatChecking.getResults" doc:name="Get Results"/>
+    </flow>
+
+    <sub-flow name="ocr.vatChecking.getResults">
+        <flow-ref name="ocr.vatChecking.getResults.callXpenditure" doc:name="Call Xpenditure to Get Results"/>
+        <set-variable variableName="successfullyProcessedImages" value="#[new java.util.HashSet()]" doc:name="Create Collection for Successfully Processed Images"/>
+        <foreach collection="#[payload.ocrProcesses]" doc:name="For Each Result">
+            <flow-ref name="ocr.vatChecking.getResults.moveImageFiles" doc:name="Move Image Files"/>
+        </foreach>
+        <flow-ref name="ocr.vatChecking.getResults.syncStatus" doc:name="Sync Status with Xpenditure"/>
+    </sub-flow>
+
+    <sub-flow name="ocr.vatChecking.getResults.callXpenditure">
+        <set-payload value="#[new com.vatit.blaze.dto.xpenditureOcr.GetResultsRequest().withApiKey(&quot;${blaze.xpenditureOcr.apiKey}&quot;)]" doc:name="Create GetResults Request"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Object to JSON"/>
+        <https:outbound-endpoint exchange-pattern="request-response" method="POST"
+                                 connector-ref="XpenditureOcrHttpConnector"
+                                 address="${blaze.xpenditureOcr.host}${blaze.xpenditureOcr.vatChecking.getResults.service}"
+                                 responseTimeout="${blaze.xpenditureOcr.timeout}" contentType="application/json" encoding="UTF-8"
+                                 responseTransformer-refs="HttpErrorResponseChecker" doc:name="Call Xpenditure GetResults Service"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.DejunkUnmarshalObjectTransformer" doc:name="JSON to Object">
+            <spring:property name="returnClassName" value="com.vatit.blaze.dto.xpenditureOcr.VatCheckGetResultsResponse"/>
+        </custom-transformer>
+        <logger message="Retrieved #[(payload.getOcrProcesses() != null)? payload.getOcrProcesses().size() : 0] results from Xpenditure" level="INFO" doc:name="Log Xpenditure response"/>
+    </sub-flow>
+
+    <flow name="ocr.vatChecking.getResults.moveImageFiles" processingStrategy="synchronous">
+        <logger message="Applying results for process #[payload.getExternalProcessId()]..." level="INFO" doc:name="Log Result"/>
+        <component class="com.vatit.blaze.esb.ocr.FileMoverComponent" doc:name="Move Associated File"/>
+        <logger message="File #[flowVars['fileToMove']] moved to folder #[flowVars['destinationFolder']]" level="INFO" doc:name="Log File Move"/>
+        <scripting:transformer doc:name="Mark Process as Successful">
+            <scripting:script engine="Groovy"><![CDATA[message.getInvocationProperty('successfullyProcessedImages').add(payload.getExternalProcessId())
+payload]]></scripting:script>
+        </scripting:transformer>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger message="Error while trying to move image file for process #[payload.getExternalProcessId()]" level="ERROR" doc:name="Log Failure"/>
+        </catch-exception-strategy>
+    </flow>
+
+    <flow name="ocr.vatChecking.getResults.syncStatus">
+        <logger message="Syncing status for #[flowVars['successfullyProcessedImages'].size()] process(es)..." level="INFO" doc:name="Log Sync Size"/>
+        <expression-filter expression="#[!flowVars['successfullyProcessedImages'].isEmpty()]" doc:name="Skip If No Process to Sync"/>
+        <custom-transformer class="com.vatit.blaze.esb.ocr.CreateSyncStatusRequestTransformer" doc:name="Create Sync Status Request">
+            <spring:property name="apiKey" value="${blaze.xpenditureOcr.apiKey}"/>
+        </custom-transformer>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Object to JSON"/>
+        <https:outbound-endpoint exchange-pattern="request-response" method="POST"
+                                 connector-ref="XpenditureOcrHttpConnector"
+                                 address="${blaze.xpenditureOcr.host}${blaze.xpenditureOcr.vatChecking.syncStatus.service}"
+                                 responseTimeout="${blaze.xpenditureOcr.timeout}" contentType="application/json" encoding="UTF-8"
+                                 responseTransformer-refs="HttpErrorResponseChecker" doc:name="Call Xpenditure SyncStatus Service"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+        <custom-transformer class="com.vatit.blaze.esb.transformer.DejunkUnmarshalObjectTransformer" doc:name="JSON to Object">
+            <spring:property name="returnClassName" value="com.vatit.blaze.dto.xpenditureOcr.SyncStatusResponse"/>
+        </custom-transformer>
+        <custom-transformer class="com.vatit.blaze.esb.ocr.LogSyncStatusFailuresTransformer" doc:name="Extract Sync Failures"/>
+        <logger message="ocr.xpenditureOcr.getResults.cronJob has completed" level="INFO" doc:name="Log Cron Job Activation"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy">
+            <logger message="Status Sync failed" level="INFO" doc:name="Log Failure"/>
+        </catch-exception-strategy>
+    </flow>
+
+</mule>

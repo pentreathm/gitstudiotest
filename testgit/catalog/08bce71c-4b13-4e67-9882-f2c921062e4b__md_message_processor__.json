@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "blaze.concur.report": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "ConcurExpenseReport"
+            }
+        }
+    },
+    "id": "08bce71c-4b13-4e67-9882-f2c921062e4b",
+    "version": "5.2.0.0"
+}

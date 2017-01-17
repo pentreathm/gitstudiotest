@@ -1,0 +1,21 @@
+/client/{id}:
+  uriParameters:
+    id:
+      type: string
+      description: The unique identifier of the client. 
+      example: a6d91bcf-a2dd-4755-8a58-e1b85567f215  
+  /document:
+    description: Adds a document to a client
+    type: 
+      document-post:
+        master-resource: Client
+    post:    
+      securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE, CLIENTS_WRITE]}]
+  /note:
+    description: Adds a note to a client
+    type: 
+      note-post:
+        master-resource: Client    
+    post:    
+      securedBy: [OAuth_2: {scopes: [DOCUMENTS_WRITE, CLIENTS_WRITE]}]
+  

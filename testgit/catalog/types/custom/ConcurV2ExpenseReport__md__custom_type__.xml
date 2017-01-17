@@ -1,0 +1,27 @@
+<custom__type__definition>
+  <version>5.2.0.0</version>
+  <typeName class="org.mule.common.metadata.DefaultMetaDataKey">
+    <id>ConcurV2ExpenseReport</id>
+    <displayName>ConcurV2ExpenseReport</displayName>
+    <category>DEFAULT</category>
+    <metaDataKeyPropertiesManager>
+      <properties>
+        <org.mule.common.metadata.key.property.dsql.DsqlFromMetaDataKeyProperty/>
+      </properties>
+    </metaDataKeyPropertiesManager>
+  </typeName>
+  <metadataModel class="org.mule.common.metadata.DefaultPojoMetaDataModel">
+    <implementationClass>com.vatit.blaze.esb.concur.dto.V2_ExpenseReport</implementationClass>
+    <dataType>POJO</dataType>
+    <metaDataModelPropertiesManager>
+      <properties/>
+    </metaDataModelPropertiesManager>
+    <fields/>
+    <clazzName>com.vatit.blaze.esb.concur.dto.V2_ExpenseReport</clazzName>
+    <isInterface>false</isInterface>
+    <name>V2_ExpenseReport</name>
+    <parentNames>
+      <string>java.lang.Object</string>
+    </parentNames>
+  </metadataModel>
+</custom__type__definition>

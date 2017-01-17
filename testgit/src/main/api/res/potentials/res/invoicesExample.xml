@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+  <invoices>
+      <Waterline>MjAxNC0xMC0yMFQwMjo0MDoxNi4xMjN8MTUz</Waterline>
+      <Invoice>
+          <amount>75.0</amount>
+          <calculationComments>Vat scheme 7 for Expense type 10 does not qualify for a refund</calculationComments>
+          <countryCode>GB </countryCode>
+          <currencyCode>USD</currencyCode>
+          <date>2012-04-04T02:00:00+02:00</date>
+          <dateCreated>2014-10-20T14:38:28.977+02:00</dateCreated>
+          <dateModified>2014-10-20T14:40:14.083+02:00</dateModified>
+          <expenseTypeDragonId>10</expenseTypeDragonId>
+          <expenseTypeExtId>OFCSP</expenseTypeExtId>
+          <expenseTypeExtName>Office Supplies</expenseTypeExtName>
+          <expenseTypeId>1</expenseTypeId>
+          <externalId>nfRfpCl4IemN6Xe95Vfp2RPmoZU$pBYdWa</externalId>
+          <hasCalculationError>false</hasCalculationError>
+          <id>1</id>
+          <mustCalculate>false</mustCalculate>
+          <approximateReturnPercentage>0.0</approximateReturnPercentage>
+          <status>P</status>
+          <statusId>1</statusId>
+          <mustFetchScan>false</mustFetchScan>
+          <supplierName/>
+          <clientId>10922290-56a1-4126-84a9-e4ae554dbb11</clientId>
+          <invoiceNumber>POT 000001</invoiceNumber>
+          <source>CONCUR</source>
+          <exchangeRate>
+              <date>2012-04-04T02:00:00+02:00</date>
+              <fromCurrencyCode>USD</fromCurrencyCode>
+              <id>1</id>
+              <rate>1.2950162291526794</rate>
+              <toCurrencyCode>GBP</toCurrencyCode>
+          </exchangeRate>
+      </Invoice>
+      <Invoice>
+          <amount>50.0</amount>
+          <calculationComments>Vat scheme 7 for Expense type 10 does not qualify for a refund</calculationComments>
+          <countryCode>GB </countryCode>
+          <currencyCode>USD</currencyCode>
+          <date>2012-04-04T02:00:00+02:00</date>
+          <dateCreated>2014-10-20T14:38:28.990+02:00</dateCreated>
+          <dateModified>2014-10-20T14:40:14.103+02:00</dateModified>
+          <expenseTypeDragonId>10</expenseTypeDragonId>
+          <expenseTypeExtId>OFCSP</expenseTypeExtId>
+          <expenseTypeExtName>Office Supplies</expenseTypeExtName>
+          <expenseTypeId>1</expenseTypeId>
+          <externalId>nfRfpCl4IemT88YZ3O$sg$s$pRll$pavCc4i0</externalId>
+          <hasCalculationError>false</hasCalculationError>
+          <id>2</id>
+          <mustCalculate>false</mustCalculate>
+          <approximateReturnPercentage>0.0</approximateReturnPercentage>
+          <status>P</status>
+          <statusId>1</statusId>
+          <mustFetchScan>false</mustFetchScan>
+          <supplierName/>
+          <clientId>10922290-56a1-4126-84a9-e4ae554dbb11</clientId>
+          <invoiceNumber>POT 000002</invoiceNumber>
+          <source>CONCUR</source>
+          <exchangeRate>
+              <date>2012-04-04T02:00:00+02:00</date>
+              <fromCurrencyCode>USD</fromCurrencyCode>
+              <id>2</id>
+              <rate>1.9233605861663818</rate>
+              <toCurrencyCode>GBP</toCurrencyCode>
+          </exchangeRate>
+      </Invoice>
+    </invoices>

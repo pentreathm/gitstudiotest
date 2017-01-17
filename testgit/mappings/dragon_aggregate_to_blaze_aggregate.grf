@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?><Graph __version="3.5.0" author="Anton" created="Tue Aug 04 21:41:58 CAT 2015" description="Dragon Aggregate to Blaze Aggregate" guiVersion="3.4.4.P" id="1438719337234" licenseCode="Unlicensed" licenseType="Unknown" modified="Tue Aug 04 21:41:58 CAT 2015" modifiedBy="Anton" name="Dragon_Aggregate_to_Blaze_Aggregate" revision="1.0" showComponentDetails="false">
+<Global>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Input" id="ee657811-cbf1-493f-8416-c1ffbdc45084">
+<Record fieldDelimiter="," name="calculatePotentialAggregateResponse" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/invoiceAggregation/VATSavingRC" containerType="SINGLE" label="VATSavingRC" name="VATSavingRC" type="number"/>
+<Field __index="1" __sourcePath="{}/object/invoiceAggregation/claimableRC" containerType="SINGLE" label="claimableRC" name="claimableRC" type="number"/>
+<Field __index="24" __sourcePath="{}/object/invoiceAggregation/nonClaimableRC" containerType="SINGLE" label="nonClaimableRC" name="nonClaimableRC" type="number"/>
+<Field __index="25" __sourcePath="{}/object/invoiceAggregation/reportingCurrency" containerType="SINGLE" label="reportingCurrency" name="reportingCurrency" type="string"/>
+<Field __index="26" __sourcePath="{}/object/invoiceAggregation/totalExpensesRC" containerType="SINGLE" label="totalExpensesRC" name="totalExpensesRC" type="number"/>
+</Record>
+</Metadata>
+<Metadata __index="1" __referenceCounter="1" __sourcePath="{}/object/errors" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="2957ce05-0143-4565-8a1a-bc63d8a76226" _parent_id="__parent_id" _type="Output" id="5fe8af8a-0e97-4595-b9e2-2636d35e5d26">
+<Record fieldDelimiter="," name="errors" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="1" __sourcePath="{}/object/errors/errorMessage" containerType="SINGLE" label="errorMessage" name="errorMessage" type="string"/>
+<Field __index="2" __sourcePath="{}/object/errors/id" containerType="SINGLE" label="id" name="id" type="string"/>
+</Record>
+</Metadata>
+<Metadata __index="2" __referenceCounter="1" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList" _dataStructure="SINGLE_DIMENSIONAL_COLLECTION" _id="__id" _metadataParentId="ee657811-cbf1-493f-8416-c1ffbdc45084" _parent_id="__parent_id" _type="Input" id="e701d99d-ebb0-473a-b8b8-f199327e5f02">
+<Record fieldDelimiter="," name="invoiceErrorsList" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_parent_id" __systemManaged="true" name="__parent_id" type="string"/>
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="2" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/VATRate" containerType="SINGLE" label="VATRate" name="VATRate" type="number"/>
+<Field __index="3" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/calculationComment" containerType="SINGLE" label="calculationComment" name="calculationComment" type="string"/>
+<Field __index="4" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/claimableAmount" containerType="SINGLE" label="claimableAmount" name="claimableAmount" type="number"/>
+<Field __index="5" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/claimableAmountRC" containerType="SINGLE" label="claimableAmountRC" name="claimableAmountRC" type="number"/>
+<Field __index="6" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/clientCountry" containerType="SINGLE" label="clientCountry" name="clientCountry" type="string"/>
+<Field __index="7" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/dragonExpenseType" containerType="SINGLE" label="dragonExpenseType" name="dragonExpenseType" type="integer"/>
+<Field __index="8" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/errorComment" containerType="SINGLE" label="errorComment" name="errorComment" type="string"/>
+<Field __index="9" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceAmount" containerType="SINGLE" label="invoiceAmount" name="invoiceAmount" type="number"/>
+<Field __index="10" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceAmountRC" containerType="SINGLE" label="invoiceAmountRC" name="invoiceAmountRC" type="number"/>
+<Field __index="11" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceCountry" containerType="SINGLE" label="invoiceCountry" name="invoiceCountry" type="string"/>
+<Field __index="12" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceCurrency" containerType="SINGLE" label="invoiceCurrency" name="invoiceCurrency" type="string"/>
+<Field __index="13" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceDate" containerType="SINGLE" label="invoiceDate" name="invoiceDate" type="date"/>
+<Field __index="14" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceExpenseType" containerType="SINGLE" label="invoiceExpenseType" name="invoiceExpenseType" type="integer"/>
+<Field __index="15" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceID" containerType="SINGLE" label="invoiceID" name="invoiceID" type="string"/>
+<Field __index="16" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/invoiceValid" containerType="SINGLE" label="invoiceValid" name="invoiceValid" type="boolean"/>
+<Field __index="17" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/isDomesticVAT" containerType="SINGLE" label="isDomesticVAT" name="isDomesticVAT" type="boolean"/>
+<Field __index="18" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/isError" containerType="SINGLE" label="isError" name="isError" type="boolean"/>
+<Field __index="19" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/percentClaimable" containerType="SINGLE" label="percentClaimable" name="percentClaimable" type="number"/>
+<Field __index="20" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/region" containerType="SINGLE" label="region" name="region" type="string"/>
+<Field __index="21" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/reportingCurrency" containerType="SINGLE" label="reportingCurrency" name="reportingCurrency" type="string"/>
+<Field __index="22" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/totalApportionment" containerType="SINGLE" label="totalApportionment" name="totalApportionment" type="number"/>
+<Field __index="23" __sourcePath="{}/object/invoiceAggregation/invoiceErrorsList/vatSchemeId" containerType="SINGLE" label="vatSchemeId" name="vatSchemeId" type="integer"/>
+</Record>
+</Metadata>
+<Metadata __index="0" __referenceCounter="1" __sourcePath="{}/object" _dataStructure="OBJECT" _id="__id" _type="Output" id="2957ce05-0143-4565-8a1a-bc63d8a76226">
+<Record fieldDelimiter="," name="InvoicesCalculationAggregation" recordDelimiter="\n\\|\r\n\\|\r" type="delimited">
+<Field __artificialType="_id" __systemManaged="true" name="__id" type="string"/>
+<Field __index="0" __sourcePath="{}/object/claimable" containerType="SINGLE" label="claimable" name="claimable" type="number"/>
+<Field __index="3" __sourcePath="{}/object/nonClaimable" containerType="SINGLE" label="nonClaimable" name="nonClaimable" type="number"/>
+<Field __index="4" __sourcePath="{}/object/targetCurrency" containerType="SINGLE" label="targetCurrency" name="targetCurrency" type="string"/>
+<Field __index="5" __sourcePath="{}/object/totalValue" containerType="SINGLE" label="totalValue" name="totalValue" type="number"/>
+<Field __index="6" __sourcePath="{}/object/vatSaving" containerType="SINGLE" label="vatSaving" name="vatSaving" type="number"/>
+</Record>
+</Metadata>
+<Dictionary>
+<Entry id="DictionaryEntry0" input="true" name="inputPayload" output="false" type="object"/>
+<Entry id="DictionaryEntry1" input="false" name="outputPayload" output="true" type="object"/>
+</Dictionary>
+</Global>
+<Phase number="0">
+<Node enabled="enabled" fileURL="dict:inputPayload" guiName="Pojo READER" guiX="20" guiY="20" id="BEAN_READER0" type="BEAN_READER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<Context outPort="0" sequenceField="__id" xpath=".">
+  <Mapping cloverField="VATSavingRC" trim="true" xpath="invoiceAggregation/VATSavingRC"/>
+  <Mapping cloverField="claimableRC" trim="true" xpath="invoiceAggregation/claimableRC"/>
+  <Mapping cloverField="nonClaimableRC" trim="true" xpath="invoiceAggregation/nonClaimableRC"/>
+  <Mapping cloverField="reportingCurrency" trim="true" xpath="invoiceAggregation/reportingCurrency"/>
+  <Mapping cloverField="totalExpensesRC" trim="true" xpath="invoiceAggregation/totalExpensesRC"/>
+  <Context generatedKey="__parent_id" outPort="1" parentKey="__id" sequenceField="__id" xpath="invoiceAggregation/invoiceErrorsList">
+    <Mapping cloverField="VATRate" trim="true" xpath="VATRate"/>
+    <Mapping cloverField="calculationComment" trim="true" xpath="calculationComment"/>
+    <Mapping cloverField="claimableAmount" trim="true" xpath="claimableAmount"/>
+    <Mapping cloverField="claimableAmountRC" trim="true" xpath="claimableAmountRC"/>
+    <Mapping cloverField="clientCountry" trim="true" xpath="clientCountry"/>
+    <Mapping cloverField="dragonExpenseType" trim="true" xpath="dragonExpenseType"/>
+    <Mapping cloverField="errorComment" trim="true" xpath="errorComment"/>
+    <Mapping cloverField="invoiceAmount" trim="true" xpath="invoiceAmount"/>
+    <Mapping cloverField="invoiceAmountRC" trim="true" xpath="invoiceAmountRC"/>
+    <Mapping cloverField="invoiceCountry" trim="true" xpath="invoiceCountry"/>
+    <Mapping cloverField="invoiceCurrency" trim="true" xpath="invoiceCurrency"/>
+    <Mapping cloverField="invoiceDate" trim="true" xpath="invoiceDate"/>
+    <Mapping cloverField="invoiceExpenseType" trim="true" xpath="invoiceExpenseType"/>
+    <Mapping cloverField="invoiceID" trim="true" xpath="invoiceID"/>
+    <Mapping cloverField="invoiceValid" trim="true" xpath="invoiceValid"/>
+    <Mapping cloverField="isDomesticVAT" trim="true" xpath="isDomesticVAT"/>
+    <Mapping cloverField="isError" trim="true" xpath="isError"/>
+    <Mapping cloverField="percentClaimable" trim="true" xpath="percentClaimable"/>
+    <Mapping cloverField="region" trim="true" xpath="region"/>
+    <Mapping cloverField="reportingCurrency" trim="true" xpath="reportingCurrency"/>
+    <Mapping cloverField="totalApportionment" trim="true" xpath="totalApportionment"/>
+    <Mapping cloverField="vatSchemeId" trim="true" xpath="vatSchemeId"/>
+  </Context>
+</Context>
+]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.calculatePotentialAggregateResponse"/>
+  <typed-object type="java.lang.Double"/>
+  <typed-object type="java.util.Date"/>
+  <typed-object type="java.lang.Boolean"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.calculatePotentialAggregateResponse">
+    <typed-object-ref name="invoiceAggregation" type-ref="com.vatit.wyvern.shared.dto.PotentialAggregateResponseDef"/>
+  </typed-object>
+  <typed-object type="com.vatit.wyvern.shared.dto.PotentialAggregateResponseDef">
+    <typed-object-ref name="VATSavingRC" type-ref="java.lang.Double"/>
+    <typed-object-ref name="claimableRC" type-ref="java.lang.Double"/>
+    <schema-collection name="invoiceErrorsList" type="java.util.ArrayList">
+      <typed-object-ref type-ref="com.vatit.wyvern.shared.dto.InvoiceDetailsOTDef"/>
+    </schema-collection>
+    <typed-object-ref name="nonClaimableRC" type-ref="java.lang.Double"/>
+    <typed-object-ref name="reportingCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="totalExpensesRC" type-ref="java.lang.Double"/>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="java.lang.Integer"/>
+  <typed-object type="com.vatit.wyvern.shared.dto.InvoiceDetailsOTDef">
+    <typed-object-ref name="VATRate" type-ref="java.lang.Double"/>
+    <typed-object-ref name="calculationComment" type-ref="java.lang.String"/>
+    <typed-object-ref name="claimableAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="claimableAmountRC" type-ref="java.lang.Double"/>
+    <typed-object-ref name="clientCountry" type-ref="java.lang.String"/>
+    <typed-object-ref name="dragonExpenseType" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="errorComment" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceAmount" type-ref="java.lang.Double"/>
+    <typed-object-ref name="invoiceAmountRC" type-ref="java.lang.Double"/>
+    <typed-object-ref name="invoiceCountry" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceDate" type-ref="java.util.Date"/>
+    <typed-object-ref name="invoiceExpenseType" type-ref="java.lang.Integer"/>
+    <typed-object-ref name="invoiceID" type-ref="java.lang.String"/>
+    <typed-object-ref name="invoiceValid" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isDomesticVAT" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="isError" type-ref="java.lang.Boolean"/>
+    <typed-object-ref name="percentClaimable" type-ref="java.lang.Double"/>
+    <typed-object-ref name="region" type-ref="java.lang.String"/>
+    <typed-object-ref name="reportingCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="totalApportionment" type-ref="java.lang.Double"/>
+    <typed-object-ref name="vatSchemeId" type-ref="java.lang.Integer"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node cacheInMemory="true" enabled="enabled" fileURL="dict:outputPayload" guiName="Pojo WRITER" guiX="900" guiY="20" id="BEAN_WRITER0" type="BEAN_WRITER">
+<attr name="mapping"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<object xmlns:clover="http://www.cloveretl.com/ns/xmlmapping" clover:inPort="0">
+  <claimable>$0.claimable</claimable>
+  <clover:collection clover:name="errors">
+    <item clover:inPort="1" clover:key="__parent_id" clover:parentKey="__id">
+      <errorMessage>$1.errorMessage</errorMessage>
+      <id>$1.id</id>
+    </item>
+  </clover:collection>
+  <nonClaimable>$0.nonClaimable</nonClaimable>
+  <targetCurrency>$0.targetCurrency</targetCurrency>
+  <totalValue>$0.totalValue</totalValue>
+  <vatSaving>$0.vatSaving</vatSaving>
+</object>]]></attr>
+<attr name="_data_format"><![CDATA[JAVA]]></attr>
+<attr name="schema"><![CDATA[<?xml version="1.0" encoding="UTF-8"?><schema-object>
+  <typed-object-ref type-ref="com.vatit.blaze.dto.InvoicesCalculationAggregation"/>
+  <typed-object type="double"/>
+  <typed-object type="com.vatit.blaze.dto.Error">
+    <typed-object-ref name="errorMessage" type-ref="java.lang.String"/>
+    <typed-object-ref name="id" type-ref="java.lang.String"/>
+  </typed-object>
+  <typed-object type="java.lang.String"/>
+  <typed-object type="com.vatit.blaze.dto.InvoicesCalculationAggregation">
+    <typed-object-ref name="claimable" type-ref="double"/>
+    <schema-collection name="errors" type="java.util.List">
+      <typed-object-ref type-ref="com.vatit.blaze.dto.Error"/>
+    </schema-collection>
+    <typed-object-ref name="nonClaimable" type-ref="double"/>
+    <typed-object-ref name="targetCurrency" type-ref="java.lang.String"/>
+    <typed-object-ref name="totalValue" type-ref="double"/>
+    <typed-object-ref name="vatSaving" type-ref="double"/>
+  </typed-object>
+</schema-object>
+]]></attr>
+</Node>
+<Node enabled="enabled" guiName="For each Dragon error to Blaze Error" guiX="460" guiY="120" id="FOREACH_INVOICE_ERRORS_LIST_ERRORS" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+output.__parent_id = input.__parent_id;
+//END -> DO NOT REMOVE
+output.errorMessage = input.errorComment;
+output.id = input.invoiceID;]]></attr>
+</Node>
+<Node enabled="enabled" guiName="For each Dragon aggregation to Blaze aggregation" guiX="460" guiY="20" id="FOREACH_OBJECT_OBJECT" transformClass="com.mulesoft.datamapper.transform.MelRecordTransform" type="REFORMAT">
+<attr name="melScript"><![CDATA[//MEL
+//START -> DO NOT REMOVE
+output.__id = input.__id;
+//END -> DO NOT REMOVE
+output.vatSaving = input.VATSavingRC;
+output.claimable = input.claimableRC;
+output.nonClaimable = input.nonClaimableRC;
+output.targetCurrency = input.reportingCurrency;
+output.totalValue = input.totalExpensesRC;]]></attr>
+</Node>
+<Edge debugMode="true" fromNode="BEAN_READER0:0" guiBendpoints="" id="Edge0" inPort="Port 0 (in)" metadata="ee657811-cbf1-493f-8416-c1ffbdc45084" outPort="Port 0 (out)" toNode="FOREACH_OBJECT_OBJECT:0"/>
+<Edge debugMode="true" fromNode="BEAN_READER0:1" guiBendpoints="" id="Edge2" inPort="Port 0 (in)" metadata="e701d99d-ebb0-473a-b8b8-f199327e5f02" outPort="Port 1 (out)" toNode="FOREACH_INVOICE_ERRORS_LIST_ERRORS:0"/>
+<Edge debugMode="true" fromNode="FOREACH_INVOICE_ERRORS_LIST_ERRORS:0" guiBendpoints="" id="Edge3" inPort="Port 1 (in)" metadata="5fe8af8a-0e97-4595-b9e2-2636d35e5d26" outPort="Port 0 (out)" toNode="BEAN_WRITER0:1"/>
+<Edge debugMode="true" fromNode="FOREACH_OBJECT_OBJECT:0" guiBendpoints="" id="Edge1" inPort="Port 0 (in)" metadata="2957ce05-0143-4565-8a1a-bc63d8a76226" outPort="Port 0 (out)" toNode="BEAN_WRITER0:0"/>
+</Phase>
+</Graph>

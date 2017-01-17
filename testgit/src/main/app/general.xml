@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:secure-property-placeholder="http://www.mulesoft.org/schema/mule/secure-property-placeholder"
+      xmlns:context="http://www.springframework.org/schema/context"
+      xmlns:https="http://www.mulesoft.org/schema/mule/https" xmlns:json="http://www.mulesoft.org/schema/mule/json"
+      xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml"
+      xmlns:scripting="http://www.mulesoft.org/schema/mule/scripting"
+      xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+      xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+      xmlns:spring="http://www.springframework.org/schema/beans" 
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns:ss="http://www.springframework.org/schema/security"
+      xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+      xmlns:oauth2-provider="http://www.mulesoft.org/schema/mule/oauth2-provider"
+      xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+http://www.mulesoft.org/schema/mule/https http://www.mulesoft.org/schema/mule/https/current/mule-https.xsd
+http://www.mulesoft.org/schema/mule/oauth2-provider http://www.mulesoft.org/schema/mule/oauth2-provider/current/mule-oauth2-provider.xsd
+http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd
+http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+http://www.mulesoft.org/schema/mule/secure-property-placeholder http://www.mulesoft.org/schema/mule/secure-property-placeholder/current/mule-secure-property-placeholder.xsd">
+
+    
+    <secure-property-placeholder:config name="Blaze-Default" encryptionAlgorithm="Rijndael" key="67a6f0bcf4e6488c" location="blazedefault.properties" doc:name="Secure Property Placeholder" order="1"/>
+    <secure-property-placeholder:config name="Blaze-Override" encryptionAlgorithm="Rijndael" key="67a6f0bcf4e6488c" location="classpath:blazeoverride.properties" order="0" doc:name="Secure Property Placeholder" ignoreResourceNotFound="true" ignoreUnresolvablePlaceholders="true"/>
+	<spring:beans>
+        <spring:bean id="oauthTokenStore" name="oauthTokenStore" class="org.mule.modules.oauth2.provider.token.ObjectStoreTokenStore">
+            <spring:property name="accessTokenObjectStore" ref="oauthObjectStore"/>
+			<spring:property name="refreshTokenObjectStore" ref="oauthObjectStore"/> 
+        </spring:bean>
+        <spring:bean id="oauthObjectStore" class="com.vatit.blaze.esb.utils.objectStore.PersistantOAuthObjectStore" init-method="initialise" destroy-method="dispose" name="oauthObjectStore">
+            <spring:property name="name" value="oauthObjectStore"/>
+        </spring:bean>
+		<context:component-scan base-package="com.vatit.blaze.esb" />
+	</spring:beans>
+	<custom-transformer class="com.vatit.blaze.esb.transformer.HttpErrorResponseChecker" name="HttpErrorResponseChecker" doc:name="Java">
+        <spring:property name="blazeServicesAddress" value="${blaze.services.address}"/>
+    </custom-transformer>
+    <https:connector name="httpsServerConnector" cookieSpec="netscape" validateConnections="true" sendBufferSize="0" receiveBufferSize="0" receiveBacklog="0" clientSoTimeout="${blaze.http.timeout}" serverSoTimeout="${blaze.http.timeout}" socketSoLinger="0" doc:name="HTTP-HTTPS" enableCookies="true">
+      <https:tls-key-store path="keystore.jks" keyPassword="B1@zeCert" storePassword="B1@zeCert"/>
+    </https:connector>
+    <http:connector name="httpServerConnector" cookieSpec="netscape" validateConnections="true" sendBufferSize="0" receiveBufferSize="0" receiveBacklog="0" clientSoTimeout="${blaze.http.timeout}" serverSoTimeout="${blaze.http.timeout}" socketSoLinger="0" doc:name="HTTP-HTTPS"/>
+    <mulexml:jaxb-context name="JAXB_Context" packageNames="com.vatit.blaze.dto:com.vatit.blaze.esb.dragon.dto:com.vatit.blaze.esb:com.vatit.blaze.esb.dragon.dto.ixml" doc:name="JAXB Context"/>
+    <http:connector name="blazeServicesConnector" cookieSpec="netscape" validateConnections="true" sendBufferSize="0" receiveBufferSize="0" receiveBacklog="0" clientSoTimeout="${blaze.services.timeout}" serverSoTimeout="${blaze.services.timeout}" socketSoLinger="0" doc:name="HTTP-HTTPS"/>
+
+    <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" name="MagicObjectMarshaller" doc:name="Java"/>
+
+	<spring:beans>
+		<ss:authentication-manager id="resourceOwnerAuthenticationManager">
+			<ss:authentication-provider>
+				<ss:user-service id="resourceOwnerUserService">
+					<ss:user name="${blaze.client.vatapp.username}" password="${blaze.client.vatapp.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.dragon.username}" password="${blaze.client.dragon.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.hotelde.username}" password="${blaze.client.hotelde.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.combtas.username}" password="${blaze.client.combtas.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.xpenditure.username}" password="${blaze.client.xpenditure.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.certify.username}" password="${blaze.client.certify.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.expensys.username}" password="${blaze.client.expensys.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.esb.username}" password="${blaze.client.esb.password}" authorities="RESOURCE_OWNER" />
+					<ss:user name="${blaze.client.itemize.username}" password="${blaze.client.itemize.password}" authorities="RESOURCE_OWNER" />
+				</ss:user-service>
+			</ss:authentication-provider>
+		</ss:authentication-manager>
+	</spring:beans>
+
+	<mule-ss:security-manager>
+		<mule-ss:delegate-security-provider
+			name="resourceOwnerSecurityProvider" delegate-ref="resourceOwnerAuthenticationManager" />
+	</mule-ss:security-manager>
+
+	<oauth2-provider:config name="blazeOauth2Provider"
+		providerName="Blaze" 
+		host="0.0.0.0" port="${blaze.esb.port.https}"
+		authorizationEndpointPath="api/1.0/authorize" 
+		accessTokenEndpointPath="api/1.0/token"
+		resourceOwnerSecurityProvider-ref="resourceOwnerSecurityProvider"
+        scopes="POTENTIALS_SYNC POTENTIALS_READ POTENTIALS_WRITE DOCUMENTS_READ DOCUMENTS_WRITE POTENTIALS_DELETE DOCUMENTS_DELETE CLIENTS_WRITE FILTERED_WRITE GUEST"
+		doc:name="OAuth provider module"
+		tokenTtlSeconds="${blaze.security.token.lifespan}" 
+		connector-ref="httpsServerConnector" 
+		supportedGrantTypes="AUTHORIZATION_CODE IMPLICIT" 
+		enableRefreshToken="true" 
+		tokenStore-ref="oauthTokenStore">
+
+		<oauth2-provider:clients>
+			<oauth2-provider:client clientId="${blaze.client.esb.id}" secret="${blaze.client.esb.secret}" type="CONFIDENTIAL" clientName="Master App" description="Master OAuth User">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>https://www.vatit.com/blaze/auth</oauth2-provider:redirect-uri>
+                    <oauth2-provider:redirect-uri>${blaze.esb.address}/api/1.0/security/authorization-ok
+                    </oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>https://www.getpostman.com/oauth2/callback</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+					<oauth2-provider:authorized-grant-type>TOKEN</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+					<oauth2-provider:scope>POTENTIALS_SYNC</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_DELETE</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_DELETE</oauth2-provider:scope>
+					<oauth2-provider:scope>CLIENTS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>FILTERED_WRITE</oauth2-provider:scope>
+				</oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.vatapp.id}" secret="${blaze.client.vatapp.secret}" type="CONFIDENTIAL" clientName="VAT App" description="VATit Potentials Service Front-End">
+				<oauth2-provider:redirect-uris>
+					<!-- Development -->
+					<oauth2-provider:redirect-uri>http://vatit.ide.devop.net/blaze/authentication*</oauth2-provider:redirect-uri>
+					<!-- UAT -->
+					<oauth2-provider:redirect-uri>http://vatit-reports.x.sergata.com*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>http://vatit-tablet.x.sergata.com*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>http://vatit.x.sergata.com*</oauth2-provider:redirect-uri>
+					<!-- Live -->
+					<oauth2-provider:redirect-uri>http://vatanalysis.com*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>http://162.13.137.57*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>http://thevatcloud.com*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+					<oauth2-provider:authorized-grant-type>TOKEN</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+					<oauth2-provider:scope>POTENTIALS_SYNC</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_DELETE</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_DELETE</oauth2-provider:scope>
+					<oauth2-provider:scope>CLIENTS_WRITE</oauth2-provider:scope>
+				</oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.dragon.id}" secret="${blaze.client.dragon.secret}" type="CONFIDENTIAL" clientName="Dragon" description="VATit Dragon service">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>http://localhost/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+					<oauth2-provider:authorized-grant-type>TOKEN</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+					<oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+				</oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.hotelde.id}" secret="${blaze.client.hotelde.secret}" type="CONFIDENTIAL" clientName="Hotel De" description="Hotel.de data service">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>https://localhost/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+					<oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>${blaze.security.scope.staging.potentialsDelete}</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+				</oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.combtas.id}" secret="${blaze.client.combtas.secret}" type="CONFIDENTIAL" clientName="ComBTAS" description="ComBTAS Expense Management">
+				<oauth2-provider:redirect-uris>
+                    <oauth2-provider:redirect-uri>http://localhost/*</oauth2-provider:redirect-uri>
+                    <oauth2-provider:redirect-uri>https://secure.combtas.com/*</oauth2-provider:redirect-uri>
+                    <oauth2-provider:redirect-uri>https://tas.combtas.com/*</oauth2-provider:redirect-uri>
+                    <oauth2-provider:redirect-uri>https://tas2.combtas.com/*</oauth2-provider:redirect-uri>
+                    <oauth2-provider:redirect-uri>https://tas3.combtas.com/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+                    <oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+                    <oauth2-provider:scope>${blaze.security.scope.staging.potentialsDelete}</oauth2-provider:scope>
+                    <oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>
+                </oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.xpenditure.id}" secret="${blaze.client.xpenditure.secret}" type="CONFIDENTIAL" clientName="Xpenditure" description="Xpenditure Expense Management">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>http://local.manage.xpenditure.com:55548/superadmin/*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>http://staging.manage.xpenditure.com/superadmin/*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>https://manage.xpenditure.com/superadmin/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+                    <oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+                    <oauth2-provider:scope>${blaze.security.scope.staging.potentialsDelete}</oauth2-provider:scope>
+                    <oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>				
+                </oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.expensys.id}" secret="${blaze.client.expensys.secret}" type="CONFIDENTIAL" clientName="Expensys" description="Expensys Expense Management">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>http://localhost/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+                    <oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+                    <oauth2-provider:scope>POTENTIALS_DELETE</oauth2-provider:scope>
+                    <oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+                    <oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>
+                </oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.certify.id}" secret="${blaze.client.certify.secret}" type="CONFIDENTIAL" clientName="Certify" description="Certify Expense Management">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>https://www.certify.com/*</oauth2-provider:redirect-uri>
+					<oauth2-provider:redirect-uri>http://localhost/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+					<oauth2-provider:authorized-grant-type>TOKEN</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+					<oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+                    <oauth2-provider:scope>${blaze.security.scope.staging.potentialsDelete}</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>
+				</oauth2-provider:scopes>
+			</oauth2-provider:client>
+			<oauth2-provider:client clientId="${blaze.client.itemize.id}" secret="${blaze.client.itemize.secret}" type="CONFIDENTIAL" clientName="Itemize" description="Itemize Expense Management">
+				<oauth2-provider:redirect-uris>
+					<oauth2-provider:redirect-uri>https://localhost/*</oauth2-provider:redirect-uri>
+				</oauth2-provider:redirect-uris>
+				<oauth2-provider:authorized-grant-types>
+					<oauth2-provider:authorized-grant-type>AUTHORIZATION_CODE</oauth2-provider:authorized-grant-type>
+					<oauth2-provider:authorized-grant-type>TOKEN</oauth2-provider:authorized-grant-type>
+				</oauth2-provider:authorized-grant-types>
+				<oauth2-provider:scopes>
+					<oauth2-provider:scope>POTENTIALS_READ</oauth2-provider:scope>
+                    <oauth2-provider:scope>${blaze.security.scope.staging.potentialsDelete}</oauth2-provider:scope>
+					<oauth2-provider:scope>POTENTIALS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_WRITE</oauth2-provider:scope>
+					<oauth2-provider:scope>DOCUMENTS_READ</oauth2-provider:scope>
+				</oauth2-provider:scopes>
+			</oauth2-provider:client>
+		</oauth2-provider:clients>
+	</oauth2-provider:config>
+    <message-properties-transformer overwrite="true" name="setOauthClientId" doc:name="Message Properties">
+        <add-message-property key="Blaze-Client-Id" value="#[flowVars['mule.oauth2.access_token_store_holder'] == null ? flowVars['blaze.api.client.id'] : flowVars['mule.oauth2.access_token_store_holder'].authorizationRequest.clientId]"/>
+    </message-properties-transformer>
+    <custom-transformer class="com.vatit.blaze.esb.transformer.ObjectCompressorTransformer" name="GzipCompressorTransformer" doc:name="Java"/>
+
+
+    <custom-transformer class="com.vatit.blaze.esb.transformer.HttpErrorResponseChecker" name="HttpErrorResponseCheckerWithStatus" doc:name="Java">
+        <spring:property name="surfaceHttpStatus" value="true"/>
+        <spring:property name="blazeServicesAddress" value="${blaze.services.address}"/>
+    </custom-transformer>
+    <catch-exception-strategy name="GlobalCatch">
+        <flow-ref name="general.exceptionHandling" doc:name="general.exceptionHandling"/>
+        <transformer ref="MagicObjectMarshaller" doc:name="Magic Marshaller"/>
+
+    </catch-exception-strategy>
+    <sub-flow name="general.callBlazeServices">
+        <transformer ref="setOauthClientId" doc:name="Add OAuth client id header"/>
+        <message-properties-transformer doc:name="Set Http request Method">
+            <add-message-property key="http.method" value="#[flowVars['httpMethod']]"/>
+        </message-properties-transformer>
+        <scripting:component doc:name="Copy Blaze Headers">
+            <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.utils.Constants
+
+if(message.getInvocationProperty('blaze.request.id') != null)
+	message.setOutboundProperty(Constants.Headers.REQUEST_ID, message.getInvocationProperty('blaze.request.id'))
+	
+if(message.getInvocationProperty('blaze.request.category') != null)
+	message.setOutboundProperty(Constants.Headers.REQUEST_CATEGORY, message.getInvocationProperty('blaze.request.category'))
+
+if(message.getInvocationProperty('blaze.request.idIsExternal') != null)
+	message.setOutboundProperty(Constants.Headers.ID_IS_EXTERNAL, message.getInvocationProperty('blaze.request.idIsExternal'))
+	
+if (message.getOutboundProperty('Content-Type') == null)
+	message.setOutboundProperty('Content-Type', 'application/json')
+
+message.payload]]></scripting:script>
+        </scripting:component>
+        <choice doc:name="Must Serialize?">
+            <when expression="#[payload instanceof com.vatit.blaze.dto.BlazeBaseDto &amp;&amp; message.outboundProperties['Content-Type'] == 'application/json']">
+                <logger level="INFO" doc:name="Yes" message="Auto-serializing payload to Json"/>
+                <custom-transformer class="com.vatit.blaze.esb.transformer.MarshalObjectTransformer" doc:name="Marshal">
+	                <spring:property name="contentType" value="application/json"/>
+                </custom-transformer>
+
+            </when>
+            <otherwise>
+                <logger level="INFO" doc:name="No" message="Payload appears to be the correct format"/>
+            </otherwise>
+        </choice>
+
+        <flow-ref name="dragon.populateBlazeUserId" doc:name="dragon.populateBlazeUserId"/>
+        <logger message="Fowarding this call as #[header:OUTBOUND:http.method] to http://#[flowVars['blaze.services.path']]" level="INFO" doc:name="Logger"/>
+        <http:outbound-endpoint exchange-pattern="request-response" connector-ref="blazeServicesConnector" method="GET" address="http://#[flowVars['blaze.services.path']]" responseTimeout="${blaze.services.timeout}"  responseTransformer-refs="HttpErrorResponseChecker" doc:name="Call Blaze Service"/>
+    </sub-flow>
+    <sub-flow name="general.fwdToBlazeServices">
+        <not-filter doc:name="Block Favicon Requests">
+            <wildcard-filter pattern="/favicon.ico" caseSensitive="true"/>
+        </not-filter>
+        <set-property propertyName="Content-Type" value="application/json" doc:name="Set Content-Type"/>
+        <set-variable variableName="blaze.services.path" value="${blaze.services.address}#[header:INBOUND:http.request]" doc:name="Set request address"/>
+        <set-variable variableName="httpMethod" value="#[message.inboundProperties['http.method']]" doc:name="Set Http Method variable"/>
+        <flow-ref name="general.callBlazeServices" doc:name="Call blaze services"/>
+        <object-to-string-transformer doc:name="Object to String"/>
+    </sub-flow>
+
+    <sub-flow name="general.exceptionHandling" >
+        <choice doc:name="Choice">
+            <when expression="#[payload is com.vatit.blaze.esb.dragon.dto.Fault]">
+                <logger message="Exception Caught: #[payload.faultstring] - FaultCode #[payload.faultcode] - #[payload.detail.error]" level="INFO" doc:name="Log Dragon Fault"/>
+                <scripting:component doc:name="Set Payload">
+                    <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.dto.BlazeError
+
+String message = payload.faultstring + " - FaultCode " + payload.faultcode.toString() + " - " + payload.detail.error
+new BlazeError(message)]]></scripting:script>
+                </scripting:component>
+            </when>
+            <when expression="#[exception is org.mule.api.transport.DispatchException]">
+                <logger message="Dispatch Exception: #[exception.summaryMessage]" level="INFO" doc:name="Log Dispatch Exception"/>
+                <scripting:component doc:name="Set Payload">
+                    <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.dto.BlazeError
+
+new BlazeError(exception)]]></scripting:script>
+                </scripting:component>
+            </when>
+            <otherwise>
+                <logger message="Exception Caught: #[exception.summaryMessage or exception.getMessage()]" level="ERROR" doc:name="Log Fault"/>
+                <scripting:component doc:name="Set Payload">
+                    <scripting:script engine="Groovy"><![CDATA[import com.vatit.blaze.dto.BlazeError
+
+new BlazeError(exception)]]></scripting:script>
+                </scripting:component>
+            </otherwise>
+        </choice>
+        <choice doc:name="Choice">
+            <when expression="#[message.outboundProperties['http.status'] &gt;= 400]">
+                <logger message="Error Status: #[message.outboundProperties['http.status']]." level="WARN" doc:name="Status &gt;= 400"/>
+            </when>
+            <when expression="#[com.vatit.blaze.esb.exception.HttpResponseTransformerException.surfaceStatus(exception)]">
+                <set-property propertyName="http.status" value="#[com.vatit.blaze.esb.exception.HttpResponseTransformerException.getHttpStatus(exception)]" doc:name="Surface HTTP Status"/>
+            </when>
+            <otherwise>
+                <set-property propertyName="http.status" value="500" doc:name="Set HTTP Status 500"/>
+            </otherwise>
+        </choice>
+
+
+    </sub-flow>
+    <flow name="general.favIcon">
+        <https:inbound-endpoint exchange-pattern="request-response" host="0.0.0.0" port="${blaze.esb.port.https}" path="favicon.ico" connector-ref="httpsServerConnector" doc:name="favIcon"/>
+        <logger message="Currently favicon is blocked, ultimately we want to serve up an icon" level="INFO" doc:name="Logger"/>
+    </flow>
+
+</mule>

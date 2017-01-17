@@ -1,0 +1,55 @@
+{
+  "items": [
+    {
+      "externalId": "inv-1",
+      "locationMap": {
+        "countryCode": "US"
+      },
+      "currencyCode": "USD",
+      "amount": 75,
+      "date": "2012-04-04",
+      "expenseType": {
+        "dragonId": 8
+      },
+      "connection": {
+        "client": {
+          "countryCode": "ZA"
+        }
+      }
+    },
+    {
+      "externalId": "inv-1-5",
+      "locationMap": {
+        "countryCode": "US"
+      },
+      "currencyCode": "USD",
+      "amount": 755,
+      "date": "2012-04-04",
+      "expenseType": {
+        "externalId": "invalid-expense-type"
+      },
+      "connection": {
+        "client": {
+          "countryCode": "ZA"
+        }
+      }
+    },
+    {
+      "externalId": "inv-2",
+      "locationMap": {
+        "countryCode": "GB"
+      },
+      "currencyCode": "USD",
+      "amount": 50,
+      "date": "2012-04-04",
+      "expenseType": {
+        "dragonId": 8
+      },
+      "connection": {
+        "client": {
+          "countryCode": "ZA"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "items": [
+    {
+      "id": 11,
+      "externalId": "my-unique-id"
+    },
+    {
+      "id": 12,
+      "externalId": "my-unique-id 2",
+ 	    "items": [
+        {
+      	  "id": 13,
+          "externalId": "my-unique-item-id 1"
+        },
+        {
+      	  "id": 14,
+          "externalId": "my-unique-item-id 2"
+        },
+        {
+      	  "id": 15,
+          "externalId": "my-unique-item-id 3"
+        }
+      ]    
+   }
+  ]
+}

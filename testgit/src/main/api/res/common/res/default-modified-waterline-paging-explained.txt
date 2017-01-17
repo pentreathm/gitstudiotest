@@ -1,0 +1,20 @@
+###Waterline Paging (Bulk, Resumable)
+
+This service uses waterline paging by modifiedDate by default. This is equivalent to calling the service with the waterline query parameter set to _'MODIFIED'_. Paging by createdDate is not supported
+
+For this example we will request all invoice documents for client _1234_ to be paged on modifiedDate, and we want 10 invoices per request
+
+Example: __GET__ ```{server}/api/1.0/potentials/completed-invoice-documents?clientCode=1234&pageSize=10```
+
+Example response:
+```
+{
+  "waterline": "eyJkYXRlIjoiMjAxNS0wNC0xNVQwNzoyODo1My4wMTNaIiwidHlwZSI6Ik1PRElGSUVEIiwiaWQiOjIxNTd9",
+  "items": [
+  ...
+```
+To fetch the next page, we take the waterline hash received in the response from the previous call and assign the value to the waterline query parameter. The rest of the request stays the same.
+
+Example: __GET__ ```{server}/api/1.0/potentials/completed-invoice-documents?clientCode=1234&pageSize=10&waterline=eyJkYXRlIjoiMjAxNS0wNC0xNVQwNzoyODo1My4wMTNaIiwidHlwZSI6Ik1PRElGSUVEIiwiaWQiOjIxNTd9```
+
+Continue replacing the waterline value with the one returned in the response until the result set is empty (or has fewer rows than specified in _pageSize_).

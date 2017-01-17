@@ -1,0 +1,147 @@
+[ {
+  "externalId" : "HGSTYALIS89",
+  "connection" : {
+    "client" : {
+      "code" : "6654"
+    }
+  },
+  "invoices" : [ {
+    "externalId" : "HSGSKJ658",
+    "amount" : 87.45,
+    "taxAmount" : 9.45,
+    "date" : "2015-01-20",
+    "expenseType" : {
+      "externalId" : "accom",
+      "externalName" : "Accomadation"
+    },
+    "isPersonalExpense" : true,
+    "location" : {
+      "countryCode" : "ZA",
+      "externalId" : "Johannesburg",
+      "regionCode" : "GP"
+    },
+    "currencyCode" : "ZAR",
+    "ownerName" : "Izn Arcolad",
+    "items" : [ ],
+    "notes" : [ ],
+    "supplier" : {
+      "name" : "Hotel Beach Palms",
+      "address" : {
+        "line" : "12 Dune Road",
+        "city" : "Port Elizabeth",
+        "province" : "Eastern Cape",
+        "postCode" : "6543",
+        "countryCode" : "ZA"
+      }
+    },
+    "formOfPayment" : "cash",
+    "doesReceiptExist" : true,
+    "paperInvoiceReference" : "1007"
+  }, {
+    "externalId" : "JHG65",
+    "amount" : 782.23,
+    "date" : "2013-08-20",
+    "expenseType" : {
+      "externalId" : "net",
+      "externalName" : "internet"
+    },
+    "location" : {
+      "countryCode" : "ZA",
+      "externalId" : "Tel Aviv"
+    },
+    "currencyCode" : "ILS",
+    "items" : [ ],
+    "notes" : [ ],
+    "supplier" : {
+      "name" : "Barbara's Balmy B&B"
+    }
+  } ]
+}, {
+  "externalId" : "HTSGRIS89",
+  "connection" : {
+    "externalId" : "wsadmin@Connect-VATit.co.uk"
+  },
+  "invoices" : [ {
+    "externalId" : "DSGSRET",
+    "amount" : 1774.62,
+    "expenseType" : {
+      "externalId" : "accom",
+      "externalName" : "Accommodation"
+    },
+    "location" : {
+      "countryCode" : "GB",
+      "externalId" : "Wot",
+      "regionCode" : "SXW"
+    },
+    "currencyCode" : "GBP",
+    "ownerName" : "Percy Jackson",
+    "items" : [ {
+      "externalId" : "JJJJ67",
+      "amount" : 1762.12,
+      "date" : "2013-07-06",
+      "expenseType" : {
+        "externalId" : "accom",
+        "externalName" : "Accommodation"
+      }
+    }, {
+      "externalId" : "JJJJ68",
+      "amount" : 12.5,
+      "taxAmount" : 1.54,
+      "date" : "2013-07-06",
+      "expenseType" : {
+        "externalId" : "net",
+        "externalName" : "Internet Charge"
+      }
+    } ],
+    "notes" : [ ],
+    "supplier" : {
+      "name" : "Barbara's Balmy B&B"
+    }
+  }, {
+    "externalId" : "JDTUYANA",
+    "amount" : 345.87,
+    "date" : "2015-01-03",
+    "expenseType" : {
+      "externalId" : "stat",
+      "externalName" : "Office Stationary"
+    },
+    "mustCalculate" : false,
+    "location" : {
+      "countryCode" : "ES"
+    },
+    "currencyCode" : "ESP",
+    "items" : [ ],
+    "notes" : [ ],
+    "supplier" : {
+      "name" : "Barbara's Balmy B&B"
+    },
+    "formOfPayment" : "cash",
+    "paperInvoiceReference" : "1008"
+  } ]
+}, {
+  "externalId" : "JHSYTS65675",
+  "connection" : {
+    "id" : 6752
+  },
+  "invoices" : [ {
+    "externalId" : "GSFSKYA",
+    "amount" : 1423.45,
+    "taxAmount" : 215.12,
+    "date" : "2013-07-06",
+    "expenseType" : {
+      "externalId" : "stat",
+      "externalName" : "Office Stationary"
+    },
+    "location" : {
+      "countryCode" : "ZA",
+      "externalId" : "Cape Town"
+    },
+    "currencyCode" : "ZAR",
+    "ownerName" : "Joe",
+    "items" : [ ],
+    "notes" : [ ],
+    "supplier" : {
+      "name" : "CNA"
+    }
+  } ]
+} ]

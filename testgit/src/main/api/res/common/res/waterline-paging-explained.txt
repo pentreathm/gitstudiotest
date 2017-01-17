@@ -1,0 +1,20 @@
+###Waterline Paging (Bulk, Resumable)
+
+To instruct the Blaze service that waterline paging will be used, the request must contain the waterline query parameter which must be set to either _'CREATED'_ or _'MODIFIED'_
+
+For this example we will request all invoices for client _1234_ to be paged on createdDate, and we want 10 invoices per request
+
+Example: __GET__ ```{server}/api/1.0/potentials/invoices?clientCode=1234&pageSize=10&waterline=CREATED```
+
+Example response:
+```
+{
+  "waterline": "eyJkYXRlIjoiMjAxNS0wNC0xNVQwNzoyODo1My4wMTNaIiwidHlwZSI6Ik1PRElGSUVEIiwiaWQiOjIxNTd9",
+  "items": [
+  ...
+```
+To fetch the next page, we take the waterline hash received in the response from the previous call and assign the value to the waterline query parameter. The rest of the request stays the same.
+
+Example: __GET__ ```{server}/api/1.0/potentials/invoices?clientCode=1234&pageSize=10&waterline=eyJkYXRlIjoiMjAxNS0wNC0xNVQwNzoyODo1My4wMTNaIiwidHlwZSI6Ik1PRElGSUVEIiwiaWQiOjIxNTd9```
+
+Continue replacing the waterline value with the one returned in the response until the result set is empty (or has fewer rows than specified in _pageSize_).

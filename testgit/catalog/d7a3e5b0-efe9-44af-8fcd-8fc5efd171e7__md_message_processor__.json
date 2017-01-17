@@ -1,0 +1,13 @@
+{
+    "inputMessageMetadata": {},
+    "outputMessageMetadata": {
+        "flowVariables": {
+            "blaze.concur.pageUrl": {
+                "connectorName": "#_custom_mule_metadata_type_#",
+                "typeId": "String"
+            }
+        }
+    },
+    "id": "d7a3e5b0-efe9-44af-8fcd-8fc5efd171e7",
+    "version": "5.2.0.0"
+}

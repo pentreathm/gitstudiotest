@@ -1,0 +1,22 @@
+ratesQueryParameters:
+  queryParameters:
+    id:
+      description: The ID of the item in the list. This is used to identify the item in the list in order to reconsile the results
+      type: string
+      example: GBP-USD, 1
+    date:
+      description: The date for which the exchange rate is required. This will most likely be the date of the invoice. The date must conform to - __[ISO 8601](http://www.iso.org/iso/home/standards/iso8601.htm)__
+      type: date
+      example: "2014-02-21T00:38:17+04:00"
+    fromCurrencyCode:
+      description: The currency from which to convert. This is also known as the domestic or base currency.
+      type: string
+      enum: [AED,AFA,ALL,AMD,ANG,AOA,ARS,AUD,AWG,AZM,BAM,BBD,BDT,BGN,BHD,BIF,BMD,BND,BOB,BRL,BSD,BTN,BWP,BYR,BZD,CAD,CDF,CHF,CLP,CNY,COP,CRC,CSD,CUP,CVE,CYP,CZK,DJF,DKK,DOP,DZD,EEK,EGP,ERN,ETB,EUR,FJD,FKP,GBP,GEL,GGP,GHC,GIP,GMD,GNF,GTQ,GYD,HKD,HNL,HRK,HTG,HUF,IDR,ILS,IMP,INR,IQD,IRR,ISK,JEP,JMD,JOD,JPY,KES,KGS,KHR,KMF,KPW,KRW,KWD,KYD,KZT,LAK,LBP,LKR,LRD,LSL,LTL,LVL,LYD,MAD,MDL,MGA,MKD,MMK,MNT,MOP,MRO,MTL,MUR,MVR,MWK,MXN,MYR,MZM,NAD,NGN,NIO,NOK,NPR,NZD,OMR,PAB,PEN,PGK,PHP,PKR,PLN,PYG,QAR,ROL,RON,RUB,RWF,SAR,SBD,SCR,SDD,SEK,SGD,SHP,SIT,SKK,SLL,SOS,SRD,STD,SVC,SYP,SZL,THB,TJS,TMM,TND,TOP,TRY,TTD,TVD,TWD,TZS,UAH,UGX,USD,UYU,UZS,VEB,VND,VUV,WST,YER,ZAR,ZMK,ZWD]
+      example: JPY
+      required: true
+    toCurrencyCode: 
+      description: The currency to which to convert. This is also known as the foreign or counter currency.
+      type: string
+      enum: [AED,AFA,ALL,AMD,ANG,AOA,ARS,AUD,AWG,AZM,BAM,BBD,BDT,BGN,BHD,BIF,BMD,BND,BOB,BRL,BSD,BTN,BWP,BYR,BZD,CAD,CDF,CHF,CLP,CNY,COP,CRC,CSD,CUP,CVE,CYP,CZK,DJF,DKK,DOP,DZD,EEK,EGP,ERN,ETB,EUR,FJD,FKP,GBP,GEL,GGP,GHC,GIP,GMD,GNF,GTQ,GYD,HKD,HNL,HRK,HTG,HUF,IDR,ILS,IMP,INR,IQD,IRR,ISK,JEP,JMD,JOD,JPY,KES,KGS,KHR,KMF,KPW,KRW,KWD,KYD,KZT,LAK,LBP,LKR,LRD,LSL,LTL,LVL,LYD,MAD,MDL,MGA,MKD,MMK,MNT,MOP,MRO,MTL,MUR,MVR,MWK,MXN,MYR,MZM,NAD,NGN,NIO,NOK,NPR,NZD,OMR,PAB,PEN,PGK,PHP,PKR,PLN,PYG,QAR,ROL,RON,RUB,RWF,SAR,SBD,SCR,SDD,SEK,SGD,SHP,SIT,SKK,SLL,SOS,SRD,STD,SVC,SYP,SZL,THB,TJS,TMM,TND,TOP,TRY,TTD,TVD,TWD,TZS,UAH,UGX,USD,UYU,UZS,VEB,VND,VUV,WST,YER,ZAR,ZMK,ZWD]
+      example: GBP
+      required: true

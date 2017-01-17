@@ -1,0 +1,14 @@
+{
+  "type" : "object",
+  "id" : "urn:jsonschema:com:vatit:blaze:dto:InvoiceItem",
+  "properties" : {
+    "externalId" : {
+      "type" : "string",
+      "description" : "External id of an invoice, used to identify artefacts in/by an external system"
+    },
+    "id" : {
+      "type" : "integer",
+      "description" : "Internal Blaze Id"
+    }
+  }
+}

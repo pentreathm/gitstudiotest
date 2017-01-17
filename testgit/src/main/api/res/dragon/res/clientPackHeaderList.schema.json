@@ -1,0 +1,60 @@
+{
+  "type": "array",
+  "items": {
+    "title": "Client Pack Header",
+    "description": "Contains header information on a client pack",
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "properties": {
+      "id": {
+        "type": "integer",
+        "description": "Internal System Id for this client pack"
+      },
+      "clientPackCode": {
+        "type": "string",
+        "description": "Unique, system-defined identifier for this client pack."
+      },
+      "claimValue": {
+        "type": "number",
+        "description": "Total value of a VAT claim from invoices in this client pack."
+      },
+      "clientCode": {
+        "type": "string",
+        "description": "Cod of the client to whom this pack is related"
+      },
+      "clientName": {
+        "type": "string",
+        "description": "Filter by client name"
+      },
+      "gbpRate": {
+        "type": "number",
+        "description": "Exchange rate of to GBP of the claim native currency"
+      },
+      "clientPackType": {
+        "type": "string",
+        "description": "Type of client packs",
+        "enum": [
+          "Claim Client Pack",
+          "General Client Pack",
+          "Query Client Pack"
+        ]
+      },
+      "invoiceCount": {
+        "type": "string",
+        "description": "Number of invoices in this client pack"
+      },
+      "vatSchemeName": {
+        "type": "string",
+        "description": "Name of the VAT scheme against which this client pack will be claimed."
+      },
+      "branchName": {
+        "type": "string",
+        "description": "Name of the branch that built this client pack."
+      },
+      "claimValueGBP": {
+        "type": "number",
+        "description": "Total value of a VAT claim from invoices in this client pack - in GBP."
+      }
+    }
+  }
+}

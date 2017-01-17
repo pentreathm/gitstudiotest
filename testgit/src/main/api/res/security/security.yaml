@@ -1,0 +1,8 @@
+/authorization-ok:
+  description: End point for testing auth redirect
+  get:
+    responses:
+      200:
+        body:
+          text/plain:
+            example: Authorization Succeeded!

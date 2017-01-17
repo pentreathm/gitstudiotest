@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<syncReport>
+  <connection>
+    <reportsRetrieved>28</reportsRetrieved>
+    <imagesRetrieved>0</imagesRetrieved>
+    <calculationsRetrieved>153</calculationsRetrieved>
+    <entriesRetrieved>5</entriesRetrieved>
+    <errors>Images Level: {"message":"Failed to invoke copyCopyIntoItems. Message payload is of type: Invoice","cause":{"message":"Failed to establish a connection with the Server. javax.xml.ws.soap.SOAPFaultException: Fault string, and possibly fault code, not set","cause":null},"id":"9a494c86-8e79-4c7c-af07-8cefdfca77e2"}</errors>
+    <client>
+      <ClientCode>1234</ClientCode>
+      <EntityCode>00000000-0000-0000-0000-000000000000</EntityCode>
+      <ClientName>My Company</ClientName>
+    </client>
+  </connection>
+  <connection>
+    <reportsRetrieved>0</reportsRetrieved>
+    <imagesRetrieved>0</imagesRetrieved>
+    <calculationsRetrieved>0</calculationsRetrieved>
+    <entriesRetrieved>0</entriesRetrieved>
+    <client>
+      <ClientCode>1234</ClientCode>
+      <EntityCode>11111111-1111-1111-1111-111111111111</EntityCode>
+      <ClientName>Company 2</ClientName>
+    </client>
+  </connection>
+  <numberOfConnections>2</numberOfConnections>
+</syncReport>
